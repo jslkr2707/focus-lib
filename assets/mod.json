@@ -1,11 +1,11 @@
 {
-  "name": "modtemplate",
-  "displayName": "Template",
-  "author": "[#8738ff[]]Sonnicon[[]]",
-  "description": "Gradle jar Mindustry mod template",
+  "name": "example",
+  "displayName": "Example Java Mod",
+  "author": "AshesKaiser",
+  "description": "A simple mod made out of Java",
   "version": "0",
-  "main": "sonnicon.modtemplate.ModTemplate",
-  "minGameVersion": "105",
+  "main": "example.core.Main",
+  "minGameVersion": "126",
   "dependencies": [],
   "hidden": false,
   "java": true
