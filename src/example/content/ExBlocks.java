@@ -3,12 +3,13 @@ package example.content;
 import example.world.blocks.heatMulti;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
+import mindustry.world.Block;
 import multilib.Recipe;
 
 import static mindustry.type.ItemStack.with;
 
 public class ExBlocks implements ContentList {
-    public static heatMulti
+    public static Block
     //stone age
     firepit;
 
