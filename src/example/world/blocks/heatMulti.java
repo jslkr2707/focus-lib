@@ -2,7 +2,9 @@ package example.world.blocks;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
+import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
+import mindustry.ui.Bar;
 import multilib.MultiCrafter;
 import multilib.Recipe;
 
@@ -14,6 +16,13 @@ public class heatMulti extends MultiCrafter {
 
     public heatMulti(String name, Recipe[] recs){
         super(name, recs);
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        bars.add("heat", (heatMulti.heatMultiBuild e) -> new Bar("bar.heat", Pal.lightOrange, () -> e.heat));
     }
 
     public class heatMultiBuild extends MultiCrafterBuild{
@@ -29,6 +38,7 @@ public class heatMulti extends MultiCrafter {
             super.draw();
         }
 
+
         @Override
         public void updateTile(){
             timer += 1f;
@@ -41,6 +51,9 @@ public class heatMulti extends MultiCrafter {
                 heat += -Math.pow(timer, 2) + 2*t1*timer;
             }
 
+            if (!isheated){
+                heat -= 0.3f;
+            }
             applyBoost((heat+1)/400, 60f);
         }
     }
