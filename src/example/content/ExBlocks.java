@@ -26,7 +26,7 @@ public class ExBlocks implements ContentList {
             craftEffect = Fx.smeltsmoke;
             addRecipe(
                     new Recipe.InputContents(with(ExItems.tree, 1)),
-                    new Recipe.OutputContents(with(Items.coal, 1)), 600f
+                    new Recipe.OutputContents(with(Items.coal, 2)), 600f
             );
             addRecipe(
                     new Recipe.InputContents(with(Items.copper, 3, ExItems.tin, 1)),
