@@ -20,22 +20,22 @@ public class heatMulti extends MultiCrafter {
     @Override
     public void setBars(){
         super.setBars();
-
-        bars.add("heat", (heatMulti.heatMultiBuild e) -> new Bar(() ->
-                Core.bundle.format("bar.heat", Strings.fixed(e.heat * 400, 1)), () -> Pal.lightishOrange, () -> e.heat));
-        bars.add("process", (heatMulti.heatMultiBuild h) -> new Bar(() ->
-                Core.bundle.format("bar.progress", Strings.fixed((h.Hprogress / 600), 1)), () -> Pal.powerBar, () -> h.Hprogress));
+        bars.add("Heat", (heatMulti.heatMultiBuild e) -> new Bar(() -> Core.bundle.format("a", Strings.fixed(e.heat * 400, 1)), () -> Pal.lightishOrange, () -> e.heat));
+        bars.add("Crafting progress", (heatMulti.heatMultiBuild h) -> new Bar(() -> Core.bundle.format("b", Strings.fixed(h.Hprogress / 600, 1)), () -> Pal.powerBar, () -> h.Hprogress));
     }
+
     public class heatMultiBuild extends MultiCrafterBuild{
         public float heat, Hprogress = 0;
         /* default crafting time */
         public float defCraftTime = 600f;
         public ItemStack[] inputStack;
+        /* heat capacity */
         public int heatCap = 1;
+        /* boosting scale by heat */
         public float boostScale = 1f;
         public int recLen = recs.length;
+        /* to increase heat or not */
         public boolean isheated;
-        public int sad;
 
         @Override
         public void updateTile(){
@@ -50,18 +50,15 @@ public class heatMulti extends MultiCrafter {
             }else{
                 if (heat >= 0){heat -= 0.0005f;}
             }
-
             boostScale = heat * 3;
-            applyBoost(boostScale, 120f);
-            if (isheated) { Hprogress += 0.0024f; }
-            if (Hprogress == 600f) {
-                craftTime = 0.1f;
-                Hprogress = 0;
+            applyBoost(boostScale, 1f);
+
+            if (isheated) { Hprogress += (float)(1/600) * boostScale; }
+            if (Hprogress >= 1f) {
+                Hprogress = (float)-1/600;
+                craftTime = 1f;
             }
             craftTime = 600f;
-
-            sad += 1;
-            Log.info(sad);
 
         }
     }
