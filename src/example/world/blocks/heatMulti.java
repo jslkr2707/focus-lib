@@ -2,8 +2,8 @@ package example.world.blocks;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
-import example.content.ExItems;
-import mindustry.content.Items;
+import arc.util.Log;
+import arc.util.Strings;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
@@ -11,11 +11,10 @@ import multilib.MultiCrafter;
 import multilib.Recipe;
 
 public class heatMulti extends MultiCrafter {
-
     public heatMulti(String name, int recLen){
         super(name, recLen);
+        hasItems = true;
     }
-
     public heatMulti(String name, Recipe[] recs){
         super(name, recs);
     }
@@ -24,54 +23,43 @@ public class heatMulti extends MultiCrafter {
     public void setBars(){
         super.setBars();
 
-        bars.add("heat", (heatMulti.heatMultiBuild e) -> new Bar("bar.heat", Pal.lightOrange, () -> e.heat));
+        bars.add("heat", (heatMulti.heatMultiBuild e) -> new Bar(() ->
+                Core.bundle.format("bar.poweroutput", Strings.fixed(e.heat * 300, 1)), () -> Pal.lightishOrange, () -> e.heat));
+        bars.add("process", (heatMulti.heatMultiBuild h) -> new Bar("bar.process", Pal.powerBar, () -> h.process));
     }
 
     public class heatMultiBuild extends MultiCrafterBuild{
-        public float heat = 0;
-        public float timer;
-        public int a;
-        public float calorie = 0;
-        public float heatScl = 1f;
-        public ItemStack fuel;
+        public float heat, process = 0;
+        /* default crafting time */
+        public float defCraftTime = 600f;
         public ItemStack[] inputStack;
-        /* just default scl*/
-        public float heatCap = 200f;
+        public int heatCap = 1;
         public int recLen = recs.length;
         public boolean isheated;
+        public int sad;
 
-        @Override
-        public void draw(){
-            Draw.rect(Core.atlas.find(name+"-heat"), x, y);
-            super.draw();
-        }
 
 
         @Override
         public void updateTile(){
-            timer += 0.033f;
-            isheated = false;
-            for (int i = 0; i < recLen; i++) {
+            super.updateTile();
+            for (int i = 0; i < recLen; i++){
                 inputStack = recs[i].input.items;
-                for (int j = 0; j < inputStack.length; j++) {
-                    if (inputStack[j].item == ExItems.tree || inputStack[j].item == Items.coal) {
-                        fuel = inputStack[j];
-                        a = j;
-                        break;
-                    }
-                }
-                if (items.has(inputStack) && fuel != null) isheated = true;
+                isheated = items.has(inputStack);
+                if (isheated) break;
             }
-            calorie += 200 * (fuel != null ? fuel.amount : 0);
-            if (isheated && heat <= heatCap && calorie > 0) {
-                heat += heatScl * timer;
-                calorie -= 0.2f;
-
+            if (isheated && heat <= heatCap) {
+                heat += 0.0005f;
             }else{
-                heat = -0.09f;
+                if (heat >= 0){heat -= 0.0005f;}
             }
 
-            applyBoost((heat+1)/400, 60f);
+            applyBoost((heat+2), 120f);
+
+            sad += 1;
+            Log.info(sad);
+
+
         }
     }
 }
