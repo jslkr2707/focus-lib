@@ -65,7 +65,7 @@ public class heatMulti extends MultiCrafter {
                     inItems.remove(fuelStack.item, 1);
                 }
             }
-            if (isheated && heat <= heatCap && calorie >= 0f) {
+            if (isheated || items.has(fuelStack.item, fuelStack.amount) && heat <= heatCap && calorie >= 0f) {
                 heat += 0.0005f;
             }else if (heat >= 0) heat -= 0.0005f;
             calorie -= 0.0003f;
@@ -73,8 +73,6 @@ public class heatMulti extends MultiCrafter {
             applyBoost(boostScale, 1f);
 
             Hprogress = this.progress;
-
-            if (this.progress >= 0.9985f) inItems.add(fuelStack.item, 1);
 
         }
     }

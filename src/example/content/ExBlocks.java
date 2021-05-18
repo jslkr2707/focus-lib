@@ -28,7 +28,7 @@ public class ExBlocks implements ContentList {
                     new Recipe.OutputContents(with(Items.coal, 2)), 600f
             );
             addRecipe(
-                    new Recipe.InputContents(with(ExItems.tree, 5, Items.copper, 3, ExItems.tin, 1)),
+                    new Recipe.InputContents(with(ExItems.tree, 0, Items.copper, 3, ExItems.tin, 1)),
                     new Recipe.OutputContents(with(ExItems.stone, 2)), 1000f
             );
         }};
