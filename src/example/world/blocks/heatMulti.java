@@ -24,9 +24,9 @@ public class heatMulti extends MultiCrafter {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("craftHeat", (heatMulti.heatMultiBuild e) -> new Bar(() -> Core.bundle.format("craftHeat", Strings.fixed(e.heat * 400, 1)), () -> Pal.lightishOrange, () -> e.heat));
-        bars.add("Calorie", (heatMulti.heatMultiBuild f) -> new Bar("fuelBurn", Color.crimson, () -> f.calorie).blink(Color.white));
-        bars.add("craftProgress", (heatMulti.heatMultiBuild h) -> new Bar(() -> Core.bundle.format("craftProgress", Strings.fixed(h.Hprogress, 1)), () -> Pal.powerBar, () -> h.Hprogress));
+        bars.add("craftHeat", (heatMulti.heatMultiBuild e) -> new Bar(() -> Core.bundle.format("bar.craftHeat", Strings.fixed(e.heat * 400, 1)), () -> Pal.lightishOrange, () -> e.heat));
+        bars.add("Calorie", (heatMulti.heatMultiBuild f) -> new Bar("bar.fuelBurn", Color.crimson, () -> f.calorie).blink(Color.white));
+        bars.add("craftProgress", (heatMulti.heatMultiBuild h) -> new Bar(() -> Core.bundle.format("bar.craftProgress", Strings.fixed(h.Hprogress, 1)), () -> Pal.powerBar, () -> h.Hprogress));
     }
 
     public class heatMultiBuild extends MultiCrafterBuild{
