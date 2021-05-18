@@ -12,6 +12,12 @@ public class ExItems implements ContentList {
     tin, bronze;
     public void load(){
         //region stone age
+
+        dirt = new Item("dirt", Color.rgb (115, 118, 83)){{
+            hardness = -1;
+            alwaysUnlocked = true;
+        }};
+
         tree = new Item("tree", Color.brown){{
             hardness = 0;
             alwaysUnlocked = true;
@@ -22,8 +28,6 @@ public class ExItems implements ContentList {
             hardness = 1;
             alwaysUnlocked = false;
         }};
-
-        //region metal age
 
     }
 }
