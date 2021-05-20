@@ -2,10 +2,7 @@ package example.world.blocks;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.util.Log;
 import arc.util.Strings;
-import example.content.ExItems;
-import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
@@ -25,7 +22,7 @@ public class heatMulti extends MultiCrafter {
     public void setBars(){
         super.setBars();
         bars.add("craftHeat", (heatMulti.heatMultiBuild e) -> new Bar(() -> Core.bundle.format("bar.craftHeat", Strings.fixed(e.heat * 400, 1)), () -> Pal.lightishOrange, () -> e.heat));
-        bars.add("Calorie", (heatMulti.heatMultiBuild f) -> new Bar("bar.fuelBurn", Color.crimson, () -> f.calorie).blink(Color.white));
+        bars.add("Calorie", (heatMulti.heatMultiBuild f) -> new Bar("bar.fuelBurn", Color.crimson, () -> f.calorie));
         bars.add("craftProgress", (heatMulti.heatMultiBuild h) -> new Bar(() -> Core.bundle.format("bar.craftProgress", Strings.fixed(h.Hprogress, 1)), () -> Pal.powerBar, () -> h.Hprogress));
     }
 
@@ -51,7 +48,6 @@ public class heatMulti extends MultiCrafter {
         @Override
         public void updateTile(){
             super.updateTile();
-            this.
             inItems = this.items;
             for (int i = 1; i < recLen; i++){
                 inputStack = recs[i].input.items;
@@ -65,13 +61,17 @@ public class heatMulti extends MultiCrafter {
                     inItems.remove(fuelStack.item, 1);
                 }
             }
-            if (isheated || items.has(fuelStack.item, fuelStack.amount) && heat <= heatCap && calorie >= 0f) {
+            if (isheated && heat <= heatCap) {
                 heat += 0.0005f;
             }else if (heat >= 0) heat -= 0.0005f;
             calorie -= 0.0003f;
             boostScale = heat * 3;
             applyBoost(boostScale, 1f);
-
+            for (int j = 1; j < recLen; j++){
+                for (int k = 0; k < recs[j].output.items.length; k++){
+                    if (inItems.has(recs[j].output.items) && inItems.has (fuelStack.item, itemCapacity)) inItems.add (fuelStack.item, 1);
+                }
+            }
             Hprogress = this.progress;
 
         }
