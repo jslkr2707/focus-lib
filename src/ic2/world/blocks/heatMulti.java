@@ -1,7 +1,8 @@
-package example.world.blocks;
+package ic2.world.blocks;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Strings;
 import mindustry.graphics.Pal;
@@ -25,7 +26,6 @@ public class heatMulti extends MultiCrafter {
         bars.add("Calorie", (heatMulti.heatMultiBuild f) -> new Bar("bar.fuelBurn", Color.crimson, () -> f.calorie));
         bars.add("craftProgress", (heatMulti.heatMultiBuild h) -> new Bar(() -> Core.bundle.format("bar.craftProgress", Strings.fixed(h.progress, 1)), () -> Pal.powerBar, () -> h.progress));
     }
-
     public class heatMultiBuild extends MultiCrafterBuild{
         public float heat = 0;
         /* list of items in input */
@@ -43,12 +43,18 @@ public class heatMulti extends MultiCrafter {
         /* calorie */
         public float calorie;
 
+
+        @Override
+        public void displayConsumption(Table table){
+
+        }
         @Override
         public void updateTile(){
             super.updateTile();
             for (int i = 1; i < recLen; i++){
                 inputStack = recs[i].input.items;
                 fuelStack = inputStack[0];
+                fuelStack.amount = 1;
                 isHeated = items.has(inputStack);
                 if (isHeated) break;
             }
@@ -64,8 +70,9 @@ public class heatMulti extends MultiCrafter {
             if (calorie >= 0) calorie -= 0.0003f;
             boostScale = heat * 3;
             applyBoost(boostScale, 2f);
-            Log.info(progress);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
+
+            /* effect differ by recipes */
 
         }
     }

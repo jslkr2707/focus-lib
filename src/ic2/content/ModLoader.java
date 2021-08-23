@@ -1,4 +1,4 @@
-package example.content;
+package ic2.content;
 
 import mindustry.ctype.ContentList;
 

@@ -1,7 +1,7 @@
-package example.core;
+package ic2.core;
 
 import arc.Events;
-import example.content.ModLoader;
+import ic2.content.ModLoader;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 

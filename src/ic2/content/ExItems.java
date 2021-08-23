@@ -1,4 +1,4 @@
-package example.content;
+package ic2.content;
 
 import arc.graphics.Color;
 import mindustry.ctype.ContentList;
@@ -6,12 +6,10 @@ import mindustry.type.Item;
 
 public class ExItems implements ContentList {
     public static Item
-    //stone age
     tree, stone, dirt,
-    //metal age
-    tin, bronze;
+    /* region coal */
+    coalPowder, compressedCoal;
     public void load(){
-        //region stone age
 
         dirt = new Item("dirt", Color.rgb (115, 118, 83)){{
             hardness = -1;
