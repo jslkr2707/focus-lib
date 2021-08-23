@@ -15,30 +15,33 @@ import static mindustry.type.ItemStack.*;
 
 public class ExBlocks implements ContentList {
     public static Block
-    macerator, ex1;
+    furnace, macerator;
     @Override
     public void load(){
-        macerator = new heatMulti("macerator", 2){{
-            requirements(Category.crafting, with(ExItems.tree, 10, ExItems.stone, 10));
+        furnace = new heatMulti("furnace", 3){{
+            requirements(Category.crafting, with(ExItems.wood, 10, ExItems.stone, 10));
             size = 2;
             isSmelter = true;
-            craftEffect = ExFx.carbondust;
             addRecipe(
-                    new Recipe.InputContents(with(ExItems.tree, 1)),
+                    new Recipe.InputContents(with(ExItems.wood, 1)),
                     new Recipe.OutputContents(with(Items.coal, 2)), 600f
             );
             addRecipe(
-                    new Recipe.InputContents(with(ExItems.tree, 1, Items.copper, 3, ExItems.tin, 1)),
-                    new Recipe.OutputContents(with(ExItems.stone, 2)), 1000f
+                    new Recipe.InputContents(with(Items.coal, 1, ExItems.ironOre, 1)),
+                    new Recipe.OutputContents(with( ExItems.iron, 1)), 1000f
+            );
+            addRecipe(
+                    new Recipe.InputContents (with(Items.coal, 1, ExItems.groundIron, 1)),
+                    new Recipe.OutputContents (with(ExItems.iron, 1)), 1000f
             );
         }};
 
-        ex1 = new GenericCrafter ("ex1"){{
+        macerator = new GenericCrafter ("macerator"){{
             size = 2;
             craftEffect = Fx.smeltsmoke;
             requirements(Category.crafting, with(Items.copper, 50));
-            outputItem = new ItemStack (Items.lead, 1);
-            consumes.items(with(Items.copper,1));
+            outputItem = new ItemStack(ExItems.ironOre, 1);
+            consumes.items(with(ExItems.groundIron, 2));
             craftTime = 60f;
 
         }};

@@ -54,11 +54,10 @@ public class heatMulti extends MultiCrafter {
             for (int i = 1; i < recLen; i++){
                 inputStack = recs[i].input.items;
                 fuelStack = inputStack[0];
-                fuelStack.amount = 1;
-                isHeated = items.has(inputStack);
+                isHeated = items.has(fuelStack.item, fuelStack.amount);
                 if (isHeated) break;
             }
-            if (items.has(fuelStack.item, fuelStack.amount)) {
+            if (isHeated) {
                 if (calorie <= 0) {
                     calorie += 1f;
                     items.remove(fuelStack.item, 1);

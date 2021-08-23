@@ -15,7 +15,7 @@ public class ExFx {
     carbondust = new Effect(420, e -> {
         randLenVectors(e.id, 7, 6f + e.fin() * 5f, (x, y) -> {
             color(Color.black);
-            Fill.circle(e.x + x, e.y + y, 0.4f + e.fout() * 2f);
+            Fill.circle(e.x + x, e.y + y, 1f);
         });
     });
 
