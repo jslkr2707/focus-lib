@@ -5,6 +5,10 @@ import arc.graphics.Color;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Strings;
+import ic2.content.ExFx;
+import ic2.content.ExItems;
+import mindustry.content.Fx;
+import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
@@ -34,29 +38,20 @@ public class heatMulti extends MultiCrafter {
         public ItemStack fuelStack;
         /* heat capacity */
         public int heatCap = 1;
-        /* boosting scale by heat */
-        public float boostScale = 1f;
-        /* how many recipes in that factory */
-        public int recLen = recs.length;
         /* to increase heat or not */
         public boolean isHeated;
         /* calorie */
         public float calorie;
 
-
-        @Override
-        public void displayConsumption(Table table){
-
-        }
         @Override
         public void updateTile(){
             super.updateTile();
-            for (int i = 1; i < recLen; i++){
-                inputStack = recs[i].input.items;
+            if (toggle >= 0) {
+                inputStack = recs[toggle].input.items;
                 fuelStack = inputStack[0];
                 isHeated = items.has(fuelStack.item, fuelStack.amount);
-                if (isHeated) break;
             }
+
             if (isHeated) {
                 if (calorie <= 0) {
                     calorie += 1f;
@@ -67,11 +62,13 @@ public class heatMulti extends MultiCrafter {
                 heat += 0.0005f;
             }else if (heat >= 0) heat -= 0.0005f;
             if (calorie >= 0) calorie -= 0.0003f;
-            boostScale = heat * 3;
-            applyBoost(boostScale, 2f);
+            if (!isHeated) calorie = 0;
+            applyBoost(heat*3, 2f);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
 
-            /* effect differ by recipes */
+            Log.info("inputStack: "+inputStack);
+            Log.info("fuelStack: "+fuelStack);
+
 
         }
     }
