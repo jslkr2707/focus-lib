@@ -2,18 +2,18 @@ package ic2.world.blocks;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Strings;
 import ic2.content.ExFx;
 import ic2.content.ExItems;
-import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
+import mindustry.world.blocks.production.GenericCrafter;
 import multilib.MultiCrafter;
 import multilib.Recipe;
+
+import java.util.Arrays;
 
 public class heatMulti extends MultiCrafter {
     public heatMulti(String name, int recLen){
@@ -50,6 +50,9 @@ public class heatMulti extends MultiCrafter {
                 inputStack = recs[toggle].input.items;
                 fuelStack = inputStack[0];
                 isHeated = items.has(fuelStack.item, fuelStack.amount);
+                if (fuelStack.item == ExItems.wood){
+                    craftEffect = ExFx.carbondust;
+                }
             }
 
             if (isHeated) {
@@ -57,6 +60,10 @@ public class heatMulti extends MultiCrafter {
                     calorie += 1f;
                     items.remove(fuelStack.item, 1);
                 }
+            }
+
+            if (outputItem.item == fuelStack.item){
+                outputItem = null;
             }
             if (isHeated && heat <= heatCap) {
                 heat += 0.0005f;
@@ -66,7 +73,7 @@ public class heatMulti extends MultiCrafter {
             applyBoost(heat*3, 2f);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
 
-            Log.info("inputStack: "+inputStack);
+            Log.info("inputStack: "+ Arrays.toString (inputStack));
             Log.info("fuelStack: "+fuelStack);
 
 
