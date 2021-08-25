@@ -62,14 +62,11 @@ public class heatMulti extends MultiCrafter {
                 }
             }
 
-            if (outputItem.item == fuelStack.item){
-                outputItem = null;
-            }
             if (isHeated && heat <= heatCap) {
                 heat += 0.0005f;
             }else if (heat >= 0) heat -= 0.0005f;
             if (calorie >= 0) calorie -= 0.0003f;
-            if (!isHeated) calorie = 0;
+            if (calorie > 0 && !isHeated) calorie = 0;
             applyBoost(heat*3, 2f);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
 
