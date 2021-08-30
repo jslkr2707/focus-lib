@@ -6,6 +6,7 @@ import arc.util.Log;
 import arc.util.Strings;
 import ic2.content.ExFx;
 import ic2.content.ExItems;
+import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
@@ -69,11 +70,9 @@ public class heatMulti extends MultiCrafter {
             if (calorie > 0 && !isHeated) calorie = 0;
             applyBoost(heat*3, 2f);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
-
-            Log.info("inputStack: "+ Arrays.toString (inputStack));
-            Log.info("fuelStack: "+fuelStack);
-
-
+            if (fuelStack.item == Items.coal){
+                craftEffect = ExFx.carbondust;
+            }
         }
     }
 }

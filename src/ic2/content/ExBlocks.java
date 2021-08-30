@@ -1,8 +1,7 @@
 package ic2.content;
 
+import ic2.world.blocks.defense.turrets.rangedArtillery;
 import ic2.world.blocks.heatMulti;
-import ic2.world.blocks.testTable;
-import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
@@ -51,26 +50,26 @@ public class ExBlocks implements ContentList {
 
         }};
 
-        mortar = new ItemTurret ("mortar"){{
+        mortar = new rangedArtillery ("mortar"){{
             requirements(Category.turret, with(ExItems.stone, 100, ExItems.iron, 200));
             ammo(
-                    ExItems.iron, Bullets.artilleryExplosive
+                    ExItems.iron, ExBullets.artilleryBig
             );
             targetAir = false;
             size = 3;
-            shots = 4;
+            shots = 1;
             inaccuracy = 20f;
             reloadTime = 300f;
             ammoEjectBack = 10f;
-            ammoUseEffect = ExFx.turretOverheat;
+            shootEffect = ExFx.turretOverheat;
             ammoPerShot = 3;
             cooldown = 0.1f;
             velocityInaccuracy = 0.3f;
             restitution = 0.02f;
             recoilAmount = 12f;
             shootShake = 4f;
-            range = 400f;
-            minRange = 50f;
+            range = 800f;
+            artilleryMinRange = 50f;
 
             health = 200 * size * size;
             shootSound = Sounds.artillery;

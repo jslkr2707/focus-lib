@@ -1,10 +1,12 @@
 package ic2.content;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 
 import static arc.graphics.g2d.Draw.color;
@@ -21,7 +23,7 @@ public class ExFx {
 
     turretOverheat = new Effect(60, e -> {
         color(Pal.lightOrange);
-
+        Drawf.light (e.x, e.y, 32f, Pal.lightOrange, e.fin());
     });
 
 }
