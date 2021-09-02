@@ -1,10 +1,7 @@
-package ic2.content;
+package industrial.content;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import mindustry.ctype.ContentList;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;

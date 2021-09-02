@@ -1,7 +1,7 @@
-package ic2.content;
+package industrial.content;
 
-import ic2.world.blocks.defense.turrets.rangedArtillery;
-import ic2.world.blocks.heatMulti;
+import industrial.world.blocks.defense.turrets.rangedArtillery;
+import industrial.world.blocks.heatMulti;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
@@ -9,7 +9,6 @@ import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.GenericCrafter;
 import multilib.Recipe;
 

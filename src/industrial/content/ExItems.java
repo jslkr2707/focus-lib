@@ -1,4 +1,4 @@
-package ic2.content;
+package industrial.content;
 
 import arc.graphics.Color;
 import mindustry.ctype.ContentList;

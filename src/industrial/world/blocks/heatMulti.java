@@ -1,20 +1,16 @@
-package ic2.world.blocks;
+package industrial.world.blocks;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.util.Log;
 import arc.util.Strings;
-import ic2.content.ExFx;
-import ic2.content.ExItems;
+import industrial.content.ExFx;
+import industrial.content.ExItems;
 import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;
-import mindustry.world.blocks.production.GenericCrafter;
 import multilib.MultiCrafter;
 import multilib.Recipe;
-
-import java.util.Arrays;
 
 public class heatMulti extends MultiCrafter {
     public heatMulti(String name, int recLen){
