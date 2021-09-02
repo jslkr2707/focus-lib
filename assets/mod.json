@@ -1,11 +1,11 @@
 {
-  "name": "Industrial Mod",
+  "name": "industrial",
   "displayName": "Mindustry Industrial Mod",
   "author": "AshesKaiser",
   "description": "Mindustry Mod with industrial things in modern and contemporary ages",
   "version": "0.1",
   "main": "industrial.core.Main",
-  "minGameVersion": "126",
+  "minGameVersion": "130.1",
   "dependencies": [],
   "hidden": false,
   "java": true
