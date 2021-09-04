@@ -20,7 +20,7 @@ My first Mindustry mod made with Java.
 
 ## Patch Note
 - (8/30) alpha-v0.1
-- [![alpha-v0.1 tree](https://github.com/AshesKaiser-KR/ExampleJavaMod/tree/d5b62cd2a13818cd26c278c4a4ce2bc178883446)]
+- [alpha-v0.1 tree](https://github.com/AshesKaiser-KR/ExampleJavaMod/tree/d5b62cd2a13818cd26c278c4a4ce2bc178883446)
  - Finished healMulti, a factory with heat and fuel system
  - Added various sprites
  - 
