@@ -7,10 +7,9 @@ My first Mindustry mod made with Java.
 
 ##TODO
 - [ ]Add a turret overheat effect
-- [ ]Add massive items
-  - [ ]Add sprites for each items
+- [ ]Add items
+  - [ ]Add sprites
 - [ ]Add more turrets and factories
-  - [ ]Factories specialized in making main resources
 - [ ]Add units
   - [ ]Infantry
   - [ ]Horsemen

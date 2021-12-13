@@ -1,6 +1,5 @@
 package industrial.content;
 
-import industrial.world.blocks.defense.turrets.rangedArtillery;
 import industrial.world.blocks.heatMulti;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -9,6 +8,7 @@ import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.GenericCrafter;
 import multilib.Recipe;
 
@@ -17,7 +17,7 @@ import static mindustry.type.ItemStack.*;
 public class ExBlocks implements ContentList {
     public static Block
     /* region crafting */
-    furnace, macerator,
+    furnace,
     /* region turret */
     mortar;
     @Override
@@ -34,22 +34,12 @@ public class ExBlocks implements ContentList {
                     new Recipe.OutputContents(with( ExItems.iron, 1)), 1000f
             );
             addRecipe(
-                    new Recipe.InputContents (with(Items.coal, 1, ExItems.groundIron, 1)),
-                    new Recipe.OutputContents (with(ExItems.iron, 1)), 1000f
+                    new Recipe.InputContents(with(ExItems.tinOre, 1)),
+                    new Recipe.OutputContents(with(ExItems.tin, 1)), 1200f
             );
         }};
 
-        macerator = new GenericCrafter ("macerator"){{
-            size = 2;
-            craftEffect = Fx.smeltsmoke;
-            requirements(Category.crafting, with(Items.copper, 50));
-            outputItem = new ItemStack(ExItems.ironOre, 1);
-            consumes.items(with(ExItems.groundIron, 2));
-            craftTime = 60f;
-
-        }};
-
-        mortar = new rangedArtillery ("mortar"){{
+        mortar = new ItemTurret("mortar"){{
             requirements(Category.turret, with(ExItems.stone, 100, ExItems.iron, 200));
             ammo(
                     ExItems.iron, ExBullets.artilleryBig
@@ -68,8 +58,6 @@ public class ExBlocks implements ContentList {
             recoilAmount = 12f;
             shootShake = 4f;
             range = 800f;
-            artilleryMinRange = 50f;
-
             health = 200 * size * size;
             shootSound = Sounds.artillery;
         }};

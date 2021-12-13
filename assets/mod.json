@@ -5,8 +5,7 @@
   "description": "Mindustry Mod with industrial things in modern and contemporary ages",
   "version": "0.1",
   "main": "industrial.core.Main",
-  "minGameVersion": "130.1",
+  "minGameVersion": "134",
   "dependencies": [],
-  "hidden": false,
-  "java": true
+  "hidden": false
 }
