@@ -7,6 +7,7 @@ public class ModLoader implements ContentList {
             new ExItems(),
             new ExBullets(),
             new ExBlocks(),
+            new IndFocuses(),
             new IndTechTree()
     };
     public void load(){

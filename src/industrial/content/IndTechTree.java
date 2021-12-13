@@ -17,11 +17,15 @@ public class IndTechTree implements ContentList {
 
     @Override
     public void load(){
-        mergeNode(graphitePress, () -> {
-            node(furnace);
-        });
-
         mergeNode(coreShard, () -> {
+            node(ExItems.wood, () -> {
+                node(ExItems.stone, () -> {
+                    node(ExItems.ironOre, () -> {
+                        node(ExItems.iron);
+                    });
+                });
+            });
+
             node(defFirst, Seq.with(
                     new Objectives.SectorComplete(groundZero),
                     new Objectives.Research(copperWall),
@@ -30,6 +34,11 @@ public class IndTechTree implements ContentList {
 
             });
         });
+
+        mergeNode(graphitePress, () -> {
+            node(furnace);
+        });
+
     }
 
     private static void mergeNode(UnlockableContent parent, Runnable children){
