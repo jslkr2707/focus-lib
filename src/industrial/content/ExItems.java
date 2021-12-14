@@ -17,18 +17,15 @@ public class ExItems implements ContentList {
     public void load(){
         dirt = new Item("dirt", Color.rgb (115, 118, 83)){{
             hardness = -1;
-            alwaysUnlocked = true;
         }};
 
         wood = new Item("wood", Color.brown){{
             hardness = 0;
-            alwaysUnlocked = true;
             flammability = 0.3f;
         }};
 
         stone = new Item("stone", Color.gray){{
             hardness = 1;
-            alwaysUnlocked = false;
         }};
 
         ironOre = new Item("ironOre", Pal.metalGrayDark){{

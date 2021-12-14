@@ -18,12 +18,14 @@ public class ExBlocks implements ContentList {
     public static Block
     /* region crafting */
     furnace,
+    /* region defense */
+    stoneWall, stoneWallLarge,
     /* region turret */
     mortar;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 3){{
-            requirements(Category.crafting, with(ExItems.wood, 10, ExItems.stone, 10));
+            requirements(Category.crafting, with(ExItems.wood, 100, ExItems.stone, 100));
             size = 2;
             addRecipe(
                     new Recipe.InputContents(with(ExItems.wood, 1)),
@@ -61,5 +63,8 @@ public class ExBlocks implements ContentList {
             health = 200 * size * size;
             shootSound = Sounds.artillery;
         }};
+
+        /* region wall */
+
     }
 }
