@@ -1,7 +1,6 @@
 package industrial.type;
 
 import arc.struct.Seq;
-import com.sun.istack.internal.NotNull;
 import mindustry.content.Items;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
