@@ -10,7 +10,7 @@ import mindustry.type.ItemStack;
 public class Focus extends UnlockableContent {
     public ItemStack[] requirements;
     /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
-    @NotNull public Focus opposite;
+    public Focus opposite;
 
     public Focus(String name){
         super(name);
