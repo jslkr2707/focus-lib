@@ -31,7 +31,12 @@ public class IndTechTree implements ContentList {
                     new Objectives.Research(copperWall),
                     new Objectives.Research(copperWallLarge)
             ), () -> {
-
+            });
+            node(atkFirst, Seq.with(
+                    new Objectives.SectorComplete(groundZero),
+                    new Objectives.Research(scatter),
+                    new Objectives.Research(copperWall)
+            ), () -> {
             });
         });
 

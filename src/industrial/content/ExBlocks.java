@@ -52,7 +52,7 @@ public class ExBlocks implements ContentList {
             inaccuracy = 20f;
             reloadTime = 300f;
             ammoEjectBack = 10f;
-            shootEffect = ExFx.turretOverheat;
+            shootEffect = Fx.shootSmallFlame;
             ammoPerShot = 3;
             cooldown = 0.1f;
             velocityInaccuracy = 0.3f;

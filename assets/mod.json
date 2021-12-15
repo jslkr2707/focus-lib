@@ -1,8 +1,9 @@
 {
   "name": "industrial",
+  "short": "Industrial Mod",
   "displayName": "Mindustry Industrial Mod",
   "author": "AshesKaiser",
-  "description": "Mindustry Mod with industrial things in modern and contemporary ages",
+  "description": "My first [orange]java [white]Mindustry mod",
   "version": "0.1",
   "main": "industrial.core.Main",
   "minGameVersion": "134",

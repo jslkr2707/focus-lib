@@ -2,6 +2,7 @@ package industrial.content;
 
 import industrial.type.Focus;
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 
@@ -15,27 +16,20 @@ public class IndFocuses implements ContentList {
 
     @Override
     public void load(){
-        defFirst = new Focus("def-first"){
-            @Override
-            public void onUnlock(){
-                Blocks.titaniumWall.unlock();
-                Blocks.titaniumWallLarge.unlock();
-            }
-            {
+        defFirst = new Focus("def-first"){{
                 opposite = IndFocuses.atkFirst;
-                requirements(with(ExItems.wood, 300, ExItems.stone, 100));
-            }
-        };
+                requirements(with(Items.copper, 300, Items.lead, 100));
+                addUnlocks(Blocks.titaniumWall);
+                addUnlocks(Blocks.titaniumWallLarge);
+
+        }};
 
         atkFirst = new Focus("atk-first"){
-            @Override
-            public void onUnlock(){
-                Blocks.arc.unlock();
-                Blocks.scorch.unlock();
-            }
             {
                 opposite = IndFocuses.defFirst;
-                requirements(with(ExItems.wood, 300, ExItems.stone, 100));
+                requirements(with(Items.copper, 300, Items.lead, 100));
+                addUnlocks(Blocks.door);
+                addUnlocks(Blocks.scorch);
             }
         };
     }

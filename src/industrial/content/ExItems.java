@@ -7,7 +7,7 @@ import mindustry.type.Item;
 
 public class ExItems implements ContentList {
     public static Item
-    wood, stone, dirt,
+    wood, stone,
     /* region iron */
     ironOre, iron,
     /* region tin */
@@ -15,10 +15,6 @@ public class ExItems implements ContentList {
 
 
     public void load(){
-        dirt = new Item("dirt", Color.rgb (115, 118, 83)){{
-            hardness = -1;
-        }};
-
         wood = new Item("wood", Color.brown){{
             hardness = 0;
             flammability = 0.3f;

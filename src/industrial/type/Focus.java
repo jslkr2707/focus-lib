@@ -1,7 +1,6 @@
 package industrial.type;
 
 import arc.struct.Seq;
-import com.sun.istack.internal.NotNull;
 import mindustry.content.Items;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -9,8 +8,9 @@ import mindustry.type.ItemStack;
 
 public class Focus extends UnlockableContent {
     public ItemStack[] requirements;
+    public Seq<UnlockableContent> unlock = new Seq<>();
     /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
-    @NotNull public Focus opposite;
+    public Focus opposite;
 
     public Focus(String name){
         super(name);
@@ -20,10 +20,16 @@ public class Focus extends UnlockableContent {
         this.requirements = stack;
     }
 
+    public void addUnlocks(UnlockableContent content) { this.unlock.add(content); }
+
     @Override
     public void onUnlock(){
-        opposite.requirements = ItemStack.with(Items.copper, 2147483647);
+        for (UnlockableContent unlockableContent : unlock) {
+            unlockableContent.unlock();
+        }
+        opposite.requirements(ItemStack.with(Items.copper, 29147837));
     }
+
     @Override
     public ItemStack[] researchRequirements() {
         return requirements;

@@ -2,6 +2,7 @@ package industrial.content;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
+import mindustry.content.Blocks;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -22,5 +23,6 @@ public class ExFx {
         color(Pal.lightOrange);
         Drawf.light (e.x, e.y, 32f, Pal.lightOrange, e.fin());
     });
+
 
 }
