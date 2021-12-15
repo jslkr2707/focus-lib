@@ -36,7 +36,7 @@ public class heatMulti extends MultiCrafter {
         /* heat capacity */
         public int heatCap = 1;
         /* to increase heat or not */
-        public boolean isHeated;
+        public boolean isHeated = false;
         /* calorie */
         public float calorie;
 
@@ -47,10 +47,7 @@ public class heatMulti extends MultiCrafter {
                 inputStack = recs[toggle].input.items;
                 fuelStack = inputStack[0];
                 isHeated = items.has(fuelStack.item, fuelStack.amount);
-                if (fuelStack.item == ExItems.wood){
-                    craftEffect = ExFx.carbondust;
                 }
-            }
 
             if (isHeated) {
                 if (calorie <= 0) {
@@ -66,9 +63,6 @@ public class heatMulti extends MultiCrafter {
             if (calorie > 0 && !isHeated) calorie = 0;
             applyBoost(heat*3, 2f);
             if (progress >= 0.99845f) this.items.add(fuelStack.item, 1);
-            if (fuelStack.item == Items.coal){
-                craftEffect = ExFx.carbondust;
-            }
         }
     }
 }

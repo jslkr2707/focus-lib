@@ -1,6 +1,7 @@
 package industrial.content;
 
 import industrial.type.Focus;
+import industrial.type.ResourceFocus;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
@@ -19,8 +20,7 @@ public class IndFocuses implements ContentList {
         defFirst = new Focus("def-first"){{
                 opposite = IndFocuses.atkFirst;
                 requirements(with(Items.copper, 300, Items.lead, 100));
-                addUnlocks(Blocks.titaniumWall);
-                addUnlocks(Blocks.titaniumWallLarge);
+                addUnlocks(Blocks.titaniumWall, Blocks.titaniumWallLarge);
 
         }};
 
@@ -28,8 +28,13 @@ public class IndFocuses implements ContentList {
             {
                 opposite = IndFocuses.defFirst;
                 requirements(with(Items.copper, 300, Items.lead, 100));
-                addUnlocks(Blocks.door);
-                addUnlocks(Blocks.scorch);
+                addUnlocks(Blocks.arc, Blocks.scorch);
+            }
+        };
+
+        resI = new ResourceFocus("res-I"){
+            {
+                setAdds(with(Items.copper, 500, Items.lead, 500));
             }
         };
     }

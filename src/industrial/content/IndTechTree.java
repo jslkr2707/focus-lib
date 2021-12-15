@@ -1,6 +1,7 @@
 package industrial.content;
 
 import arc.struct.Seq;
+import industrial.util.IndObjectives;
 import mindustry.content.TechTree;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
@@ -8,6 +9,7 @@ import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 
 import static mindustry.content.Blocks.*;
+import static mindustry.content.Items.*;
 import static mindustry.content.SectorPresets.*;
 import static industrial.content.ExBlocks.*;
 import static industrial.content.IndFocuses.*;
@@ -17,15 +19,13 @@ public class IndTechTree implements ContentList {
 
     @Override
     public void load(){
-        mergeNode(coreShard, () -> {
-            node(ExItems.wood, () -> {
-                node(ExItems.stone, () -> {
+        mergeNode(copper, () -> {
                     node(ExItems.ironOre, () -> {
                         node(ExItems.iron);
                     });
-                });
             });
 
+        mergeNode(coreShard, () -> {
             node(defFirst, Seq.with(
                     new Objectives.SectorComplete(groundZero),
                     new Objectives.Research(copperWall),
@@ -38,6 +38,10 @@ public class IndTechTree implements ContentList {
                     new Objectives.Research(copperWall)
             ), () -> {
             });
+            node(resI, Seq.with(
+                    new Objectives.SectorComplete(groundZero),
+                    new IndObjectives.sectorCompletes(3)
+            ), () -> {});
         });
 
         mergeNode(graphitePress, () -> {

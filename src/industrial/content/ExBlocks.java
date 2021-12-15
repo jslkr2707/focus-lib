@@ -8,6 +8,7 @@ import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.GenericCrafter;
 import multilib.Recipe;
@@ -19,30 +20,42 @@ public class ExBlocks implements ContentList {
     /* region crafting */
     furnace,
     /* region defense */
-    stoneWall, stoneWallLarge,
+    steelWall, steelWallLarge, bunkerWall,
     /* region turret */
     mortar;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 3){{
-            requirements(Category.crafting, with(ExItems.wood, 100, ExItems.stone, 100));
+            requirements(Category.crafting, with(ExItems.iron, 200, ExItems.tin, 100));
             size = 2;
             addRecipe(
-                    new Recipe.InputContents(with(ExItems.wood, 1)),
-                    new Recipe.OutputContents(with(Items.coal, 2)), 600f
-            );
-            addRecipe(
-                    new Recipe.InputContents(with(ExItems.wood, 1, ExItems.ironOre, 1)),
+                    new Recipe.InputContents(with(Items.coal, 1, ExItems.ironOre, 1)),
                     new Recipe.OutputContents(with( ExItems.iron, 1)), 1000f
             );
             addRecipe(
-                    new Recipe.InputContents(with(ExItems.tinOre, 1)),
+                    new Recipe.InputContents(with(Items.coal, 1, ExItems.ironPowder, 1)),
+                    new Recipe.OutputContents(with( ExItems.iron, 2)), 1500f
+            );
+            addRecipe(
+                    new Recipe.InputContents(with(Items.coal, 1, ExItems.tinOre, 1)),
                     new Recipe.OutputContents(with(ExItems.tin, 1)), 1200f
+            );
+            addRecipe(
+                    new Recipe.InputContents(with(Items.coal, 1, ExItems.ironPowder, 1)),
+                    new Recipe.OutputContents(with( ExItems.iron, 2)), 1500f
+            );
+            addRecipe(
+                    new Recipe.InputContents(with(Items.coal, 2, ExItems.bauxite, 1)),
+                    new Recipe.OutputContents(with( ExItems.aluminum, 1)), 2500f
+            );
+            addRecipe(
+                    new Recipe.InputContents(with(Items.coal, 1, Items.coal, 1, ExItems.iron, 3)),
+                    new Recipe.OutputContents(with( ExItems.steel, 4)), 3000f
             );
         }};
 
         mortar = new ItemTurret("mortar"){{
-            requirements(Category.turret, with(ExItems.stone, 100, ExItems.iron, 200));
+            requirements(Category.turret, with(ExItems.iron, 500, Items.copper, 500, Items.titanium, 300));
             ammo(
                     ExItems.iron, ExBullets.artilleryBig
             );
@@ -65,6 +78,25 @@ public class ExBlocks implements ContentList {
         }};
 
         /* region wall */
+        steelWall = new Wall("steel-wall"){{
+            requirements(Category.defense, with(ExItems.steel, 10));
+            size = 1;
+            health = 150 * 4;
+        }};
+
+        steelWallLarge = new Wall("steel-wall-large"){{
+            requirements(Category.defense, with(ExItems.steel, 50));
+            size = 2;
+            health = 150 * 4 * 4;
+        }};
+
+        bunkerWall = new Wall("bunker-wall"){{
+            requirements(Category.defense, with(ExItems.steel, 500, Items.copper, 300));
+            size = 3;
+            health = 500 * 4 * 4;
+            chanceDeflect = 30f;
+            deflectSound = Sounds.rockBreak;
+        }};
 
     }
 }

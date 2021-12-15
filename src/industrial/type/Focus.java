@@ -8,7 +8,8 @@ import mindustry.type.ItemStack;
 
 public class Focus extends UnlockableContent {
     public ItemStack[] requirements;
-    public Seq<UnlockableContent> unlock = new Seq<>();
+    /* what contents to unlock together when unlocked */
+    public Seq<UnlockableContent> unlockContents = new Seq<>();
     /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
     public Focus opposite;
 
@@ -20,11 +21,15 @@ public class Focus extends UnlockableContent {
         this.requirements = stack;
     }
 
-    public void addUnlocks(UnlockableContent content) { this.unlock.add(content); }
+    public void addUnlocks(UnlockableContent... content){
+        for (UnlockableContent unlocks: content){
+            this.unlockContents.add(unlocks);
+        }
+    }
 
     @Override
     public void onUnlock(){
-        for (UnlockableContent unlockableContent : unlock) {
+        for (UnlockableContent unlockableContent : unlockContents) {
             unlockableContent.unlock();
         }
         opposite.requirements(ItemStack.with(Items.copper, 29147837));
@@ -42,6 +47,6 @@ public class Focus extends UnlockableContent {
 
     @Override
     public ContentType getContentType(){
-        return ContentType.effect_UNUSED;
+        return ContentType.item;
     }
 }
