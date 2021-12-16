@@ -6,6 +6,8 @@ import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
 import mindustry.type.ItemStack;
 
+import static mindustry.type.ItemStack.*;
+
 public class Focus extends UnlockableContent {
     public ItemStack[] requirements;
     /* what contents to unlock together when unlocked */
@@ -21,18 +23,18 @@ public class Focus extends UnlockableContent {
         this.requirements = stack;
     }
 
-    public void addUnlocks(UnlockableContent... content){
-        for (UnlockableContent unlocks: content){
-            this.unlockContents.add(unlocks);
-        }
+    public void addUnlocks(UnlockableContent content){
+            this.unlockContents.add(content);
     }
 
     @Override
     public void onUnlock(){
-        for (UnlockableContent unlockableContent : unlockContents) {
-            unlockableContent.unlock();
+        if (this.unlockContents != null){
+            for (UnlockableContent content: this.unlockContents) {
+                content.unlock();
+            }
         }
-        opposite.requirements(ItemStack.with(Items.copper, 29147837));
+        this.opposite.requirements(with(Items.copper, 21290312));
     }
 
     @Override
@@ -47,6 +49,6 @@ public class Focus extends UnlockableContent {
 
     @Override
     public ContentType getContentType(){
-        return ContentType.item;
+        return ContentType.effect_UNUSED;
     }
 }

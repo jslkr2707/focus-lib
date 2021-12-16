@@ -25,7 +25,7 @@ public class ExBlocks implements ContentList {
     mortar;
     @Override
     public void load(){
-        furnace = new heatMulti("furnace", 3){{
+        furnace = new heatMulti("furnace", 6){{
             requirements(Category.crafting, with(ExItems.iron, 200, ExItems.tin, 100));
             size = 2;
             addRecipe(
@@ -57,7 +57,7 @@ public class ExBlocks implements ContentList {
         mortar = new ItemTurret("mortar"){{
             requirements(Category.turret, with(ExItems.iron, 500, Items.copper, 500, Items.titanium, 300));
             ammo(
-                    ExItems.iron, ExBullets.artilleryBig
+                    ExItems.steel, ExBullets.artilleryBig
             );
             targetAir = false;
             size = 3;

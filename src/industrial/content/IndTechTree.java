@@ -1,7 +1,7 @@
 package industrial.content;
 
 import arc.struct.Seq;
-import industrial.util.IndObjectives;
+import mindustry.content.Blocks;
 import mindustry.content.TechTree;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
@@ -12,6 +12,7 @@ import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.SectorPresets.*;
 import static industrial.content.ExBlocks.*;
+import static industrial.content.ExItems.*;
 import static industrial.content.IndFocuses.*;
 
 public class IndTechTree implements ContentList {
@@ -20,32 +21,71 @@ public class IndTechTree implements ContentList {
     @Override
     public void load(){
         mergeNode(copper, () -> {
-                    node(ExItems.ironOre, () -> {
-                        node(ExItems.iron);
+            node(ironOre, Seq.with(
+                    new Objectives.Produce(ExItems.ironOre)
+            ), () -> {
+                node(iron, Seq.with(
+                        new Objectives.Produce(ExItems.iron)
+                ),() -> {
+                    node(steel, Seq.with(
+                            new Objectives.Produce(ExItems.steel)
+                    ), () -> {
+
                     });
+                });
             });
+
+            node(tinOre, Seq.with(
+                    new Objectives.Produce(ExItems.tinOre)
+            ), () -> {
+                node(tin, Seq.with(
+                        new Objectives.Produce(ExItems.tin)
+                ), () -> {
+
+                });
+                node(tinPowder, Seq.with(
+                        new Objectives.Produce(ExItems.tinPowder)
+                ), () -> {
+
+                });
+            });
+
+            node(bauxite, Seq.with(
+                    new Objectives.Produce(ExItems.bauxite)
+            ),() -> {
+                node(aluminum, Seq.with(
+                        new Objectives.Produce(ExItems.aluminum)
+                ),() -> {
+
+                });
+            });
+        });
+
+        mergeNode(copperWall, () -> {
+            node(steelWall, () -> {
+                node(steelWallLarge, () -> {
+                    node(bunkerWall);
+                });
+            });
+        });
 
         mergeNode(coreShard, () -> {
             node(defFirst, Seq.with(
-                    new Objectives.SectorComplete(groundZero),
                     new Objectives.Research(copperWall),
-                    new Objectives.Research(copperWallLarge)
+                    new Objectives.Research(copperWallLarge),
+                    new Objectives.SectorComplete(groundZero)
             ), () -> {
             });
             node(atkFirst, Seq.with(
-                    new Objectives.SectorComplete(groundZero),
+                    new Objectives.Research(duo),
                     new Objectives.Research(scatter),
-                    new Objectives.Research(copperWall)
+                    new Objectives.SectorComplete(groundZero)
             ), () -> {
             });
-            node(resI, Seq.with(
-                    new Objectives.SectorComplete(groundZero),
-                    new IndObjectives.sectorCompletes(3)
-            ), () -> {});
-        });
 
-        mergeNode(graphitePress, () -> {
-            node(furnace);
+            mergeNode(graphitePress, () -> {
+                node(furnace);
+            });
         });
 
     }
