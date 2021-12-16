@@ -13,7 +13,7 @@ public class Focus extends UnlockableContent {
     /* what contents to unlock together when unlocked */
     public Seq<UnlockableContent> unlockContents = new Seq<>();
     /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
-    public Focus opposite;
+    // public Focus opposite;
 
     public Focus(String name){
         super(name);
@@ -29,12 +29,12 @@ public class Focus extends UnlockableContent {
 
     @Override
     public void onUnlock(){
-        if (this.unlockContents != null){
+        if (this.unlockContents.size > 0){
             for (UnlockableContent content: this.unlockContents) {
                 content.unlock();
             }
         }
-        this.opposite.requirements(with(Items.copper, 21290312));
+        // this.opposite.requirements(with(Items.copper, 21290312));
     }
 
     @Override

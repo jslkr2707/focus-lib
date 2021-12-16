@@ -1,6 +1,7 @@
 package industrial.content;
 
 import arc.struct.Seq;
+import industrial.util.IndObjectives;
 import mindustry.content.Blocks;
 import mindustry.content.TechTree;
 import mindustry.ctype.ContentList;
@@ -73,15 +74,26 @@ public class IndTechTree implements ContentList {
             node(defFirst, Seq.with(
                     new Objectives.Research(copperWall),
                     new Objectives.Research(copperWallLarge),
+                    new Objectives.SectorComplete(groundZero),
+                    new IndObjectives.sectorsCompleted(3)
+            ), () -> {
+                node(atkFirst, Seq.with(
+                        new Objectives.Research(duo),
+                        new Objectives.Research(scatter),
+                        new Objectives.SectorComplete(groundZero),
+                        new IndObjectives.sectorsCompleted(5)
+                ), () -> {
+
+                });
+            });
+
+            /*
+            node(resI, Seq.with(
                     new Objectives.SectorComplete(groundZero)
             ), () -> {
+
             });
-            node(atkFirst, Seq.with(
-                    new Objectives.Research(duo),
-                    new Objectives.Research(scatter),
-                    new Objectives.SectorComplete(groundZero)
-            ), () -> {
-            });
+            */
 
             mergeNode(graphitePress, () -> {
                 node(furnace);

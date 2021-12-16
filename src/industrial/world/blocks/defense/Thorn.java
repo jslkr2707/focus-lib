@@ -26,7 +26,6 @@ public class Thorn extends Wall {
     }
 
     public class ThornBuild extends WallBuild{
-        /* 가시벽이 향한 방향 뒤에 아무것도 없어야 작동함 */
         public boolean thornOn(){
             return tile.nearby((rotation + 2) % 4) == null;
         }
