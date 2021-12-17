@@ -1,5 +1,7 @@
 package industrial.type;
 
+import arc.util.*;
+import mindustry.ctype.ContentType;
 import mindustry.type.ItemStack;
 import mindustry.ui.dialogs.ResearchDialog;
 
@@ -17,5 +19,8 @@ public class ResourceFocus extends Focus{
         }
     }
 
-
+    @Override
+    public ItemStack[] researchRequirements() {
+        return ItemStack.empty;
+    }
 }

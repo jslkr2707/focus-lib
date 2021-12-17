@@ -1,6 +1,8 @@
 package industrial.type;
 
+import arc.Core;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import mindustry.content.Items;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -17,14 +19,18 @@ public class Focus extends UnlockableContent {
 
     public Focus(String name){
         super(name);
+
+        this.localizedName = Core.bundle.get("focus." + this.name + ".name", this.name);
     }
 
     public void requirements(ItemStack[] stack){
         this.requirements = stack;
     }
 
-    public void addUnlocks(UnlockableContent content){
-            this.unlockContents.add(content);
+    public void addUnlocks(UnlockableContent... content){
+        for (UnlockableContent i: content){
+            this.unlockContents.add(i);
+        }
     }
 
     @Override
@@ -39,12 +45,7 @@ public class Focus extends UnlockableContent {
 
     @Override
     public ItemStack[] researchRequirements() {
-        return requirements;
-    }
-
-    @Override
-    public String toString(){
-        return localizedName;
+        return this.requirements;
     }
 
     @Override

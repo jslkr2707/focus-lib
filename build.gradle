@@ -29,8 +29,9 @@ jar {
 
 dependencies {
     implementation  'com.github.younggam:multi-lib:java-v1.1.0'
-    annotationProcessor 'com.github.Anuken:jabel:0.4.0'
-    compileOnly "com.github.Anuken.Mindustry:core:$pVer"
+
+    compileOnly "com.github.Anuken.Mindustry:core:$pMindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$pMindustryVersion"
 }
 
 task dexify(type: Jar) {

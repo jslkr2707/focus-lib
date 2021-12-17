@@ -71,6 +71,7 @@ public class IndTechTree implements ContentList {
         });
 
         mergeNode(coreShard, () -> {
+
             node(defFirst, Seq.with(
                     new Objectives.Research(copperWall),
                     new Objectives.Research(copperWallLarge),
@@ -87,13 +88,14 @@ public class IndTechTree implements ContentList {
                 });
             });
 
-            /*
+
             node(resI, Seq.with(
                     new Objectives.SectorComplete(groundZero)
             ), () -> {
 
             });
-            */
+
+
 
             mergeNode(graphitePress, () -> {
                 node(furnace);
