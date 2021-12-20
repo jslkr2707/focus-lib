@@ -12,9 +12,9 @@ import static mindustry.type.ItemStack.*;
 public class IndFocuses implements ContentList {
     public static Focus
     defFirst, atkFirst, advResearch, premResearch,
-    /* region resources */
+
     resI, resII, resIII, resIV, resV,
-    /* region units */
+
     unitI, unitII, unitIII;
 
     @Override
@@ -22,6 +22,7 @@ public class IndFocuses implements ContentList {
         defFirst = new Focus("def-first"){{
                 requirements(with(Items.copper, 300, Items.lead, 100));
                 addUnlocks(Blocks.titaniumWall, ExBlocks.steelWall);
+                opposite = IndFocuses.atkFirst;
                 localizedName = Core.bundle.get("focus.def-first.name");
                 description = Core.bundle.getOrNull("focus.def-first.description");
         }};
@@ -35,20 +36,34 @@ public class IndFocuses implements ContentList {
 
         resI = new ResourceFocus("res-I"){
             {
-                toAdd = with(Items.copper, 1000, Items.lead, 1000);
+                setToAdd(with(Items.copper, 1000, Items.lead, 1000));
             }
         };
 
         resII = new ResourceFocus("res-II"){
             {
-                toAdd = with(Items.copper, 1500, Items.lead, 1500, Items.graphite, 500, Items.metaglass, 500, Items.silicon, 500);
+                setToAdd(with(Items.copper, 500, Items.lead, 500,
+                        Items.graphite, 500, Items.metaglass, 500));
             }
         };
 
         resIII = new ResourceFocus("res-III"){
             {
-                toAdd = with(Items.graphite, 1500, Items.metaglass, 1500, Items.silicon, 1500,
-                        Items.titanium, 1000, Items.thorium, 500, Items.plastanium, 500);
+                setToAdd(with(Items.graphite, 1500, Items.metaglass, 1500, Items.silicon, 1000,
+                        Items.titanium, 1000, Items.thorium, 500, Items.plastanium, 500));
+            }
+        };
+
+        resIV = new ResourceFocus("res-IV"){
+            {
+                setToAdd(with(Items.titanium, 1500, Items.thorium, 1000,
+                        Items.plastanium, 1000, Items.phaseFabric, 500));
+            }
+        };
+
+        resV = new ResourceFocus("res-V"){
+            {
+                setToAdd(with(Items.plastanium, 1000, Items.phaseFabric, 1000, Items.surgeAlloy, 1000));
             }
         };
 

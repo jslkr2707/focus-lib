@@ -1,5 +1,6 @@
 package industrial.content;
 
+import arc.util.Log;
 import mindustry.ctype.ContentList;
 
 public class ModLoader implements ContentList {
@@ -10,9 +11,15 @@ public class ModLoader implements ContentList {
             new IndFocuses(),
             new IndTechTree()
     };
+
+    public void showOp(){
+        Log.info(IndFocuses.defFirst.opposite);
+        Log.info(IndFocuses.atkFirst.opposite);
+    }
     public void load(){
         for(ContentList list : contents){
             list.load();
         }
+        showOp();
     }
 }

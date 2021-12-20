@@ -2,7 +2,9 @@ package industrial.type;
 
 import arc.Core;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
+import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
@@ -15,7 +17,7 @@ public class Focus extends UnlockableContent {
     /* what contents to unlock together when unlocked */
     public Seq<UnlockableContent> unlockContents = new Seq<>();
     /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
-    // public Focus opposite;
+    public Focus opposite;
 
     public Focus(String name){
         super(name);
@@ -40,7 +42,9 @@ public class Focus extends UnlockableContent {
                 content.unlock();
             }
         }
-        // this.opposite.requirements(with(Items.copper, 21290312));
+        if (this.opposite != null){
+            this.opposite.requirements(with(Items.copper, 21290312));
+        }
     }
 
     @Override
