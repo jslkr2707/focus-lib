@@ -11,6 +11,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.GenericCrafter;
+import multilib.MultiCrafter;
 import multilib.Recipe;
 
 import static mindustry.type.ItemStack.*;
@@ -18,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 public class ExBlocks implements ContentList {
     public static Block
     /* region crafting */
-    furnace,
+    furnace, macerator,
     /* region defense */
     steelWall, steelWallLarge, bunkerWall,
     /* region turret */
@@ -51,6 +52,19 @@ public class ExBlocks implements ContentList {
             addRecipe(
                     new Recipe.InputContents(with(Items.coal, 1, Items.coal, 1, ExItems.iron, 3)),
                     new Recipe.OutputContents(with( ExItems.steel, 4)), 3000f
+            );
+        }};
+
+        macerator = new MultiCrafter("macerator", 2){{
+            requirements(Category.crafting, with(ExItems.iron, 200, Items.copper, 100, Items.graphite, 100));
+            size = 2;
+            addRecipe(
+                    new Recipe.InputContents(with(ExItems.ironOre, 1)),
+                    new Recipe.OutputContents(with(ExItems.ironPowder, 2)), 1000f
+            );
+            addRecipe(
+                    new Recipe.InputContents(with(ExItems.tinOre, 1)),
+                    new Recipe.OutputContents(with(ExItems.tinPowder, 2)), 1200f
             );
         }};
 

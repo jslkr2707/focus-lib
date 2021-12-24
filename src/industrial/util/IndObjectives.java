@@ -2,6 +2,7 @@ package industrial.util;
 
 import arc.Core;
 import mindustry.content.Blocks;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
@@ -36,6 +37,22 @@ public class IndObjectives{
                 }
             }
             return completed;
+        }
+    }
+
+    public static class notUnlocked implements Objectives.Objective{
+        public UnlockableContent content;
+
+        public notUnlocked(UnlockableContent content) { this.content = content; }
+
+        @Override
+        public boolean complete(){
+            return !content.unlocked();
+        }
+
+        @Override
+        public String display(){
+            return Core.bundle.format("requirements.notUnlocked", content);
         }
     }
 }

@@ -12,14 +12,9 @@ public class ModLoader implements ContentList {
             new IndTechTree()
     };
 
-    public void showOp(){
-        Log.info(IndFocuses.defFirst.opposite);
-        Log.info(IndFocuses.atkFirst.opposite);
-    }
     public void load(){
         for(ContentList list : contents){
             list.load();
         }
-        showOp();
     }
 }

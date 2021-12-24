@@ -1,6 +1,7 @@
 package industrial.content;
 
 import arc.Core;
+import arc.util.Log;
 import industrial.type.Focus;
 import industrial.type.ResourceFocus;
 import mindustry.content.Blocks;
@@ -22,14 +23,13 @@ public class IndFocuses implements ContentList {
         defFirst = new Focus("def-first"){{
                 requirements(with(Items.copper, 300, Items.lead, 100));
                 addUnlocks(Blocks.titaniumWall, ExBlocks.steelWall);
-                opposite = IndFocuses.atkFirst;
-                localizedName = Core.bundle.get("focus.def-first.name");
                 description = Core.bundle.getOrNull("focus.def-first.description");
         }};
 
         atkFirst = new Focus("atk-first"){
             {
                 requirements(with(Items.copper, 300, Items.lead, 100));
+                setOpposite(IndFocuses.defFirst);
                 addUnlocks(Blocks.hail, Blocks.scorch);
             }
         };
@@ -66,6 +66,5 @@ public class IndFocuses implements ContentList {
                 setToAdd(with(Items.plastanium, 1000, Items.phaseFabric, 1000, Items.surgeAlloy, 1000));
             }
         };
-
     }
 }

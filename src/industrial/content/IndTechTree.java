@@ -76,26 +76,47 @@ public class IndTechTree implements ContentList {
                     new Objectives.Research(copperWall),
                     new Objectives.Research(copperWallLarge),
                     new Objectives.SectorComplete(groundZero),
-                    new IndObjectives.sectorsCompleted(3)
-            ), () -> {
-                node(atkFirst, Seq.with(
-                        new Objectives.Research(duo),
-                        new Objectives.Research(scatter),
-                        new Objectives.SectorComplete(groundZero),
-                        new IndObjectives.sectorsCompleted(5)
-                ), () -> {
+                    new IndObjectives.sectorsCompleted(3),
+                    new IndObjectives.notUnlocked(atkFirst)
+            ), () -> {});
 
-                });
-            });
-
+            node(atkFirst, Seq.with(
+                    new Objectives.Research(duo),
+                    new Objectives.Research(scatter),
+                    new Objectives.SectorComplete(groundZero),
+                    new IndObjectives.sectorsCompleted(3),
+                    new IndObjectives.notUnlocked(defFirst)
+            ), () -> {});
 
             node(resI, Seq.with(
-                    new Objectives.SectorComplete(groundZero)
+                    new Objectives.SectorComplete(groundZero),
+                    new Objectives.Research(copper),
+                    new Objectives.Research(lead)
             ), () -> {
-
+                node(resII, Seq.with(
+                        new IndObjectives.sectorsCompleted(5),
+                        new Objectives.Research(graphite),
+                        new Objectives.Research(metaglass)
+                ), () -> {
+                    node(resIII, Seq.with(
+                            new IndObjectives.sectorsCompleted(10),
+                            new Objectives.Research(silicon),
+                            new Objectives.Research(titanium),
+                            new Objectives.Research(thorium),
+                            new Objectives.Research(plastanium)
+                    ), () -> {
+                        node(resIV, Seq.with(
+                                new IndObjectives.sectorsCompleted(15),
+                                new Objectives.Research(phaseFabric)
+                        ), () -> {
+                            node(resV, Seq.with(
+                                    new IndObjectives.sectorsCompleted(15),
+                                    new Objectives.Research(surgeAlloy)
+                            ), () -> {});
+                        });
+                    });
+                });
             });
-
-
 
             mergeNode(graphitePress, () -> {
                 node(furnace);

@@ -32,13 +32,4 @@ public class ResourceFocus extends Focus{
     public ItemStack[] researchRequirements() {
         return ItemStack.empty;
     }
-
-    @Override
-    public void load(){
-        if (this.toAdd != null){
-            for (ItemStack stack: toAdd){
-                Log.info(stack.item + " " + stack.amount);
-            }
-        }
-    }
 }

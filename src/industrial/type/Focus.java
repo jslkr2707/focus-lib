@@ -1,6 +1,7 @@
 package industrial.type;
 
 import arc.Core;
+import arc.Events;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Nullable;
@@ -8,6 +9,7 @@ import mindustry.Vars;
 import mindustry.content.Items;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.EventType;
 import mindustry.type.ItemStack;
 
 import static mindustry.type.ItemStack.*;
@@ -22,12 +24,14 @@ public class Focus extends UnlockableContent {
     public Focus(String name){
         super(name);
 
-        this.localizedName = Core.bundle.get("focus." + this.name + ".name", this.name);
+        this.localizedName = Core.bundle.get("focus." + this.name + ".name");
     }
 
     public void requirements(ItemStack[] stack){
         this.requirements = stack;
     }
+
+    public void setOpposite(Focus opposite){ this.opposite = opposite; }
 
     public void addUnlocks(UnlockableContent... content){
         for (UnlockableContent i: content){
@@ -55,5 +59,12 @@ public class Focus extends UnlockableContent {
     @Override
     public ContentType getContentType(){
         return ContentType.effect_UNUSED;
+    }
+
+    @Override
+    public void load(){
+        Events.on(EventType.ClientLoadEvent.class, e -> {
+            Log.info(this.opposite);
+        });
     }
 }
