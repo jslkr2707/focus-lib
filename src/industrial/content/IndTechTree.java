@@ -71,22 +71,25 @@ public class IndTechTree implements ContentList {
         });
 
         mergeNode(coreShard, () -> {
+            node(defEffort, Seq.with(
+                    new Objectives.SectorComplete(groundZero)
+            ), () -> {
+                node(wallFirst, Seq.with(
+                        new Objectives.Research(copperWall),
+                        new Objectives.Research(copperWallLarge),
+                        new Objectives.SectorComplete(groundZero),
+                        new IndObjectives.sectorsCompleted(3),
+                        new IndObjectives.notUnlocked(turretFirst)
+                ), () -> {});
 
-            node(defFirst, Seq.with(
-                    new Objectives.Research(copperWall),
-                    new Objectives.Research(copperWallLarge),
-                    new Objectives.SectorComplete(groundZero),
-                    new IndObjectives.sectorsCompleted(3),
-                    new IndObjectives.notUnlocked(atkFirst)
-            ), () -> {});
-
-            node(atkFirst, Seq.with(
-                    new Objectives.Research(duo),
-                    new Objectives.Research(scatter),
-                    new Objectives.SectorComplete(groundZero),
-                    new IndObjectives.sectorsCompleted(3),
-                    new IndObjectives.notUnlocked(defFirst)
-            ), () -> {});
+                node(turretFirst, Seq.with(
+                        new Objectives.Research(duo),
+                        new Objectives.Research(scatter),
+                        new Objectives.SectorComplete(groundZero),
+                        new IndObjectives.sectorsCompleted(3),
+                        new IndObjectives.notUnlocked(wallFirst)
+                ), () -> {});
+            });
 
             node(resI, Seq.with(
                     new Objectives.SectorComplete(groundZero),

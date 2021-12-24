@@ -7,12 +7,13 @@ import industrial.type.ResourceFocus;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
+import mindustry.type.ItemStack;
 
 import static mindustry.type.ItemStack.*;
 
 public class IndFocuses implements ContentList {
     public static Focus
-    defFirst, atkFirst, advResearch, premResearch,
+    defEffort, wallFirst, turretFirst, advResearch, premResearch,
 
     resI, resII, resIII, resIV, resV,
 
@@ -20,25 +21,28 @@ public class IndFocuses implements ContentList {
 
     @Override
     public void load(){
-        defFirst = new Focus("def-first"){{
-                requirements(with(Items.copper, 300, Items.lead, 100));
-                addUnlocks(Blocks.titaniumWall, ExBlocks.steelWall);
-                description = Core.bundle.getOrNull("focus.def-first.description");
+        defEffort = new Focus("def-effort"){{
+            requirements(ItemStack.empty);
+            unlockContents = null;
         }};
 
-        atkFirst = new Focus("atk-first"){
-            {
+        wallFirst = new Focus("wall-first"){{
                 requirements(with(Items.copper, 300, Items.lead, 100));
-                setOpposite(IndFocuses.defFirst);
-                addUnlocks(Blocks.hail, Blocks.scorch);
-            }
-        };
+                addUnlocks(Blocks.titaniumWall, ExBlocks.steelWall);
+                localizedName = Core.bundle.get("focus.wall-first.name");
+                description = Core.bundle.getOrNull("focus.wall-first.description");
+        }};
 
-        resI = new ResourceFocus("res-I"){
-            {
+        turretFirst = new Focus("turret-first"){{
+                requirements(with(Items.copper, 300, Items.lead, 100));
+                addUnlocks(Blocks.hail, Blocks.scorch);
+                localizedName = Core.bundle.get("focus.turret-first.name");
+                description = Core.bundle.getOrNull("focus.turret-first.description");
+        }};
+
+        resI = new ResourceFocus("res-I"){{
                 setToAdd(with(Items.copper, 1000, Items.lead, 1000));
-            }
-        };
+        }};
 
         resII = new ResourceFocus("res-II"){
             {

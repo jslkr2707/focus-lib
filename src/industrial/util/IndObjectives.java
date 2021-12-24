@@ -52,7 +52,7 @@ public class IndObjectives{
 
         @Override
         public String display(){
-            return Core.bundle.format("requirements.notUnlocked", content);
+            return Core.bundle.format("requirements.notUnlocked", content.toString());
         }
     }
 }

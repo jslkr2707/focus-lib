@@ -18,20 +18,15 @@ public class Focus extends UnlockableContent {
     public ItemStack[] requirements;
     /* what contents to unlock together when unlocked */
     public Seq<UnlockableContent> unlockContents = new Seq<>();
-    /* if Focus A is opposite with Focus B, only one of them can be unlocked. */
-    public Focus opposite;
 
     public Focus(String name){
         super(name);
-
-        this.localizedName = Core.bundle.get("focus." + this.name + ".name");
     }
 
     public void requirements(ItemStack[] stack){
         this.requirements = stack;
     }
 
-    public void setOpposite(Focus opposite){ this.opposite = opposite; }
 
     public void addUnlocks(UnlockableContent... content){
         for (UnlockableContent i: content){
@@ -41,13 +36,10 @@ public class Focus extends UnlockableContent {
 
     @Override
     public void onUnlock(){
-        if (this.unlockContents.size > 0){
+        if (this.unlockContents != null){
             for (UnlockableContent content: this.unlockContents) {
                 content.unlock();
             }
-        }
-        if (this.opposite != null){
-            this.opposite.requirements(with(Items.copper, 21290312));
         }
     }
 
@@ -59,12 +51,5 @@ public class Focus extends UnlockableContent {
     @Override
     public ContentType getContentType(){
         return ContentType.effect_UNUSED;
-    }
-
-    @Override
-    public void load(){
-        Events.on(EventType.ClientLoadEvent.class, e -> {
-            Log.info(this.opposite);
-        });
     }
 }
