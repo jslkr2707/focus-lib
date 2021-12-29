@@ -3,6 +3,7 @@ package industrial.content;
 import arc.struct.Seq;
 import industrial.util.IndObjectives;
 import mindustry.content.Blocks;
+import mindustry.content.Liquids;
 import mindustry.content.TechTree;
 import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
@@ -11,6 +12,7 @@ import mindustry.type.ItemStack;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
+import static mindustry.content.Items.sand;
 import static mindustry.content.SectorPresets.*;
 import static industrial.content.ExBlocks.*;
 import static industrial.content.ExItems.*;
@@ -91,11 +93,48 @@ public class IndTechTree implements ContentList {
                 ), () -> {});
             });
 
+
             node(resI, Seq.with(
                     new Objectives.SectorComplete(groundZero),
                     new Objectives.Research(copper),
-                    new Objectives.Research(lead)
+                    new Objectives.Research(lead),
+                    new IndObjectives.sectorsCompleted(3)
             ), () -> {
+                node(oreI, Seq.with(
+                        new IndObjectives.sectorsCompleted(5)
+                ), () -> {
+                    node(oreII, Seq.with(
+                            new IndObjectives.sectorsCompleted(5),
+                            new Objectives.Research(coal),
+                            new Objectives.Research(sand),
+                            new Objectives.Research(scrap)
+                    ), () -> {
+                        node(oreIII, Seq.with(
+                                new IndObjectives.sectorsCompleted(15),
+                                new Objectives.Research(titanium),
+                                new Objectives.Research(thorium)
+                        ), () -> {
+
+                        });
+                    });
+                });
+
+                node(liquidI, Seq.with(
+                        new IndObjectives.sectorsCompleted(15),
+                        new Objectives.Research(Liquids.water),
+                        new Objectives.Research(sporePod),
+                        new IndObjectives.notUnlocked(liquidTank)
+                ), () -> {
+                });
+
+                node(liquidII, Seq.with(
+                        new IndObjectives.sectorsCompleted(15),
+                        new Objectives.Research(Liquids.oil),
+                        new Objectives.Research(plastanium)
+                ), () -> {
+
+                });
+
                 node(resII, Seq.with(
                         new IndObjectives.sectorsCompleted(5),
                         new Objectives.Research(graphite),
@@ -103,27 +142,25 @@ public class IndTechTree implements ContentList {
                 ), () -> {
                     node(resIII, Seq.with(
                             new IndObjectives.sectorsCompleted(10),
-                            new Objectives.Research(silicon),
-                            new Objectives.Research(titanium),
-                            new Objectives.Research(thorium),
-                            new Objectives.Research(plastanium)
+                            new Objectives.Research(silicon)
                     ), () -> {
                         node(resIV, Seq.with(
                                 new IndObjectives.sectorsCompleted(15),
+                                new Objectives.Research(plastanium),
                                 new Objectives.Research(phaseFabric)
                         ), () -> {
                             node(resV, Seq.with(
-                                    new IndObjectives.sectorsCompleted(15),
+                                    new IndObjectives.sectorsCompleted(20),
                                     new Objectives.Research(surgeAlloy)
                             ), () -> {});
                         });
                     });
                 });
             });
+        });
 
-            mergeNode(graphitePress, () -> {
-                node(furnace);
-            });
+        mergeNode(graphitePress, () -> {
+            node(furnace);
         });
 
     }
