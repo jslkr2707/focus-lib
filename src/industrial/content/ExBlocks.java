@@ -1,6 +1,8 @@
 package industrial.content;
 
+import industrial.world.blocks.DivisonPlanner;
 import industrial.world.blocks.heatMulti;
+import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
@@ -23,7 +25,9 @@ public class ExBlocks implements ContentList {
     /* region defense */
     steelWall, steelWallLarge, bunkerWall,
     /* region turret */
-    mortar;
+    mortar,
+
+    divisionPlanner;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 6){{
@@ -71,6 +75,7 @@ public class ExBlocks implements ContentList {
         mortar = new ItemTurret("mortar"){{
             requirements(Category.turret, with(ExItems.iron, 500, Items.copper, 500, Items.titanium, 300));
             ammo(
+                    ExItems.iron, Bullets.artilleryDense,
                     ExItems.steel, ExBullets.artilleryBig
             );
             targetAir = false;
@@ -110,6 +115,12 @@ public class ExBlocks implements ContentList {
             health = 500 * 4 * 4;
             chanceDeflect = 30f;
             deflectSound = Sounds.rockBreak;
+        }};
+
+        divisionPlanner = new DivisonPlanner("division-planner"){{
+            health = 500;
+            size = 2;
+            requirements(Category.units, with(Items.copper, 500, Items.lead, 500));
         }};
 
     }

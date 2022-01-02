@@ -1,16 +1,8 @@
 package industrial.type;
 
 import arc.struct.Seq;
-import arc.util.*;
-import mindustry.ClientLauncher;
-import mindustry.Vars;
-import mindustry.content.Items;
-import mindustry.core.UI;
-import mindustry.ctype.ContentType;
 import mindustry.game.SectorInfo;
 import mindustry.type.*;
-import mindustry.ui.dialogs.ResearchDialog;
-import mindustry.world.modules.ItemModule;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.state;
