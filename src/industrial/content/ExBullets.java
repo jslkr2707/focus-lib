@@ -1,5 +1,6 @@
 package industrial.content;
 
+import industrial.type.IndMissile;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.ctype.ContentList;
@@ -10,7 +11,7 @@ import mindustry.graphics.Pal;
 public class ExBullets implements ContentList{
     public static BulletType
 
-    artilleryBig;
+    artilleryBig, missileSmall;
 
     @Override
     public void load(){
@@ -29,6 +30,13 @@ public class ExBullets implements ContentList{
             fragBullets = 8;
             despawnEffect = Fx.fireballsmoke;
             trailEffect = Fx.artilleryTrail;
+        }};
+
+        missileSmall = new IndMissile(3f, 150){{
+            lifetime = 100f;
+            width = 4f;
+            height = 12f;
+            collidesAir = false;
         }};
     }
 }

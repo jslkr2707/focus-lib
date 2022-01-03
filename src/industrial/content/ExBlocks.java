@@ -76,7 +76,8 @@ public class ExBlocks implements ContentList {
             requirements(Category.turret, with(ExItems.iron, 500, Items.copper, 500, Items.titanium, 300));
             ammo(
                     ExItems.iron, Bullets.artilleryDense,
-                    ExItems.steel, ExBullets.artilleryBig
+                    ExItems.steel, ExBullets.artilleryBig,
+                    Items.copper, ExBullets.missileSmall
             );
             targetAir = false;
             size = 3;
