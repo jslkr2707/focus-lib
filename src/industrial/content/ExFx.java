@@ -2,9 +2,8 @@ package industrial.content;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
-import mindustry.content.Blocks;
+import arc.graphics.g2d.Lines;
 import mindustry.entities.Effect;
-import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 
 import static arc.graphics.g2d.Draw.color;
@@ -19,10 +18,15 @@ public class ExFx {
         Fill.circle(e.x + x, e.y + y, 2f);
     })),
 
-    turretOverheat = new Effect(60, e -> {
-        color(Pal.lightOrange);
-        Drawf.light (e.x, e.y, 32f, Pal.lightOrange, e.fin());
+    bulletAccel = new Effect(20, e -> {
+        color(Pal.lightFlame);
+        stroke(e.fout() * 2f);
+        Lines.circle(e.x, e.y, 12f * e.finpow());
+    }),
+
+    bulletFire = new Effect(60, e -> {
+        color(Pal.lightFlame, Pal.darkFlame, Pal.gray, e.fin());
+
+        Fill.circle(e.x, e.y, e.rotation * e.fout());
     });
-
-
 }

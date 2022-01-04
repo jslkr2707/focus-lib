@@ -32,11 +32,17 @@ public class ExBullets implements ContentList{
             trailEffect = Fx.artilleryTrail;
         }};
 
-        missileSmall = new IndMissile(3f, 150){{
-            lifetime = 100f;
-            width = 4f;
-            height = 12f;
+        missileSmall = new IndMissile(2f, 150){{
+            accel = 1.1f;
+            lifetime = 1000f;
+            width = 8f;
+            height = 24f;
             collidesAir = false;
+            accelEffect = ExFx.bulletAccel;
+            explodeEffect = Fx.blastExplosion;
+            frontColor = Pal.lightFlame;
+            backColor = Pal.missileYellow;
+            bulletFireEffect = ExFx.bulletFire;
         }};
     }
 }
