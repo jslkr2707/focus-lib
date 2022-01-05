@@ -81,19 +81,19 @@ public class ExBlocks implements ContentList {
             );
             targetAir = false;
             size = 3;
-            shots = 3;
+            shots = 1;
             inaccuracy = 0f;
             reloadTime = 120f;
             ammoEjectBack = 10f;
             shootEffect = Fx.explosion;
             ammoPerShot = 3;
             cooldown = 0.1f;
-            velocityInaccuracy = 0.3f;
+            velocityInaccuracy = 0;
             restitution = 0.02f;
             recoilAmount = 12f;
             range = 800f;
             health = 200 * size * size;
-            shootSound = Sounds.artillery;
+            shootSound = Sounds.missile;
         }};
 
         /* region wall */

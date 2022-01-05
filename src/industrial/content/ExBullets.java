@@ -35,8 +35,8 @@ public class ExBullets implements ContentList{
         missileSmall = new IndMissile(2f, 150){{
             accel = 1.1f;
             lifetime = 1000f;
-            width = 8f;
-            height = 24f;
+            width = 12f;
+            height = 36f;
             collidesAir = false;
             accelEffect = ExFx.bulletAccel;
             explodeEffect = Fx.blastExplosion;
