@@ -13,7 +13,6 @@ public class DivisionUnitType extends UnitType {
 
     public DivisionUnitType(String name){
         super(name);
-        this.speed = setSpeed();
     }
 
     public void addCompose(UnitType[] type, Integer[] num){
@@ -24,18 +23,15 @@ public class DivisionUnitType extends UnitType {
         }
     }
 
-    public Float[] speeds(){
-        Seq<Float> speed = new Seq<>();
+    public float divSpeed(){
+        float min = 99f;
+
         for (UnitType unit: this.compose.keySet()){
-            speed.add(unit.speed);
+            if (unit.speed < min){
+                min = unit.speed;
+            }
         }
 
-        return speed.toArray();
-    }
-
-    public float setSpeed(){
-        Float[] aa = speeds();
-        Arrays.sort(aa);
-        return aa[0];
+        return min;
     }
 }
