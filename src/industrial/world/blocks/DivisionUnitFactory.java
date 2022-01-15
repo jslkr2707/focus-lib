@@ -3,6 +3,10 @@ package industrial.world.blocks;
 import arc.Core;
 import arc.func.Cons;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
+import arc.scene.Element;
+import arc.scene.style.Drawable;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Button;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
@@ -13,6 +17,7 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.gen.UnitEntity;
 import mindustry.type.UnitType;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.blocks.units.UnitFactory;
@@ -24,10 +29,17 @@ public class DivisionUnitFactory extends UnitFactory {
     int aa = 5;
     public BaseDialog planDialog;
     public int combatWidth = 20;
-    public Seq<UnitType> compose = new Seq<>();
+    public Seq<UnitType> compose = new Seq<>(4);
 
     public DivisionUnitFactory(String name) {
         super(name);
+
+        compose.add(null, null, null);
+    }
+
+    public void addCompose(int i, UnitType unit){
+        compose.insert(i, unit);
+        if (compose.size > i) compose.remove(i+1);
     }
 
     public class DivisionUnitFactoryBuild extends UnitFactoryBuild{
@@ -75,9 +87,18 @@ public class DivisionUnitFactory extends UnitFactory {
             planDialog.cont.table(tt -> {
                 tt.center();
 
-                tt.button(Core.bundle.get("ui.selectunit"), () -> {
+                tt.button(new TextureRegionDrawable(btnImg(0)), () -> {
 
-                });
+                }).size(32).left();
+
+
+                tt.button(new TextureRegionDrawable(btnImg(1)), () -> {
+
+                }).size(32).center();
+
+                tt.button(new TextureRegionDrawable(btnImg(2)), () -> {
+
+                }).size(32).right();
             });
 
             planDialog.show();
@@ -112,6 +133,12 @@ public class DivisionUnitFactory extends UnitFactory {
             return dialog;
 
         }
+
+        public TextureRegion btnImg(int i){
+            return compose.get(i) != null ? compose.get(i).uiIcon : (TextureRegion) Styles.black;
+        }
+
+
 
     }
 

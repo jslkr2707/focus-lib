@@ -5,6 +5,7 @@ import industrial.world.blocks.heatMulti;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
+import mindustry.content.UnitTypes;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Category;
@@ -121,6 +122,7 @@ public class ExBlocks implements ContentList {
             health = 500;
             size = 2;
             requirements(Category.units, with(Items.copper, 500, Items.lead, 500));
+            addCompose(0, UnitTypes.dagger);
         }};
 
     }
