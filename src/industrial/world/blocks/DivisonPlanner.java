@@ -60,75 +60,48 @@ public class DivisonPlanner extends Block {
 
         @Override
         public void buildConfiguration(Table table){
-            super.buildConfiguration(table);
             if (planDialog == null){
                 planDialog = new BaseDialog("Division Planner");
                 planDialog.addCloseButton();
             }
 
-            planDialog.cont.clear();
+            planDialog.cont.clearChildren();
+
             planDialog.cont.center().top();
 
-            planDialog.cont.table(t -> {
-                t.center();
+            /* combat width and available types */
+            planDialog.cont.table(frame -> {
+                frame.table(w -> {
+                    w.defaults().pad(5);
+                    w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(50).center();
+                }).growX().center();
 
-                t.add(Core.bundle.get("ui.combatwidth") + ": " + combatWidth).padBottom(20);
-            });
+                frame.row();
+                btnTable(frame);
 
-            planDialog.cont.row();
+                frame.row();
+                frame.table(s -> {
+                    s.defaults().padTop(20);
+                    s.center();
 
-            planDialog.cont.table(tt -> {
-                tt.center();
+                    for (int i = 0;i < available.size;i++){
+                        int j = i;
 
-                tt.button(new TextureRegionDrawable(btnImg(0, compose)), () -> {
-                    if (pending && selected != null){
-                        lastSelected = 0;
-                        pending = false;
-                        configure(selected);
+                        s.button(btnImg(i, available), () -> {
+                            selected = available.get(j);
+                            pending = true;
+                        }).pad(5).center().size(50);
+
+                        if (i % 8 == 7) s.row();
                     }
-                }).size(70).padRight(50f);
-
-                tt.button(new TextureRegionDrawable(btnImg(1, compose)), () -> {
-                    if (pending && selected != null){
-                        lastSelected = 1;
-                        pending = false;
-                        configure(selected);
-                    }
-                }).size(70).pad(5);
-
-                tt.button(new TextureRegionDrawable(btnImg(2, compose)), () -> {
-                    if (pending && selected != null){
-                        lastSelected = 2;
-                        pending = false;
-                        configure(selected);
-                    }
-                }).size(70).padLeft(50f);
-
-                tt.row();
-
-                tt.add(unitName(0)).padRight(50f);
-                tt.add(unitName(1)).pad(5);
-                tt.add(unitName(2)).padLeft(50f);
-            });
-
-            planDialog.cont.table(tbl -> {
-                tbl.left();
-
-                for (int i = 0;i < available.size;i++){
-                    int j = i;
-                    tbl.button(new TextureRegionDrawable(btnImg(i, available)), () -> {
-                        selected = available.get(j);
-                        pending = true;
-                    }).size(60).pad(10);
-                    if (i % 8 == 7) tbl.row();
-                }
+                }).growX();
             });
 
             planDialog.show();
         }
 
-        public TextureRegion btnImg(int i, Seq<UnitType> seq){
-            return seq.get(i) != null ? seq.get(i).uiIcon : Icon.none.getRegion();
+        public TextureRegionDrawable btnImg(int i, Seq<UnitType> seq){
+            return seq.get(i) != null ? new TextureRegionDrawable(seq.get(i).uiIcon) : new TextureRegionDrawable(Icon.none.getRegion());
         }
 
         public Label unitName(int i){
@@ -137,6 +110,33 @@ public class DivisonPlanner extends Block {
 
         public boolean remain(){
             return remaining > 0;
+        }
+
+        public void btnTable(Table tbl){
+            tbl.table(btn -> {
+                btn.defaults().padTop(50);
+                btn.center();
+
+                for (int i = 0;i < 3; i++){
+                    int j = i;
+                    btn.button(btnImg(j, compose), () -> {
+                        boolean aa = selected == compose.get(j);
+                        if (pending && selected != null){
+                            addCompose(j, selected);
+                            pending = false;
+                        }
+                        if (!aa){
+                            btn.clearChildren();
+                            btnTable(btn);
+                        }
+                    }).growX().center().size(70).padLeft((j - 1) * 70f);
+                }
+                btn.row();
+                btn.add(unitName(0)).padRight(70f).center();
+                btn.add(unitName(1)).center();
+                btn.add(unitName(2)).padLeft(70f).center();
+
+            }).growX();
         }
     }
 }

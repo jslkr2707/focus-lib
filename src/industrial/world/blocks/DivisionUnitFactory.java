@@ -49,22 +49,10 @@ public class DivisionUnitFactory extends UnitFactory {
         @Override
         public void updateTile(){
             super.updateTile();
-
-            if(currentPlan != -1 && payload == null) {
-                UnitPlan plan = plans.get(currentPlan);
-
-                if(progress >= plan.time && consValid()){
-                    for (UnitType units: compose){
-                        payload = new UnitPayload(units.create(team));
-                    }
-                }
-            }
         }
 
         @Override
         public void buildConfiguration(Table table){
-            int col = 4;
-
             if (planDialog == null){
                 planDialog = new BaseDialog("Division Planner");
                 planDialog.addCloseButton();
@@ -74,64 +62,19 @@ public class DivisionUnitFactory extends UnitFactory {
             planDialog.cont.center().top();
 
             /* combat width and available types */
-            planDialog.cont.table(t -> {
-                t.center();
+            planDialog.cont.table(frame -> {
+                frame.table(w -> {
+                    w.defaults().pad(5);
 
-                t.add(Core.bundle.get("ui.combatwidth") + ": " + combatWidth);
-                t.row();
-                t.add(Core.bundle.get("ui.unittypes") + ": "+ "3");
-            });
+                    w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(50);
+                }).growX();
 
-            planDialog.cont.row();
-
-            planDialog.cont.table(tt -> {
-                tt.center();
-
-                tt.button(new TextureRegionDrawable(btnImg(0)), () -> {
-
-                }).size(32).left();
+                frame.row();
 
 
-                tt.button(new TextureRegionDrawable(btnImg(1)), () -> {
-
-                }).size(32).center();
-
-                tt.button(new TextureRegionDrawable(btnImg(2)), () -> {
-
-                }).size(32).right();
             });
 
             planDialog.show();
-        }
-
-        public BaseDialog select(){
-            BaseDialog dialog = new BaseDialog("");
-            int col = 4;
-            dialog.addCloseButton();
-            dialog.clear();
-
-            dialog.cont.table(t -> {
-                t.center().top();
-
-                t.add(Core.bundle.get("ui.select1"));
-
-                t.row();
-            });
-
-            dialog.cont.table(tt -> {
-                for (int i=0;i <= available.size;i++){
-                    Image image = available.get(i).unlocked() ? new Image(available.get(i).uiIcon) : new Image(Icon.none);
-
-                    tt.add(image).size(32f);
-
-                    if (i % 4 == 3){
-                        tt.row();
-                    }
-                }
-            });
-
-            return dialog;
-
         }
 
         public TextureRegion btnImg(int i){
