@@ -122,7 +122,6 @@ public class ExBlocks implements ContentList {
             health = 500;
             size = 2;
             requirements(Category.units, with(Items.copper, 500, Items.lead, 500));
-            addCompose(0, UnitTypes.dagger);
         }};
 
     }

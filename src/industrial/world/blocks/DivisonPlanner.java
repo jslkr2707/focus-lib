@@ -10,6 +10,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Scaling;
 import mindustry.Vars;
+import mindustry.content.UnitTypes;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
@@ -22,7 +23,12 @@ public class DivisonPlanner extends Block {
     BaseDialog planDialog;
     public int combatWidth = 5;
     public int remaining = 5;
-    public Seq<UnitType> compose = new Seq<>(3);
+    public Seq<UnitType> t1 = new Seq<>();
+    public Seq<UnitType> t2 = new Seq<>();
+    public Seq<UnitType> t3 = new Seq<>();
+    public Seq<UnitType> t4 = new Seq<>();
+    public Seq<UnitType> t5 = new Seq<>();
+
 
     public DivisonPlanner(String name) {
         super(name);
@@ -33,29 +39,47 @@ public class DivisonPlanner extends Block {
         logicConfigurable = true;
         sync = true;
 
-        compose.add(null, null, null);
-
         config(UnitType.class, (DivisionPlannerBuild tile, UnitType unit) -> {
             if (tile.remain()){
-                addCompose(tile.lastSelected, tile.selected);
+                tile.addCompose(tile.lastSelected, tile.selected);
             }
         });
     }
 
-    public void addCompose(int i, UnitType unit){
-        compose.insert(i, unit);
-        if (compose.size > i) compose.remove(i+1);
+    public void setTier() {
+        t1.addAll(UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+                UnitTypes.risso, UnitTypes.retusa);
+        t2.addAll(UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+                UnitTypes.risso, UnitTypes.retusa);
+        t3.addAll(UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+                UnitTypes.risso, UnitTypes.retusa);
+        t4.addAll(UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+                UnitTypes.risso, UnitTypes.retusa);
+        t5.addAll(UnitTypes.dagger, UnitTypes.nova, UnitTypes.crawler, UnitTypes.flare, UnitTypes.mono,
+                UnitTypes.risso, UnitTypes.retusa);
     }
+
+    /* public int unitWidth(UnitType unit){
+    }
+
+    */
+
 
     public class DivisionPlannerBuild extends Building{
         public UnitType selected;
         public Seq<UnitType> available = Vars.content.units().select(u -> !u.isBanned() && !u.isHidden() & u.node() != null);
         public boolean pending = false;
+        public Seq<UnitType> compose = new Seq<>(3);
         public int lastSelected;
 
         @Override
         public void updateTile(){
             super.updateTile();
+        }
+
+        public void addCompose(int i, UnitType unit){
+            compose.insert(i, unit);
+            if (compose.size > i) compose.remove(i+1);
         }
 
         @Override
@@ -65,6 +89,8 @@ public class DivisonPlanner extends Block {
                 planDialog.addCloseButton();
             }
 
+            if (compose.size == 0) compose.add(null, null, null);
+
             planDialog.cont.clearChildren();
 
             planDialog.cont.center().top();
@@ -72,16 +98,16 @@ public class DivisonPlanner extends Block {
             /* combat width and available types */
             planDialog.cont.table(frame -> {
                 frame.table(w -> {
-                    w.defaults().pad(5);
                     w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(50).center();
-                }).growX().center();
+                }).growX().center().padBottom(30);
 
                 frame.row();
+
                 btnTable(frame);
 
                 frame.row();
                 frame.table(s -> {
-                    s.defaults().padTop(20);
+                    s.defaults().padTop(50);
                     s.center();
 
                     for (int i = 0;i < available.size;i++){
@@ -95,7 +121,7 @@ public class DivisonPlanner extends Block {
                         if (i % 8 == 7) s.row();
                     }
                 }).growX();
-            });
+            }).center();
 
             planDialog.show();
         }
@@ -114,7 +140,6 @@ public class DivisonPlanner extends Block {
 
         public void btnTable(Table tbl){
             tbl.table(btn -> {
-                btn.defaults().padTop(50);
                 btn.center();
 
                 for (int i = 0;i < 3; i++){
@@ -132,11 +157,12 @@ public class DivisonPlanner extends Block {
                     }).growX().center().size(70).padLeft((j - 1) * 70f);
                 }
                 btn.row();
+
                 btn.add(unitName(0)).padRight(70f).center();
-                btn.add(unitName(1)).center();
+                btn.add(unitName(1)).center().size(40);
                 btn.add(unitName(2)).padLeft(70f).center();
 
-            }).growX();
+            }).growX().center();
         }
     }
 }
