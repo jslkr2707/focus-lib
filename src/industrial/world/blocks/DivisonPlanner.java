@@ -22,7 +22,6 @@ import mindustry.world.Block;
 public class DivisonPlanner extends Block {
     BaseDialog planDialog;
     public int combatWidth = 5;
-    public int remaining = 5;
     public Seq<UnitType> t1 = new Seq<>();
     public Seq<UnitType> t2 = new Seq<>();
     public Seq<UnitType> t3 = new Seq<>();
@@ -70,7 +69,9 @@ public class DivisonPlanner extends Block {
         public Seq<UnitType> available = Vars.content.units().select(u -> !u.isBanned() && !u.isHidden() & u.node() != null);
         public boolean pending = false;
         public Seq<UnitType> compose = new Seq<>(3);
+        public Seq<Integer> unitNums = new Seq<>(3);
         public int lastSelected;
+        public int remaining = 5;
 
         @Override
         public void updateTile(){
@@ -98,14 +99,15 @@ public class DivisonPlanner extends Block {
             /* combat width and available types */
             planDialog.cont.table(frame -> {
                 frame.table(w -> {
-                    w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(50).center();
-                }).growX().center().padBottom(30);
+                    w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(70f);
+                }).center().padBottom(30);
 
                 frame.row();
 
                 btnTable(frame);
 
                 frame.row();
+
                 frame.table(s -> {
                     s.defaults().padTop(50);
                     s.center();
@@ -140,27 +142,47 @@ public class DivisonPlanner extends Block {
 
         public void btnTable(Table tbl){
             tbl.table(btn -> {
-                btn.center();
+                btn.button(btnImg(0, compose), () -> {
+                    boolean aa = selected == compose.get(0);
+                    if (pending && selected != null){
+                        addCompose(0, selected);
+                        pending = false;
+                    }
+                    if (!aa){
+                        btn.clearChildren();
+                        btnTable(btn);
+                    }
+                }).growX().size(70).padRight(70f);
 
-                for (int i = 0;i < 3; i++){
-                    int j = i;
-                    btn.button(btnImg(j, compose), () -> {
-                        boolean aa = selected == compose.get(j);
-                        if (pending && selected != null){
-                            addCompose(j, selected);
-                            pending = false;
-                        }
-                        if (!aa){
-                            btn.clearChildren();
-                            btnTable(btn);
-                        }
-                    }).growX().center().size(70).padLeft((j - 1) * 70f);
-                }
+                btn.button(btnImg(1, compose), () -> {
+                    boolean aa = selected == compose.get(1);
+                    if (pending && selected != null){
+                        addCompose(1, selected);
+                        pending = false;
+                    }
+                    if (!aa){
+                        btn.clearChildren();
+                        btnTable(btn);
+                    }
+                }).growX().size(70);
+
+                btn.button(btnImg(2, compose), () -> {
+                    boolean aa = selected == compose.get(2);
+                    if (pending && selected != null){
+                        addCompose(2, selected);
+                        pending = false;
+                    }
+                    if (!aa){
+                        btn.clearChildren();
+                        btnTable(btn);
+                    }
+                }).growX().size(70).padLeft(70f);
+
                 btn.row();
 
-                btn.add(unitName(0)).padRight(70f).center();
-                btn.add(unitName(1)).center().size(40);
-                btn.add(unitName(2)).padLeft(70f).center();
+                btn.add(unitName(0)).padRight(70f);
+                btn.add(unitName(1)).size(40);
+                btn.add(unitName(2)).padLeft(70f);
 
             }).growX().center();
         }
