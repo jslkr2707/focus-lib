@@ -1,4 +1,4 @@
-package industrial.type;
+package industrial.type.bullets;
 
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -20,7 +20,7 @@ import mindustry.world.blocks.defense.turrets.Turret;
 public class IndMissile extends BasicBulletType{
     public float accel = 1f;
     public Effect accelEffect, explodeEffect, bulletFireEffect;
-    public float expDmg;
+    public float expDmg, velLimit;
 
     public IndMissile(float speed, float damage){
         this.speed = speed;
@@ -52,6 +52,8 @@ public class IndMissile extends BasicBulletType{
             b.vel().scl(accel * Time.delta);
             bulletFireEffect.at(b.x,b.y, b.fslope() * 2, Pal.gray);
         }
+
+        b.vel().limit(velLimit);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package industrial.content;
 
-import industrial.world.blocks.DivisonPlanner;
-import industrial.world.blocks.heatMulti;
+import arc.graphics.g2d.Draw;
+import industrial.world.blocks.*;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.UnitTypes;
+import mindustry.content.Liquids;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Category;
@@ -14,6 +14,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.draw.DrawGlow;
 import multilib.MultiCrafter;
 import multilib.Recipe;
 
@@ -22,11 +23,11 @@ import static mindustry.type.ItemStack.*;
 public class ExBlocks implements ContentList {
     public static Block
     /* region crafting */
-    furnace, macerator,
+    furnace, macerator, titaniumExtractor,
     /* region defense */
     steelWall, steelWallLarge, bunkerWall,
     /* region turret */
-    mortar,
+    mortar, grenadeLauncher,
 
     divisionPlanner;
     @Override
@@ -124,5 +125,19 @@ public class ExBlocks implements ContentList {
             requirements(Category.units, with(Items.copper, 500, Items.lead, 500));
         }};
 
+        grenadeLauncher = new ItemTurret("grenade-launcher"){{
+            requirements(Category.turret, with());
+            size = 2;
+            ammo(
+                    Items.copper, ExBullets.grenadeSmall
+            );
+            reloadTime = 120f;
+            range = 300f;
+            health = 200 * size * size;
+            inaccuracy = 0;
+            shootSound = Sounds.explosion;
+            shots = 1;
+            shootShake = 1f;
+        }};
     }
 }

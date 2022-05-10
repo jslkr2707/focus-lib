@@ -1,6 +1,7 @@
 package industrial.content;
 
-import industrial.type.IndMissile;
+import industrial.type.bullets.GrenadeBulletType;
+import industrial.type.bullets.IndMissile;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.ctype.ContentList;
@@ -11,7 +12,7 @@ import mindustry.graphics.Pal;
 public class ExBullets implements ContentList{
     public static BulletType
 
-    artilleryBig, missileSmall;
+    artilleryBig, missileSmall, grenadeSmall;
 
     @Override
     public void load(){
@@ -32,7 +33,7 @@ public class ExBullets implements ContentList{
             trailEffect = Fx.artilleryTrail;
         }};
 
-        missileSmall = new IndMissile(2f, 150){{
+        missileSmall = new IndMissile(1f, 150){{
             accel = 1.1f;
             lifetime = 1000f;
             width = 12f;
@@ -43,6 +44,15 @@ public class ExBullets implements ContentList{
             frontColor = Pal.lightFlame;
             backColor = Pal.missileYellow;
             bulletFireEffect = ExFx.bulletFire;
+            velLimit = 20f;
+        }};
+
+        grenadeSmall = new GrenadeBulletType(2f, 10){{
+            lifetime = 90f;
+            width = height = 4f;
+            frontColor = Pal.plastaniumFront;
+            backColor = Pal.lightishGray;
+            shootEffect = Fx.shootSmallFlame;
         }};
     }
 }

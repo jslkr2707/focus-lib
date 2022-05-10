@@ -8,6 +8,7 @@ import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
@@ -91,6 +92,7 @@ public class DivisonPlanner extends Block {
             }
 
             if (compose.size == 0) compose.add(null, null, null);
+            if (unitNums.size == 0) unitNums.add(1, 1, 1);
 
             planDialog.cont.clearChildren();
 
@@ -183,6 +185,28 @@ public class DivisonPlanner extends Block {
                 btn.add(unitName(0)).padRight(70f);
                 btn.add(unitName(1)).size(40);
                 btn.add(unitName(2)).padLeft(70f);
+
+                btn.row();
+
+                btn.button(Icon.leftSmall, Styles.accenti, () -> {
+                    if (unitNums.get(0) != 1){
+                        int bb = unitNums.get(0);
+                        unitNums.set(0, bb - 1);
+                        remaining += 2;
+                        btn.clearChildren();
+                        btnTable(btn);
+                    }
+                }).growX().size(10).left().padLeft(20f);
+                btn.add(""+unitNums.get(0)).left().padLeft(30f);
+                btn.button(Icon.rightSmall, Styles.accenti, () -> {
+                    if (remaining >= 2){
+                        int bb = unitNums.get(0);
+                        unitNums.set(0, bb + 1);
+                        remaining -= 2;
+                        btn.clearChildren();
+                        btnTable(btn);
+                    }
+                }).growX().size(10).left().padLeft(20f);
 
             }).growX().center();
         }
