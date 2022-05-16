@@ -1,7 +1,7 @@
-package industrial.content;
+package ages.content;
 
-import industrial.type.bullets.GrenadeBulletType;
-import industrial.type.bullets.IndMissile;
+import ages.entities.bullet.modern.GrenadeBulletType;
+import ages.entities.bullet.contemporary.IndMissile;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.ctype.ContentList;
@@ -48,7 +48,7 @@ public class ExBullets implements ContentList{
         }};
 
         grenadeSmall = new GrenadeBulletType(2f, 10){{
-            lifetime = 90f;
+            lifetime = 60f;
             width = height = 4f;
             frontColor = Pal.plastaniumFront;
             backColor = Pal.lightishGray;

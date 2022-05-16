@@ -1,8 +1,7 @@
-package industrial.content;
+package ages.content;
 
 import arc.struct.Seq;
-import industrial.util.IndObjectives;
-import mindustry.content.Blocks;
+import ages.util.IndObjectives;
 import mindustry.content.Liquids;
 import mindustry.content.TechTree;
 import mindustry.ctype.ContentList;
@@ -14,9 +13,9 @@ import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Items.sand;
 import static mindustry.content.SectorPresets.*;
-import static industrial.content.ExBlocks.*;
-import static industrial.content.ExItems.*;
-import static industrial.content.IndFocuses.*;
+import static ages.content.ExBlocks.*;
+import static ages.content.ExItems.*;
+import static ages.content.IndFocuses.*;
 
 public class IndTechTree implements ContentList {
     static TechTree.TechNode context = null;

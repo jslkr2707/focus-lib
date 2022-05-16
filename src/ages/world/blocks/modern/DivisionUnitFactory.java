@@ -1,28 +1,14 @@
-package industrial.world.blocks;
+package ages.world.blocks.modern;
 
 import arc.Core;
-import arc.func.Cons;
-import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
-import arc.scene.Element;
-import arc.scene.style.Drawable;
-import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Button;
-import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Scaling;
-import industrial.type.DivisionUnitType;
 import mindustry.Vars;
-import mindustry.gen.Icon;
-import mindustry.gen.UnitEntity;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.blocks.units.UnitFactory;
-
-import java.util.HashMap;
 
 public class DivisionUnitFactory extends UnitFactory {
     /* test */

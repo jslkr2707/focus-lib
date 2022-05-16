@@ -1,4 +1,4 @@
-package industrial.type;
+package ages.type;
 
 import arc.struct.Seq;
 import mindustry.game.SectorInfo;

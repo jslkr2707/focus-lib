@@ -1,7 +1,7 @@
-package industrial.core;
+package ages.core;
 
 import arc.Events;
-import industrial.content.ModLoader;
+import ages.content.ModLoader;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 

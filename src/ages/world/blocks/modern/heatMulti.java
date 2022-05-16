@@ -1,11 +1,8 @@
-package industrial.world.blocks;
+package ages.world.blocks.modern;
 
 import arc.Core;
 import arc.graphics.Color;
 import arc.util.Strings;
-import industrial.content.ExFx;
-import industrial.content.ExItems;
-import mindustry.content.Items;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.ui.Bar;

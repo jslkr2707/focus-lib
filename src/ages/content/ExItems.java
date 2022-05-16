@@ -1,4 +1,4 @@
-package industrial.content;
+package ages.content;
 
 import arc.graphics.Color;
 import mindustry.ctype.ContentList;

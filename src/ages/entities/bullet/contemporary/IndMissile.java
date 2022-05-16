@@ -1,20 +1,14 @@
-package industrial.type.bullets;
+package ages.entities.bullet.contemporary;
 
 import arc.math.Mathf;
-import arc.math.Rand;
-import arc.math.geom.Circle;
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.content.Fx;
-import mindustry.entities.Damage;
 import mindustry.entities.Effect;
-import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
-import mindustry.graphics.Trail;
 import mindustry.world.blocks.defense.turrets.Turret;
 
 public class IndMissile extends BasicBulletType{

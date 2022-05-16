@@ -1,6 +1,5 @@
-package industrial.content;
+package ages.content;
 
-import arc.util.Log;
 import mindustry.ctype.ContentList;
 
 public class ModLoader implements ContentList {

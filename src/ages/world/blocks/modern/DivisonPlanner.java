@@ -1,20 +1,14 @@
-package industrial.world.blocks;
+package ages.world.blocks.modern;
 
 import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.g2d.TextureRegion;
 import arc.scene.style.TextureRegionDrawable;
-import arc.scene.ui.Image;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
-import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;

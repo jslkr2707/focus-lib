@@ -1,20 +1,16 @@
-package industrial.content;
+package ages.content;
 
-import arc.graphics.g2d.Draw;
-import industrial.world.blocks.*;
+import ages.world.blocks.modern.DivisonPlanner;
+import ages.world.blocks.modern.heatMulti;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.Liquids;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.draw.DrawGlow;
 import multilib.MultiCrafter;
 import multilib.Recipe;
 
@@ -23,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 public class ExBlocks implements ContentList {
     public static Block
     /* region crafting */
-    furnace, macerator, titaniumExtractor,
+    furnace, macerator,
     /* region defense */
     steelWall, steelWallLarge, bunkerWall,
     /* region turret */

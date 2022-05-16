@@ -1,13 +1,11 @@
-package industrial.content;
+package ages.content;
 
 import arc.Core;
-import arc.util.Log;
-import industrial.type.Focus;
-import industrial.type.ResourceFocus;
+import ages.type.Focus;
+import ages.type.ResourceFocus;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.ctype.ContentList;
-import mindustry.type.ItemStack;
 
 import static mindustry.type.ItemStack.*;
 
