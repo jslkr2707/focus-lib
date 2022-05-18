@@ -1,11 +1,11 @@
 {
-  "name": "industrial",
-  "short": "Industrial Mod",
-  "displayName": "Mindustry Industrial Mod",
+  "name": "ages",
+  "short": "Mindustry: Ages",
+  "displayName": "From ancient to contemporary ages.",
   "author": "AshesKaiser",
   "description": "My first [orange]java [white]Mindustry mod",
   "version": "0.1",
-  "main": "industrial.core.Main",
+  "main": "ages.core.Main",
   "minGameVersion": "134",
   "dependencies": [],
   "hidden": false

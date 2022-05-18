@@ -1,5 +1,6 @@
 package ages.content;
 
+import ages.world.blocks.ancient.AncientFence;
 import ages.world.blocks.modern.DivisonPlanner;
 import ages.world.blocks.modern.heatMulti;
 import mindustry.content.Bullets;
@@ -25,7 +26,9 @@ public class ExBlocks implements ContentList {
     /* region turret */
     mortar, grenadeLauncher,
 
-    divisionPlanner;
+    divisionPlanner,
+
+    woodenFence;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 6){{
@@ -134,6 +137,13 @@ public class ExBlocks implements ContentList {
             shootSound = Sounds.explosion;
             shots = 1;
             shootShake = 1f;
+        }};
+
+        woodenFence = new AncientFence("wooden-fence"){{
+            requirements(Category.defense, with(ExItems.wood, 6));
+
+            health = 100;
+            size = 2;
         }};
     }
 }
