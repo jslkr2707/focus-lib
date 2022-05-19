@@ -1,18 +1,7 @@
 package ages.world.blocks.ancient;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mat;
-import arc.util.Log;
-import mindustry.content.StatusEffects;
 import mindustry.gen.Unit;
-import mindustry.graphics.Layer;
-import mindustry.type.StatusEffect;
-import mindustry.type.UnitType;
 import mindustry.world.blocks.defense.Wall;
-
-import java.awt.*;
 
 public class AncientFence extends Wall {
     public float fenceDamage = 1f;
