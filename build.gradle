@@ -55,5 +55,5 @@ task dexify(type: Jar) {
 }
 
 task buildDex dependsOn "build", "dexify"
-sourceCompatibility = JavaVersion.VERSION_1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_16
