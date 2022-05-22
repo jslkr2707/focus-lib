@@ -28,10 +28,12 @@ jar {
 
 
 dependencies {
+    annotationProcessor 'com.github.Anuken:jabel:0.4.0'
     implementation  'com.github.younggam:multi-lib:java-v1.1.0'
 
-    compileOnly "com.github.Anuken.Mindustry:core:$pMindustryVersion"
-    compileOnly "com.github.Anuken.Arc:arc-core:$pMindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:v135"
+    compileOnly files('annotations/annotations-release.jar')
+    compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 
 task dexify(type: Jar) {
@@ -55,5 +57,11 @@ task dexify(type: Jar) {
 }
 
 task buildDex dependsOn "build", "dexify"
+<<<<<<< Updated upstream
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = 8
+=======
+
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
+>>>>>>> Stashed changes

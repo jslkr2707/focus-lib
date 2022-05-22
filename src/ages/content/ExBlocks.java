@@ -1,6 +1,7 @@
 package ages.content;
 
 import ages.world.blocks.ancient.AncientFence;
+import ages.world.blocks.ancient.AncientTower;
 import ages.world.blocks.modern.DivisonPlanner;
 import ages.world.blocks.modern.heatMulti;
 import mindustry.content.Bullets;
@@ -28,7 +29,7 @@ public class ExBlocks implements ContentList {
 
     divisionPlanner,
 
-    woodenFence;
+    woodenFence, bulwark;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 6){{
@@ -142,8 +143,24 @@ public class ExBlocks implements ContentList {
         woodenFence = new AncientFence("wooden-fence"){{
             requirements(Category.defense, with(ExItems.wood, 6));
 
-            health = 100;
+            health = 100000;
             size = 2;
+        }};
+
+        bulwark = new AncientTower("bulwark"){{
+            requirements(Category.turret, with());
+
+            health = 200000;
+            size = 2;
+
+            reloadTime = 120f;
+            range = 150f;
+
+            ammo(
+                    ExItems.stone, Bullets.standardCopper
+            );
+
+            charge = 30f;
         }};
     }
 }

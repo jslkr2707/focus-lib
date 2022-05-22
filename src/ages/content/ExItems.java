@@ -7,7 +7,7 @@ import mindustry.type.Item;
 
 public class ExItems implements ContentList {
     public static Item
-    wood,
+    wood, stone,
     ironOre, iron, ironPowder, steel,
     tinOre, tin, tinPowder,
     bauxite, aluminum;
@@ -18,6 +18,12 @@ public class ExItems implements ContentList {
             hardness = 0;
             cost = 1;
         }};
+
+        stone = new Item("stone", Color.gray){{
+            hardness = 1;
+            cost = 2;
+        }};
+
         ironOre = new Item("ironOre", Pal.metalGrayDark){{
             hardness = 2;
         }};
