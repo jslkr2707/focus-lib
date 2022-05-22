@@ -3,20 +3,12 @@ package ages.world.blocks.ancient;
 import ages.content.AgesUnitTypes;
 import ages.type.WorkerUnitType;
 import arc.Core;
-<<<<<<< Updated upstream
 import arc.math.Mathf;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-=======
-import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.UnitType;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
->>>>>>> Stashed changes
 import mindustry.world.meta.*;
 
 public class AncientTower extends ItemTurret {
