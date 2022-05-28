@@ -29,7 +29,7 @@ public class ExBlocks implements ContentList {
 
     divisionPlanner,
 
-    woodenFence, bulwark;
+    woodenFence, complexWoodenFence, bulwark;
     @Override
     public void load(){
         furnace = new heatMulti("furnace", 6){{
@@ -143,7 +143,14 @@ public class ExBlocks implements ContentList {
         woodenFence = new AncientFence("wooden-fence"){{
             requirements(Category.defense, with(ExItems.wood, 6));
 
-            health = 100000;
+            health = 100;
+            size = 1;
+        }};
+
+        complexWoodenFence = new AncientFence("complex-wooden-fence"){{
+            requirements(Category.defense, with(ExItems.wood, 24));
+
+            health = 400;
             size = 2;
         }};
 

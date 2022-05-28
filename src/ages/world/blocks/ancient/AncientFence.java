@@ -1,12 +1,13 @@
 package ages.world.blocks.ancient;
 
 import arc.Core;
+import arc.util.Time;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.meta.Stat;
 
 public class AncientFence extends Wall {
-    public float fenceDamage = 10f;
+    public float fenceDamage = 5f;
     public float damageTime = 30f;
     public float speedMultiplier = 0.2f;
 
@@ -27,7 +28,7 @@ public class AncientFence extends Wall {
         stats.add(Stat.abilities, t -> {
             t.left().defaults().padRight(3).left();
             t.row();
-            t.add(Core.bundle.format("ages.fencedamage", fenceDamage * damageTime / 60));
+            t.add(Core.bundle.format("ages.fencedamage", fenceDamage));
         });
     }
 
@@ -35,8 +36,7 @@ public class AncientFence extends Wall {
         @Override
         public void unitOn(Unit unit){
             unit.speedMultiplier *= speedMultiplier;
-
-            unit.damagePierce(fenceDamage * healthf(), unit.hitTime < -(damageTime / 9) + 1);
+            unit.damage(fenceDamage / 60 * Time.delta * healthf(), unit.hitTime < -(damageTime / 9) + 1);
         }
     }
 }
