@@ -166,8 +166,6 @@ public class ExBlocks implements ContentList {
             ammo(
                     ExItems.stone, Bullets.standardCopper
             );
-
-            charge = 30f;
         }};
     }
 }
