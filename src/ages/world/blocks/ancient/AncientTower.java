@@ -1,8 +1,8 @@
 package ages.world.blocks.ancient;
 
-import ages.content.AgesUnitTypes;
-import arc.Core;
-import arc.graphics.g2d.Draw;
+import ages.content.*;
+import arc.*;
+import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;

@@ -4,11 +4,11 @@ import mindustry.ctype.ContentList;
 
 public class ModLoader implements ContentList {
     private final ContentList[] contents = {
-            new ExItems(),
-            new ExBullets(),
-            new ExBlocks(),
-            new IndFocuses(),
-            new IndTechTree()
+            new AgesItems(),
+            new AgesBullets(),
+            new AgesBlocks(),
+            new AgesFocus(),
+            new AgesTechTree()
     };
 
     public void load(){

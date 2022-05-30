@@ -9,7 +9,7 @@ import mindustry.ctype.ContentList;
 
 import static mindustry.type.ItemStack.*;
 
-public class IndFocuses implements ContentList {
+public class AgesFocus implements ContentList {
     public static Focus
     defEffort, wallFirst, turretFirst, advResearch, premResearch,
 
@@ -30,7 +30,7 @@ public class IndFocuses implements ContentList {
 
         wallFirst = new Focus("wall-first"){{
             requirements(with(Items.copper, 300, Items.lead, 100));
-            addUnlocks(Blocks.titaniumWall, ExBlocks.steelWall);
+            addUnlocks(Blocks.titaniumWall);
             localizedName = Core.bundle.get("focus.wall-first.name");
             description = Core.bundle.getOrNull("focus.wall-first.description");
         }};

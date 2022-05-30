@@ -9,7 +9,7 @@ import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.graphics.Pal;
 
-public class ExBullets implements ContentList{
+public class AgesBullets implements ContentList{
     public static BulletType
 
     artilleryBig, missileSmall, grenadeSmall;
@@ -39,11 +39,11 @@ public class ExBullets implements ContentList{
             width = 12f;
             height = 36f;
             collidesAir = false;
-            accelEffect = ExFx.bulletAccel;
+            accelEffect = AgesFx.bulletAccel;
             explodeEffect = Fx.blastExplosion;
             frontColor = Pal.lightFlame;
             backColor = Pal.missileYellow;
-            bulletFireEffect = ExFx.bulletFire;
+            bulletFireEffect = AgesFx.bulletFire;
             velLimit = 20f;
         }};
 

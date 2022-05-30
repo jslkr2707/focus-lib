@@ -5,7 +5,7 @@ import mindustry.ctype.ContentList;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 
-public class ExItems implements ContentList {
+public class AgesItems implements ContentList {
     public static Item
     wood, stone,
     ironOre, iron, ironPowder, steel,

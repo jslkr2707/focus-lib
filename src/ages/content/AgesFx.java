@@ -10,7 +10,7 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
-public class ExFx {
+public class AgesFx {
     public static final Effect
 
     carbondust = new Effect(420, e -> randLenVectors(e.id, 8, 6f + e.fin() * 5f, (x, y) -> {

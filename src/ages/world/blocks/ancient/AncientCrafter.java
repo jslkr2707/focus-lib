@@ -1,13 +1,15 @@
 package ages.world.blocks.ancient;
 
-import arc.Core;
-import mindustry.content.Fx;
-import mindustry.entities.Effect;
+import arc.*;
+import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.Bar;
+import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.meta.*;
 
 public class AncientCrafter extends GenericCrafter{
     protected Item fuel;
@@ -23,6 +25,13 @@ public class AncientCrafter extends GenericCrafter{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.input, StatValues.items(heatCapacity, new ItemStack(fuel, fuelUse)));
+    }
+
+    @Override
     public void setBars(){
         super.setBars();
 
@@ -34,11 +43,11 @@ public class AncientCrafter extends GenericCrafter{
 
         @Override
         public boolean consValid(){
-            return super.consValid() && hasFuel();
+            return super.consValid() && (hasFuel() || heat > 0);
         }
 
         @Override
-        public boolean shouldConsume(){ return super.shouldConsume() && hasFuel(); }
+        public boolean shouldConsume(){ return super.shouldConsume() && (hasFuel() || heat > 0); }
 
         @Override
         public boolean acceptItem(Building source, Item item){ return super.acceptItem(source, item) || (item == fuel && items.get(fuel) < fuelCapacity); }
@@ -47,19 +56,33 @@ public class AncientCrafter extends GenericCrafter{
         public void updateTile(){
             super.updateTile();
 
-            if (hasFuel()){
-                if (heat == 0 && consValid()){
-                    items.remove(fuel, fuelUse);
-                    heat = heatCapacity;
-                    fuelBurnEffect.at(this);
-                }else{
-                    heat -= 1;
-                }
+            if (hasFuel() && heat <= 0 && consValid()){
+                items.remove(fuel, fuelUse);
+                heat = heatCapacity;
+                fuelBurnEffect.at(this);
+            }
+
+            if (heat > 0){
+                heat -= 1;
             }
         }
 
         public boolean hasFuel(){ return items.get(fuel) > 0; }
 
         public float heatf(){ return heat / heatCapacity; }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(heat);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            heat = read.f();
+        }
     }
 }

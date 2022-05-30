@@ -13,24 +13,24 @@ import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Items.sand;
 import static mindustry.content.SectorPresets.*;
-import static ages.content.ExBlocks.*;
-import static ages.content.ExItems.*;
-import static ages.content.IndFocuses.*;
+import static ages.content.AgesBlocks.*;
+import static ages.content.AgesItems.*;
+import static ages.content.AgesFocus.*;
 
-public class IndTechTree implements ContentList {
+public class AgesTechTree implements ContentList {
     static TechTree.TechNode context = null;
 
     @Override
     public void load(){
         mergeNode(copper, () -> {
             node(ironOre, Seq.with(
-                    new Objectives.Produce(ExItems.ironOre)
+                    new Objectives.Produce(AgesItems.ironOre)
             ), () -> {
                 node(iron, Seq.with(
-                        new Objectives.Produce(ExItems.iron)
+                        new Objectives.Produce(AgesItems.iron)
                 ),() -> {
                     node(steel, Seq.with(
-                            new Objectives.Produce(ExItems.steel)
+                            new Objectives.Produce(AgesItems.steel)
                     ), () -> {
 
                     });
@@ -38,35 +38,27 @@ public class IndTechTree implements ContentList {
             });
 
             node(tinOre, Seq.with(
-                    new Objectives.Produce(ExItems.tinOre)
+                    new Objectives.Produce(AgesItems.tinOre)
             ), () -> {
                 node(tin, Seq.with(
-                        new Objectives.Produce(ExItems.tin)
+                        new Objectives.Produce(AgesItems.tin)
                 ), () -> {
 
                 });
                 node(tinPowder, Seq.with(
-                        new Objectives.Produce(ExItems.tinPowder)
+                        new Objectives.Produce(AgesItems.tinPowder)
                 ), () -> {
 
                 });
             });
 
             node(bauxite, Seq.with(
-                    new Objectives.Produce(ExItems.bauxite)
+                    new Objectives.Produce(AgesItems.bauxite)
             ),() -> {
                 node(aluminum, Seq.with(
-                        new Objectives.Produce(ExItems.aluminum)
+                        new Objectives.Produce(AgesItems.aluminum)
                 ),() -> {
 
-                });
-            });
-        });
-
-        mergeNode(copperWall, () -> {
-            node(steelWall, () -> {
-                node(steelWallLarge, () -> {
-                    node(bunkerWall);
                 });
             });
         });
@@ -157,11 +149,6 @@ public class IndTechTree implements ContentList {
                 });
             });
         });
-
-        mergeNode(graphitePress, () -> {
-            node(furnace);
-        });
-
     }
 
     private static void mergeNode(UnlockableContent parent, Runnable children){
