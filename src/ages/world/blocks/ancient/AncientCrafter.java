@@ -13,6 +13,7 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
 import static ages.AgesVars.*;
+import static arc.Core.bundle;
 
 public class AncientCrafter extends GenericCrafter{
     protected Item fuel;
@@ -39,8 +40,8 @@ public class AncientCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        bars.add(Core.bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("ages.fuel", Pal.accent, e::heatf));
-        bars.add(Core.bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("ages.heat", Pal.heal, e::heathf));
+        bars.add(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("ages.fuel", Pal.accent, e::heatf));
+        bars.add(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("ages.heat", Pal.heal, e::heathf));
     }
 
     public class AncientCrafterBuild extends GenericCrafterBuild{
@@ -49,7 +50,7 @@ public class AncientCrafter extends GenericCrafter{
 
         @Override
         public boolean consValid(){
-            return super.consValid() && (hasFuel() || heath >= minCraftHeat);
+            return super.consValid() && hasFuel();
         }
 
         @Override
@@ -62,12 +63,15 @@ public class AncientCrafter extends GenericCrafter{
         public void updateTile(){
             super.updateTile();
 
-            if (hasFuel() && heat <= 0 && consValid()){
-                items.remove(fuel, fuelUse * fuelUseMulti);
-                heat = heatCapacity * heatCapMulti;
-                fuelBurnEffect.at(this);
-                if (heath < 1f){
+            if (consValid()){
+                if (heath < heatCapacity * heatCapMulti){
                     heath = Mathf.lerpDelta(heath, heatCapacity * heatCapMulti, 0.02f);
+                }
+
+                if (heat <= 0) {
+                    items.remove(fuel, fuelUse * fuelUseMulti);
+                    heat = heatCapacity * heatCapMulti;
+                    fuelBurnEffect.at(this);
                 }
             }
 
