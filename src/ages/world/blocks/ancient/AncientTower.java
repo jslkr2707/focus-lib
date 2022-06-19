@@ -1,8 +1,9 @@
 package ages.world.blocks.ancient;
 
-import ages.content.*;
+import ages.world.blocks.*;
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.util.Nullable;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -32,21 +33,26 @@ public class AncientTower extends ItemTurret {
     public void setBars(){
         super.setBars();
 
-        bars.add("unitLimit", (AncientTowerBuild e) -> new Bar(Core.bundle.format("ages.stat.unitlimit", e.unitAmount(), unitLimit), Pal.lightOrange, e::inUnitf));
+        bars.add("unitLimit", (AncientTowerBuild e) -> new Bar(Core.bundle.format("ages.stat.unitlimit", e.getUnits(), unitLimit), Pal.lightOrange, e::maxUnitf));
         bars.add("leastUnit", (AncientTowerBuild e) -> new Bar("ages.stat.leastunit", Pal.command, () -> Math.min(e.leastUnitf(), 1)));
     }
 
-    public class AncientTowerBuild extends ItemTurretBuild{
-        public Unit[] inUnits = {};
+    public class AncientTowerBuild extends ItemTurretBuild implements UnitHolder{
+        @Nullable Unit[] inUnits = new Unit[unitLimit];
+
+        @Override
+        public int getUnits(){
+            return inUnits.length;
+        }
 
         @Override
         public float handleDamage(float amount){
-            if (unitAmount() > 0) {
+            if (getUnits() > 0) {
                 for (Unit u : inUnits) {
-                    u.damage(amount / (unitAmount() + 1));
+                    if (u != null) u.damage(amount / (getUnits() + 1));
                 }
             }
-            return amount / (unitAmount() + 1);
+            return amount / (getUnits() + 1);
         }
 
         @Override
@@ -62,18 +68,40 @@ public class AncientTower extends ItemTurret {
             Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation);
         }
 
-        public boolean unitActive(){ return unitAmount() >= leastUnits; }
+        public boolean unitActive(){ return getUnits() >= leastUnits; }
 
-        public int inUnitf(){
-            return unitAmount() / unitLimit;
+        @Override
+        public float maxUnitf(){
+            return (float) getUnits() / unitLimit;
         }
 
-        public int leastUnitf(){
-            return unitAmount() / leastUnits;
+        @Override
+        public float leastUnitf(){
+            return (float) getUnits() / leastUnits;
         }
 
-        public int unitAmount(){ return inUnits.length; }
+        @Override
+        public boolean acceptUnit(Unit u){
+            removeUnit();
+            if (getUnits() >= unitLimit){
+                for (int i = 0; i < getUnits(); i++){
+                    if (inUnits[i] == null){
+                        inUnits[i] = u;
+                        return true;
+                    }
+                }
+            }else{
+                inUnits[getUnits()] = u;
+                return true;
+            }
 
-        public boolean acceptUnit(Unit unit){ return unitAmount() < unitLimit && unit.type == AgesUnitTypes.slinger; }
+            return false;
+        }
+
+        public void removeUnit(){
+            for (int i = 0; i < getUnits(); i++){
+                if (inUnits[i].dead) inUnits[i] = null;
+            }
+        }
     }
 }
