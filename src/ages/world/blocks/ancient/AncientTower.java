@@ -3,7 +3,8 @@ package ages.world.blocks.ancient;
 import ages.world.blocks.*;
 import arc.*;
 import arc.graphics.g2d.*;
-import arc.util.Nullable;
+import arc.struct.*;
+import arc.util.io.Writes;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -38,18 +39,18 @@ public class AncientTower extends ItemTurret {
     }
 
     public class AncientTowerBuild extends ItemTurretBuild implements UnitHolder{
-        @Nullable Unit[] inUnits = new Unit[unitLimit];
+        public Seq<Unit> inUnits = new Seq<>();
 
         @Override
         public int getUnits(){
-            return inUnits.length;
+            return inUnits.size;
         }
 
         @Override
         public float handleDamage(float amount){
-            if (getUnits() > 0) {
-                for (Unit u : inUnits) {
-                    if (u != null) u.damage(amount / (getUnits() + 1));
+            if (unitActive()) {
+                for (Unit u: inUnits) {
+                    u.damage(amount / (getUnits() + 1));
                 }
             }
             return amount / (getUnits() + 1);
@@ -68,7 +69,11 @@ public class AncientTower extends ItemTurret {
             Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation);
         }
 
-        public boolean unitActive(){ return getUnits() >= leastUnits; }
+        @Override
+        public void updateTile(){
+            super.updateTile();
+            removeUnit();
+        }
 
         @Override
         public float maxUnitf(){
@@ -82,25 +87,23 @@ public class AncientTower extends ItemTurret {
 
         @Override
         public boolean acceptUnit(Unit u){
-            removeUnit();
-            if (getUnits() >= unitLimit){
-                for (int i = 0; i < getUnits(); i++){
-                    if (inUnits[i] == null){
-                        inUnits[i] = u;
-                        return true;
-                    }
-                }
-            }else{
-                inUnits[getUnits()] = u;
-                return true;
-            }
-
-            return false;
+            return getUnits() >= unitLimit;
         }
 
+        public boolean unitActive(){ return getUnits() >= leastUnits; }
+
         public void removeUnit(){
-            for (int i = 0; i < getUnits(); i++){
-                if (inUnits[i].dead) inUnits[i] = null;
+            for (Unit u: inUnits){
+                if (u.dead) inUnits.remove(u);
+            }
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            for (Unit u: inUnits){
+                write.i(u.id);
             }
         }
     }
