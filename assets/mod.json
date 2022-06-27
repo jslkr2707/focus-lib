@@ -6,7 +6,7 @@
   "description": "My first [orange]java [white]Mindustry mod",
   "version": "0.1",
   "main": "ages.core.Main",
-  "minGameVersion": "134",
+  "minGameVersion": "136",
   "dependencies": [],
   "hidden": false
 }

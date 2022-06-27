@@ -1,19 +1,17 @@
 package ages.content;
 
 import arc.graphics.Color;
-import mindustry.ctype.ContentList;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 
-public class AgesItems implements ContentList {
+public class AgesItems{
     public static Item
     wood, stone,
     ironOre, iron, ironPowder, steel,
     tinOre, tin, tinPowder,
+    plantI, plantII,
     bauxite, aluminum;
-
-
-    public void load(){
+    public static void load(){
         wood = new Item("wood", Color.brown){{
             hardness = 0;
             cost = 1;

@@ -34,8 +34,8 @@ public class AncientTower extends ItemTurret {
     public void setBars(){
         super.setBars();
 
-        bars.add("unitLimit", (AncientTowerBuild e) -> new Bar(Core.bundle.format("ages.stat.unitlimit", e.getUnits(), unitLimit), Pal.lightOrange, e::maxUnitf));
-        bars.add("leastUnit", (AncientTowerBuild e) -> new Bar("ages.stat.leastunit", Pal.command, () -> Math.min(e.leastUnitf(), 1)));
+        addBar("unitLimit", (AncientTowerBuild e) -> new Bar(Core.bundle.format("ages.stat.unitlimit", e.getUnits(), unitLimit), Pal.lightOrange, e::maxUnitf));
+        addBar("leastUnit", (AncientTowerBuild e) -> new Bar("ages.stat.leastunit", Pal.command, () -> Math.min(e.leastUnitf(), 1)));
     }
 
     public class AncientTowerBuild extends ItemTurretBuild implements UnitHolder{
@@ -60,18 +60,9 @@ public class AncientTower extends ItemTurret {
         public boolean validateTarget(){ return super.validateTarget() && unitActive(); }
 
         @Override
-        public void draw(){
-            Draw.rect(baseRegion, x, y);
-            Draw.color();
-
-            Draw.z(Layer.turret);
-
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation);
-        }
-
-        @Override
         public void updateTile(){
             super.updateTile();
+
             removeUnit();
         }
 

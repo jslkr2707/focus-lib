@@ -1,15 +1,12 @@
 package ages.content;
 
 import arc.Core;
-import ages.type.Focus;
-import ages.type.ResourceFocus;
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.ctype.ContentList;
+import ages.type.*;
+import mindustry.content.*;
 
 import static mindustry.type.ItemStack.*;
 
-public class AgesFocus implements ContentList {
+public class AgesFocus{
     public static Focus
     defEffort, wallFirst, turretFirst, advResearch, premResearch,
 
@@ -20,9 +17,7 @@ public class AgesFocus implements ContentList {
     liquidI, liquidII,
 
     unitI, unitII, unitIII;
-
-    @Override
-    public void load(){
+    public static void load(){
         defEffort = new Focus("def-effort"){{
             requirements(with(Items.copper, 100, Items.lead, 100));
             addUnlocks(Blocks.router, Blocks.copperWall);

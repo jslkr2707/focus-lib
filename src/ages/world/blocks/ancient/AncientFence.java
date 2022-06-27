@@ -1,10 +1,10 @@
 package ages.world.blocks.ancient;
 
-import arc.Core;
-import arc.util.Time;
-import mindustry.gen.Unit;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.meta.Stat;
+import arc.*;
+import arc.util.*;
+import mindustry.gen.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.meta.*;
 
 public class AncientFence extends Wall {
     public float fenceDamage = 5f;

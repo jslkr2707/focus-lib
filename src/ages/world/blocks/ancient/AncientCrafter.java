@@ -40,8 +40,8 @@ public class AncientCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        bars.add(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("ages.fuel", Pal.accent, e::heatf));
-        bars.add(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("ages.heat", Pal.heal, e::heathf));
+        addBar(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("ages.fuel", Pal.accent, e::heatf));
+        addBar(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("ages.heat", Pal.heal, e::heathf));
     }
 
     public class AncientCrafterBuild extends GenericCrafterBuild{
@@ -49,8 +49,8 @@ public class AncientCrafter extends GenericCrafter{
         protected float heath = 0;
 
         @Override
-        public boolean consValid(){
-            return super.consValid() && hasFuel();
+        public boolean canConsume(){
+            return super.canConsume() && hasFuel();
         }
 
         @Override
@@ -63,7 +63,7 @@ public class AncientCrafter extends GenericCrafter{
         public void updateTile(){
             super.updateTile();
 
-            if (consValid()){
+            if (canConsume()){
                 if (heath < heatCapacity * heatCapMulti){
                     heath = Mathf.lerpDelta(heath, heatCapacity * heatCapMulti, 0.02f);
                 }

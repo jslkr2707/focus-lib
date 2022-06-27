@@ -1,14 +1,14 @@
 package ages.content;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import mindustry.entities.Effect;
-import mindustry.graphics.Pal;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import mindustry.entities.*;
+import mindustry.graphics.*;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.stroke;
-import static arc.math.Angles.randLenVectors;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.*;
+
 
 public class AgesFx {
     public static final Effect

@@ -2,26 +2,23 @@ package ages.content;
 
 import arc.struct.Seq;
 import ages.util.IndObjectives;
+import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.content.TechTree;
-import mindustry.ctype.ContentList;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Objectives;
 import mindustry.type.ItemStack;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
-import static mindustry.content.Items.sand;
 import static mindustry.content.SectorPresets.*;
-import static ages.content.AgesBlocks.*;
 import static ages.content.AgesItems.*;
 import static ages.content.AgesFocus.*;
 
-public class AgesTechTree implements ContentList {
+public class AgesTechTree{
     static TechTree.TechNode context = null;
 
-    @Override
-    public void load(){
+    public static void load(){
         mergeNode(copper, () -> {
             node(ironOre, Seq.with(
                     new Objectives.Produce(AgesItems.ironOre)
@@ -97,7 +94,7 @@ public class AgesTechTree implements ContentList {
                     node(oreII, Seq.with(
                             new IndObjectives.sectorsCompleted(5),
                             new Objectives.Research(coal),
-                            new Objectives.Research(sand),
+                            new Objectives.Research(Items.sand),
                             new Objectives.Research(scrap)
                     ), () -> {
                         node(oreIII, Seq.with(
@@ -183,7 +180,7 @@ public class AgesTechTree implements ContentList {
     }
 
     private static void nodeProduce(UnlockableContent content, Seq<Objectives.Objective> objectives, Runnable children){
-        node(content, content.researchRequirements(), objectives.and(new Objectives.Produce(content)), children);
+        node(content, content.researchRequirements(), objectives.add(new Objectives.Produce(content)), children);
     }
 
     private static void nodeProduce(UnlockableContent content, Runnable children){

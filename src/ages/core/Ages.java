@@ -1,13 +1,13 @@
 package ages.core;
 
+import ages.content.*;
 import arc.Events;
-import ages.content.ModLoader;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
 
-public class Main extends Mod{
+public class Ages extends Mod{
 
-    public Main(){
+    public Ages(){
         Events.on(EventType.ClientLoadEvent.class, e -> {
         });
 
@@ -21,6 +21,10 @@ public class Main extends Mod{
 
     @Override
     public void loadContent(){
-        new ModLoader().load();
+        AgesItems.load();
+        AgesBullets.load();
+        AgesBlocks.load();
+        AgesFocus.load();
+        AgesTechTree.load();
     }
 }
