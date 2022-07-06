@@ -1,14 +1,14 @@
 package ages.world.blocks.modern;
 
-import arc.Core;
-import arc.graphics.g2d.TextureRegion;
-import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import mindustry.Vars;
-import mindustry.type.UnitType;
-import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
-import mindustry.world.blocks.units.UnitFactory;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import mindustry.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
+import mindustry.world.blocks.units.*;
 
 public class DivisionUnitFactory extends UnitFactory {
     /* test */
@@ -29,7 +29,7 @@ public class DivisionUnitFactory extends UnitFactory {
     }
 
     public class DivisionUnitFactoryBuild extends UnitFactoryBuild{
-        public Seq<UnitType> available = Vars.content.units().select(c -> c.unlocked() && c.node() != null
+        public Seq<UnitType> available = Vars.content.units().select(c -> c.unlocked() && c.techNode != null
         && !c.isHidden());
 
         @Override

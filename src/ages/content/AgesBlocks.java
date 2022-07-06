@@ -10,6 +10,8 @@ import static mindustry.type.ItemStack.*;
 
 public class AgesBlocks{
     public static Block
+    /* region environment */
+    soil,
     /* region production */
     ancientFarm,
     /* region crafting */

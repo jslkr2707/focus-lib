@@ -1,6 +1,5 @@
 package ages.world.blocks.ancient;
 
-import arc.*;
 import arc.math.Mathf;
 import arc.util.io.*;
 import mindustry.content.*;

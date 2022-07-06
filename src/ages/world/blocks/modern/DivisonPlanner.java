@@ -61,7 +61,7 @@ public class DivisonPlanner extends Block {
 
     public class DivisionPlannerBuild extends Building{
         public UnitType selected;
-        public Seq<UnitType> available = Vars.content.units().select(u -> !u.isBanned() && !u.isHidden() & u.node() != null);
+        public Seq<UnitType> available = Vars.content.units().select(u -> !u.isBanned() && !u.isHidden() & u.techNode != null);
         public boolean pending = false;
         public Seq<UnitType> compose = new Seq<>(3);
         public Seq<Integer> unitNums = new Seq<>(3);
@@ -182,7 +182,7 @@ public class DivisonPlanner extends Block {
 
                 btn.row();
 
-                btn.button(Icon.leftSmall, Styles.accenti, () -> {
+                btn.button(Icon.leftSmall, Styles.grayi, () -> {
                     if (unitNums.get(0) != 1){
                         int bb = unitNums.get(0);
                         unitNums.set(0, bb - 1);
@@ -192,7 +192,7 @@ public class DivisonPlanner extends Block {
                     }
                 }).growX().size(10).left().padLeft(20f);
                 btn.add(""+unitNums.get(0)).left().padLeft(30f);
-                btn.button(Icon.rightSmall, Styles.accenti, () -> {
+                btn.button(Icon.rightSmall, Styles.grayi, () -> {
                     if (remaining >= 2){
                         int bb = unitNums.get(0);
                         unitNums.set(0, bb + 1);
