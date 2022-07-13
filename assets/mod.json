@@ -1,11 +1,11 @@
 {
   "name": "ages",
   "short": "Mindustry: Ages",
-  "displayName": "From ancient to contemporary ages.",
+  "displayName": "Mindustry: Ages",
   "author": "AshesKaiser",
   "description": "My first [orange]java [white]Mindustry mod",
   "version": "0.1",
-  "main": "ages.core.Main",
+  "main": "ages.core.Ages",
   "minGameVersion": "136",
   "dependencies": [],
   "hidden": false

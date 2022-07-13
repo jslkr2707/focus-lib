@@ -56,8 +56,6 @@ public class DivisionUnitFactory extends UnitFactory {
                 }).growX();
 
                 frame.row();
-
-
             });
 
             planDialog.show();

@@ -7,7 +7,7 @@ import mindustry.type.ItemStack;
 
 public class Focus extends UnlockableContent{
     public ItemStack[] requirements;
-    /* what contents to unlock together when unlocked */
+    /* contents to unlock together when unlocked */
     public Seq<UnlockableContent> unlockContents = new Seq<>();
 
     public Focus(String name){

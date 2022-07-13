@@ -1,6 +1,5 @@
 package ages.world.blocks.ancient;
 
-import ages.world.blocks.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -8,19 +7,18 @@ import arc.struct.*;
 import arc.util.Log;
 import mindustry.content.*;
 import mindustry.game.*;
-import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 
+import static mindustry.Vars.world;
 import static mindustry.content.Blocks.*;
 
 public class AncientFarm extends GenericCrafter{
-    protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater});
+    protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
     protected Block soil = Blocks.dirt;
     public Seq<TextureRegion> phases = new Seq<>();
-    public int unitLimit = 2;
 
     public AncientFarm(String name) {
         super(name);
@@ -28,8 +26,6 @@ public class AncientFarm extends GenericCrafter{
         hasItems = false;
         hasLiquids = false;
         hasPower = false;
-
-        rotate = true;
 
         craftTime = 1800f;
     }
@@ -52,33 +48,34 @@ public class AncientFarm extends GenericCrafter{
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        if (isMultiblock()){
-            for (Tile other: tile.getLinkedTilesAs(this, tempTiles)){
-                if (waterBlocks.contains(other.block())) return true;
-            }
+        for (Tile other: getNearbyTiles(tile, this)){
+            if (waterBlocks.contains(other.floor()) && !waterBlocks.contains(tile.floor()) && other.block() == air) return true;
         }
 
         return false;
     }
 
-    public class AncientFarmBuild extends GenericCrafterBuild implements UnitHolder {
-        public int inUnits;
+
+    public Seq<Tile> getNearbyTiles(Tile tile, Block block){
+        Seq<Tile> tiles = new Seq<>();
+
+        if (block.isMultiblock()){
+            int size = block.size, o = block.sizeOffset;
+            /*
+            Tile other = world.tile(tile.x + size + o, tile.y + size + o);
+            if (other != null) tiles.add(other);
+            */
+        }else{
+            for (int i = 0;i<4;i++){
+                tiles.add(tile.nearby(i));
+            }
+        }
+
+        return tiles;
+    }
+
+    public class AncientFarmBuild extends GenericCrafterBuild{
         public int phase = 0;
-
-        @Override
-        public int getUnits(){
-            return inUnits;
-        }
-
-        @Override
-        public boolean acceptUnit(Unit u){
-            return inUnits < unitLimit;
-        }
-
-        @Override
-        public boolean shouldConsume(){
-            return super.shouldConsume() && getUnits() > 0;
-        }
 
         @Override
         public void updateTile(){

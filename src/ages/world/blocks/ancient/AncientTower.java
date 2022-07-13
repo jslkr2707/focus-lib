@@ -1,6 +1,5 @@
 package ages.world.blocks.ancient;
 
-import ages.world.blocks.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
@@ -30,34 +29,8 @@ public class AncientTower extends ItemTurret {
         stats.add(Stat.abilities, "@", Core.bundle.format("ages.unitlimit", unitLimit));
     }
 
-    @Override
-    public void setBars(){
-        super.setBars();
-
-        addBar("unitLimit", (AncientTowerBuild e) -> new Bar(Core.bundle.format("ages.stat.unitlimit", e.getUnits(), unitLimit), Pal.lightOrange, e::maxUnitf));
-        addBar("leastUnit", (AncientTowerBuild e) -> new Bar("ages.stat.leastunit", Pal.command, () -> Math.min(e.leastUnitf(), 1)));
-    }
-
-    public class AncientTowerBuild extends ItemTurretBuild implements UnitHolder{
+    public class AncientTowerBuild extends ItemTurretBuild{
         public Seq<Unit> inUnits = new Seq<>();
-
-        @Override
-        public int getUnits(){
-            return inUnits.size;
-        }
-
-        @Override
-        public float handleDamage(float amount){
-            if (unitActive()) {
-                for (Unit u: inUnits) {
-                    u.damage(amount / (getUnits() + 1));
-                }
-            }
-            return amount / (getUnits() + 1);
-        }
-
-        @Override
-        public boolean validateTarget(){ return super.validateTarget() && unitActive(); }
 
         @Override
         public void updateTile(){
@@ -65,23 +38,6 @@ public class AncientTower extends ItemTurret {
 
             removeUnit();
         }
-
-        @Override
-        public float maxUnitf(){
-            return (float) getUnits() / unitLimit;
-        }
-
-        @Override
-        public float leastUnitf(){
-            return (float) getUnits() / leastUnits;
-        }
-
-        @Override
-        public boolean acceptUnit(Unit u){
-            return getUnits() >= unitLimit;
-        }
-
-        public boolean unitActive(){ return getUnits() >= leastUnits; }
 
         public void removeUnit(){
             for (Unit u: inUnits){

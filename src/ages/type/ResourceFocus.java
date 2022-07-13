@@ -17,12 +17,11 @@ public class ResourceFocus extends Focus{
 
     @Override
     public void onUnlock(){
-        while (this.toAdd.size > 0){
+        for (ItemStack stack: this.toAdd){
             for (Planet planet: content.planets()){
                 for (Sector sector: planet.sectors){
                     infos = sector.info;
                     if (sector.hasBase()){
-                        for (ItemStack stack: this.toAdd){
                             if (infos.items.get(stack.item) <= infos.storageCapacity){
                                 if(sector.isBeingPlayed()){
                                     state.rules.defaultTeam.items().add(stack.item, stack.amount);
@@ -31,9 +30,7 @@ public class ResourceFocus extends Focus{
                                     infos.items.checkNegative();
                                     sector.saveInfo();
                                 }
-                                this.toAdd.remove(stack);
                             }
-                        }
                     }
                 }
             }
