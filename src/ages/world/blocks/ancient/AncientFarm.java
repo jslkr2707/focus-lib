@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
@@ -55,16 +56,19 @@ public class AncientFarm extends GenericCrafter{
         return false;
     }
 
-
     public Seq<Tile> getNearbyTiles(Tile tile, Block block){
         Seq<Tile> tiles = new Seq<>();
 
         if (block.isMultiblock()){
             int size = block.size, o = block.sizeOffset;
-            /*
-            Tile other = world.tile(tile.x + size + o, tile.y + size + o);
-            if (other != null) tiles.add(other);
-            */
+            for (int i = 0;i<4;i++){
+                for (int j = 0;j<size+o;j++){
+                    tiles.add(world.tile(tile.x + size + o, tile.y+j));
+                    tiles.add(world.tile(tile.x - size - o+1, tile.y+j));
+                    tiles.add(world.tile(tile.x + j, tile.y+size+o));
+                    tiles.add(world.tile(tile.x + j, tile.y-size-o+1));
+                }
+            }
         }else{
             for (int i = 0;i<4;i++){
                 tiles.add(tile.nearby(i));
@@ -80,8 +84,6 @@ public class AncientFarm extends GenericCrafter{
         @Override
         public void updateTile(){
             super.updateTile();
-
-            Log.info(rotation);
 
             phase = Mathf.round(progress / 4);
         }

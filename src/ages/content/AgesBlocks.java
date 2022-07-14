@@ -65,7 +65,7 @@ public class AgesBlocks{
         ancientFarm = new AncientFarm("ancient-farm"){{
             requirements(Category.production, with());
 
-            size = 1;
+            size = 2;
             health = 100 * size * size;
             outputItem = new ItemStack(AgesItems.plantI, 60);
         }};
