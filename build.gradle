@@ -13,7 +13,7 @@ sourceSets.main {
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
+    maven {url "https://jitpack.io"}
 }
 
 jar {
@@ -29,7 +29,7 @@ jar {
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
-    compileOnly "com.github.Anuken.MindustryJitpack:core:75f5e7271e"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:978c113c34"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 

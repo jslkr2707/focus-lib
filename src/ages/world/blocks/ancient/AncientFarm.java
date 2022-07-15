@@ -19,6 +19,7 @@ import static mindustry.content.Blocks.*;
 public class AncientFarm extends GenericCrafter{
     protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
     protected Block soil = Blocks.dirt;
+    public int totalPhase;
     public Seq<TextureRegion> phases = new Seq<>();
 
     public AncientFarm(String name) {
@@ -35,7 +36,7 @@ public class AncientFarm extends GenericCrafter{
     public void load(){
         super.load();
 
-        for (int i = 0;i<4;i++){
+        for (int i = 0;i<totalPhase;i++){
             phases.add(Core.atlas.find(outputItem.item.name + "-phase-" + i));
         }
     }
@@ -85,7 +86,7 @@ public class AncientFarm extends GenericCrafter{
         public void updateTile(){
             super.updateTile();
 
-            phase = Mathf.round(progress / 4);
+            phase = Mathf.round(progress / totalPhase);
         }
 
         @Override

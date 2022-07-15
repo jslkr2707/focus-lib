@@ -3,6 +3,7 @@ package ages.world.blocks.ancient;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.Mathf;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.*;
@@ -47,13 +48,21 @@ public class AncientFence extends Wall {
     }
 
     public class AncientFenceBuild extends WallBuild{
-        public float hitTime;
+        public float damages;
 
         @Override
+        public void update(){
+            super.update();
+
+            damages -= Time.delta;
+        }
+        @Override
         public void unitOn(Unit unit){
-            hitTime = unit.hitTime;
             unit.speedMultiplier *= speedMultiplier;
-            unit.damage(fenceDamage / 60 * Time.delta * healthf(), unit.hitTime < -(damageTime / 9) + 1);
+            if (unit.hitTime < -(damageTime / 9) + 1){
+                unit.damage(fenceDamage / 60 * Time.delta * healthf());
+                damages = damageTime;
+            }
         }
 
         @Override
@@ -61,10 +70,8 @@ public class AncientFence extends Wall {
             super.draw();
 
             if (hitEffect){
-                if (hitTime >= -(damageTime / 9)+1) return;
-
                 Draw.color(Color.white);
-                Draw.alpha(hitTime * 0.5f);
+                Draw.alpha(Mathf.clamp((damages - (damageTime - 10)) / 10f));
                 Draw.blend(Blending.additive);
                 Draw.rect(effectRegion, x, y, tilesize*size, tilesize*size);
                 Draw.blend();
