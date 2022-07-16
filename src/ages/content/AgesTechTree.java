@@ -19,47 +19,6 @@ public class AgesTechTree{
     static TechTree.TechNode context = null;
 
     public static void load(){
-        mergeNode(copper, () -> {
-            node(ironOre, Seq.with(
-                    new Objectives.Produce(AgesItems.ironOre)
-            ), () -> {
-                node(iron, Seq.with(
-                        new Objectives.Produce(AgesItems.iron)
-                ),() -> {
-                    node(steel, Seq.with(
-                            new Objectives.Produce(AgesItems.steel)
-                    ), () -> {
-
-                    });
-                });
-            });
-
-            node(tinOre, Seq.with(
-                    new Objectives.Produce(AgesItems.tinOre)
-            ), () -> {
-                node(tin, Seq.with(
-                        new Objectives.Produce(AgesItems.tin)
-                ), () -> {
-
-                });
-                node(tinPowder, Seq.with(
-                        new Objectives.Produce(AgesItems.tinPowder)
-                ), () -> {
-
-                });
-            });
-
-            node(bauxite, Seq.with(
-                    new Objectives.Produce(AgesItems.bauxite)
-            ),() -> {
-                node(aluminum, Seq.with(
-                        new Objectives.Produce(AgesItems.aluminum)
-                ),() -> {
-
-                });
-            });
-        });
-
         mergeNode(coreShard, () -> {
             node(defEffort, Seq.with(
                     new Objectives.SectorComplete(groundZero)

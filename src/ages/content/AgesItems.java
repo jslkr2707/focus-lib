@@ -1,16 +1,20 @@
 package ages.content;
 
-import arc.graphics.Color;
-import mindustry.graphics.Pal;
-import mindustry.type.Item;
+import ages.type.*;
+import arc.graphics.*;
+import mindustry.type.*;
 
 public class AgesItems{
     public static Item
+    /* region ancient */
     wood, stone,
+    /* region metal
     ironOre, iron, ironPowder, steel,
     tinOre, tin, tinPowder,
-    plantI, plantII,
-    bauxite, aluminum;
+    bauxite, aluminum,
+    */
+    /* region organic */
+    erwat;
     public static void load(){
         wood = new Item("wood", Color.brown){{
             hardness = 0;
@@ -22,6 +26,7 @@ public class AgesItems{
             cost = 2;
         }};
 
+        /*
         ironOre = new Item("ironOre", Pal.metalGrayDark){{
             hardness = 2;
         }};
@@ -54,6 +59,14 @@ public class AgesItems{
 
         aluminum = new Item("aluminum", Color.rgb(80, 80, 80)){{
             cost = 4;
+        }};
+         */
+
+        erwat = new OrganicItems("erwat", Color.rgb(248, 180, 35)){{
+            flammability = 0.2f;
+            buildable = false;
+            cost = 1;
+            calories = 1;
         }};
     }
 }
