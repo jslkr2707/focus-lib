@@ -94,9 +94,7 @@ public class DivisonPlanner extends Block {
 
             /* combat width and available types */
             planDialog.cont.table(frame -> {
-                frame.table(w -> {
-                    w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(70f);
-                }).center().padBottom(30);
+                frame.table(w -> w.add(Core.bundle.get("division.width") + ": " + combatWidth).size(70f)).center().padBottom(30);
 
                 frame.row();
 

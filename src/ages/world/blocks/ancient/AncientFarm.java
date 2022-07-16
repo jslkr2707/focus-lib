@@ -1,26 +1,32 @@
 package ages.world.blocks.ancient;
 
+import ages.type.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.Table;
 import arc.struct.*;
-import arc.util.Log;
-import arc.util.Nullable;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
+import mindustry.type.Item;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.meta.Stat;
 
 import static mindustry.Vars.world;
 import static mindustry.content.Blocks.*;
+import static ages.content.AgesItems.*;
 
 public class AncientFarm extends GenericCrafter{
     protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
     protected Block soil = Blocks.dirt;
-    public int totalPhase;
     public Seq<TextureRegion> phases = new Seq<>();
+    public TextureRegion toDraw;
+    public int totalPhase;
+    public Seq<Item> availableCrops = new Seq<>(new Item[]{erwat});
+    public Item selectedCrop;
 
     public AncientFarm(String name) {
         super(name);
@@ -29,12 +35,25 @@ public class AncientFarm extends GenericCrafter{
         hasLiquids = false;
         hasPower = false;
 
+        configurable = true;
         craftTime = 1800f;
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.reload, t -> {
+            t.row();
+            t.add("[lightgray]" + Core.bundle.format("ages.block.ancientfarm.phase") + ": [white]" + totalPhase + Core.bundle.format("ages.values.phasevalue"));
+        });
     }
 
     @Override
     public void load(){
         super.load();
+
+        totalPhase = ((OrganicItems) outputItem.item).phases;
 
         for (int i = 0;i<totalPhase;i++){
             phases.add(Core.atlas.find(outputItem.item.name + "-phase-" + i));
@@ -90,10 +109,26 @@ public class AncientFarm extends GenericCrafter{
         }
 
         @Override
+        public void buildConfiguration(Table table){
+            super.buildConfiguration(table);
+
+            table.table(t -> {
+                for (Item i: availableCrops){
+                    t.button(Core.bundle.format(i.name), () -> {
+                        selectedCrop = i;
+                        totalPhase = ((OrganicItems)selectedCrop).phases;
+                    }).center().size(50f).growX();
+                }
+            }).center().growX();
+        }
+
+        @Override
         public void draw(){
             super.draw();
 
-            TextureRegion toDraw = phases.get(phase);
+            if (phases.size > 0){
+                toDraw = phases.get(phase);
+            }
 
             if (region != toDraw){
                 Draw.rect(toDraw, x, y);

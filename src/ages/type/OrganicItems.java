@@ -1,12 +1,12 @@
 package ages.type;
 
-import arc.Core;
-import arc.graphics.Color;
-import mindustry.type.Item;
-import mindustry.world.meta.Stat;
+import arc.*;
+import arc.graphics.*;
+import mindustry.type.*;
+import mindustry.world.meta.*;
 
 public class OrganicItems extends Item {
-    public int calories;
+    public int calories, phases;
 
     public OrganicItems(String name) {
         super(name);
@@ -20,9 +20,12 @@ public class OrganicItems extends Item {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.charge, t -> {
+        stats.remove(Stat.charge);
+        stats.add(Stat.reload, t -> {
             t.row();
             t.add("[lightgray]" + Core.bundle.format("ages.item.calories") + ": [white]" + calories);
+            t.row();
+            t.add("[lightgray]" + Core.bundle.format("ages.item.phase") + ": [white]" + phases);
         });
     }
 }

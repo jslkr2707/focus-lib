@@ -67,6 +67,7 @@ public class AgesItems{
             buildable = false;
             cost = 1;
             calories = 1;
+            phases = 4;
         }};
     }
 }

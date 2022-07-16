@@ -67,6 +67,7 @@ public class AgesBlocks{
 
             size = 2;
             health = 100 * size * size;
+            itemCapacity = 60;
             outputItem = new ItemStack(AgesItems.erwat, 60);
         }};
     }
