@@ -68,6 +68,7 @@ public class AgesItems{
             cost = 1;
             calories = 1;
             phases = 4;
+            growTime = 1800f;
         }};
     }
 }

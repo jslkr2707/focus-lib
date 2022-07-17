@@ -4,29 +4,31 @@ import ages.type.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.ui.layout.Table;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.Log;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.type.Item;
+import mindustry.type.ItemStack;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.meta.Stat;
+import mindustry.world.meta.*;
 
+import static mindustry.Vars.multicastPort;
 import static mindustry.Vars.world;
 import static mindustry.content.Blocks.*;
 import static ages.content.AgesItems.*;
 
 public class AncientFarm extends GenericCrafter{
     protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
+    protected Item[] allCrops = {erwat};
     protected Block soil = Blocks.dirt;
     public Seq<TextureRegion> phases = new Seq<>();
     public TextureRegion toDraw;
-    public int totalPhase;
-    public Seq<Item> availableCrops = new Seq<>(new Item[]{erwat});
-    public Item selectedCrop;
+    public Seq<ItemStack> availableCrops = new Seq<>();
 
     public AncientFarm(String name) {
         super(name);
@@ -39,6 +41,11 @@ public class AncientFarm extends GenericCrafter{
         craftTime = 1800f;
     }
 
+    public void addCrops(ItemStack... item){
+        availableCrops.add(item);
+    }
+
+    /*
     @Override
     public void setStats(){
         super.setStats();
@@ -49,14 +56,16 @@ public class AncientFarm extends GenericCrafter{
         });
     }
 
+     */
+
     @Override
     public void load(){
         super.load();
 
-        totalPhase = ((OrganicItems) outputItem.item).phases;
-
-        for (int i = 0;i<totalPhase;i++){
-            phases.add(Core.atlas.find(outputItem.item.name + "-phase-" + i));
+        for (Item i: allCrops){
+            for (int j = 0;j < ((OrganicItems) i).phases;j++){
+                phases.add(Core.atlas.find(i.name + "-phases-" + j));
+            }
         }
     }
 
@@ -99,7 +108,14 @@ public class AncientFarm extends GenericCrafter{
     }
 
     public class AncientFarmBuild extends GenericCrafterBuild{
+        public int totalPhase;
+        public ItemStack selectedCrop;
         public int phase = 0;
+
+        @Override
+        public boolean productionValid(){
+            return super.productionValid();
+        }
 
         @Override
         public void updateTile(){
@@ -109,19 +125,45 @@ public class AncientFarm extends GenericCrafter{
         }
 
         @Override
+        public void craft(){
+            consume();
+
+            if(selectedCrop != null){
+                for(int i = 0; i < selectedCrop.amount; i++){
+                    offload(selectedCrop.item);
+                }
+            }
+
+            if(wasVisible){
+                craftEffect.at(x, y);
+            }
+
+            progress %= 1f;
+        }
+
+        @Override
+        public void dumpOutputs(){
+            if(selectedCrop != null && timer(timerDump, dumpTime / timeScale)){
+                dump(selectedCrop.item);
+            }
+        }
+
+        @Override
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
 
             table.table(t -> {
-                for (Item i: availableCrops){
-                    t.button(Core.bundle.format(i.name), () -> {
+                for (ItemStack i: availableCrops){
+                    t.button(Core.bundle.format("item."+i.item.name), () -> {
                         selectedCrop = i;
-                        totalPhase = ((OrganicItems)selectedCrop).phases;
-                    }).center().size(50f).growX();
+                        totalPhase = ((OrganicItems) selectedCrop.item).phases;
+                    }).center().size(50f).growX().checked(i == selectedCrop);
                 }
             }).center().growX();
         }
 
+
+        /*
         @Override
         public void draw(){
             super.draw();
@@ -130,9 +172,10 @@ public class AncientFarm extends GenericCrafter{
                 toDraw = phases.get(phase);
             }
 
-            if (region != toDraw){
+            if (region != toDraw && toDraw != null){
                 Draw.rect(toDraw, x, y);
             }
         }
+         */
     }
 }
