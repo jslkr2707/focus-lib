@@ -1,6 +1,9 @@
 package ages.world.blocks.ancient;
 
+import arc.Core;
+import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -15,7 +18,7 @@ import static ages.AgesVars.*;
 import static arc.Core.bundle;
 
 public class AncientCrafter extends GenericCrafter{
-    protected Item fuel;
+    protected Seq<Item> fuel = new Seq<>();
     protected int fuelUse = 1;
     protected int fuelCapacity = 15;
     protected Effect fuelBurnEffect = Fx.smoke;
@@ -28,11 +31,21 @@ public class AncientCrafter extends GenericCrafter{
         hasPower = false;
     }
 
+    public void addFuel(Item... item){
+        fuel.add(item);
+    }
+
     @Override
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.input, StatValues.items(heatCapacity, new ItemStack(fuel, fuelUse)));
+        stats.add(Stat.input, t -> {
+            t.row();
+            for (Item i: fuel){
+                t.add(new ItemImage(i.uiIcon, 1));
+                t.add(Core.bundle.format("stat.ages.fuel") + fuelUse + heatCapacity / 60 + StatUnit.seconds.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+            }
+        });
     }
 
     @Override
@@ -44,6 +57,7 @@ public class AncientCrafter extends GenericCrafter{
     }
 
     public class AncientCrafterBuild extends GenericCrafterBuild{
+        public Item currentFuel;
         protected float heat = 0;
         protected float heath = 0;
 
@@ -56,7 +70,10 @@ public class AncientCrafter extends GenericCrafter{
         public boolean shouldConsume(){ return super.shouldConsume() && (hasFuel() || heath >= minCraftHeat); }
 
         @Override
-        public boolean acceptItem(Building source, Item item){ return super.acceptItem(source, item) || (item == fuel && items.get(fuel) < fuelCapacity * fuelCapMulti); }
+        public boolean acceptItem(Building source, Item item){
+            if (fuel.contains(item)) currentFuel = item;
+            return super.acceptItem(source, item) || (fuel.contains(item) && items.get(item) < fuelCapacity * fuelCapMulti) && items.get(currentFuel) < 1;
+        }
 
         @Override
         public void updateTile(){
@@ -68,7 +85,7 @@ public class AncientCrafter extends GenericCrafter{
                 }
 
                 if (heat <= 0) {
-                    items.remove(fuel, fuelUse * fuelUseMulti);
+                    items.remove(currentFuel, fuelUse * fuelUseMulti);
                     heat = heatCapacity * heatCapMulti;
                     fuelBurnEffect.at(this);
                 }
@@ -81,7 +98,7 @@ public class AncientCrafter extends GenericCrafter{
             }
         }
 
-        public boolean hasFuel(){ return items.get(fuel) > 0; }
+        public boolean hasFuel(){ return currentFuel != null && items.get(currentFuel) > 0; }
 
         public float heatf(){ return heat / (heatCapacity * heatCapMulti); }
 

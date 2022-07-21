@@ -20,6 +20,7 @@ public class AgesTechTree{
 
     public static void load(){
         mergeNode(coreShard, () -> {
+            /*
             node(defEffort, Seq.with(
                     new Objectives.SectorComplete(groundZero)
             ), () -> {
@@ -104,6 +105,9 @@ public class AgesTechTree{
                     });
                 });
             });
+            */
+
+
         });
     }
 

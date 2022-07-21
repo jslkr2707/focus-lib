@@ -18,6 +18,7 @@ public class AgesFocus{
 
     unitI, unitII, unitIII;
     public static void load(){
+        /*
         defEffort = new Focus("def-effort"){{
             requirements(with(Items.copper, 100, Items.lead, 100));
             addUnlocks(Blocks.router, Blocks.copperWall);
@@ -104,5 +105,6 @@ public class AgesFocus{
             setToAdd(with(Items.copper, 1000, Items.lead, 1000));
             addUnlocks(Blocks.plastaniumCompressor);
         }};
+         */
     }
 }

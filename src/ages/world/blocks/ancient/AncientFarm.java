@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.Log;
+import arc.util.Time;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
@@ -119,9 +120,29 @@ public class AncientFarm extends GenericCrafter{
 
         @Override
         public void updateTile(){
-            super.updateTile();
+            if(efficiency > 0 && selectedCrop != null){
+
+                progress += getProgressIncrease(craftTime);
+                warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
+
+                if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
+                    updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4));
+                }
+            }else{
+                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+            }
+
+            totalProgress += warmup * Time.delta;
+
+            if(progress >= 1f){
+                craft();
+            }
+
+            dumpOutputs();
 
             phase = Mathf.round(progress / totalPhase);
+
+            Log.info(selectedCrop);
         }
 
         @Override

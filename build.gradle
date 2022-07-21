@@ -29,7 +29,7 @@ jar {
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
-    compileOnly "com.github.Anuken.MindustryJitpack:core:978c113c34"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:75f5e7271e"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 
@@ -57,7 +57,7 @@ task buildDex dependsOn "build", "dexify"
 
 tasks.withType(JavaCompile){
     targetCompatibility = 8
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_16
     options.encoding = "UTF-8"
     options.compilerArgs += ["-Xlint:deprecation"]
     if(JavaVersion.current() != JavaVersion.VERSION_1_8){

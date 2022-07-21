@@ -7,7 +7,7 @@ import mindustry.type.*;
 public class AgesItems{
     public static Item
     /* region ancient */
-    wood, stone,
+    wood, stone, dirt, brick,
     /* region metal
     ironOre, iron, ironPowder, steel,
     tinOre, tin, tinPowder,
@@ -16,13 +16,24 @@ public class AgesItems{
     /* region organic */
     erwat;
     public static void load(){
-        wood = new Item("wood", Color.brown){{
+        dirt = new Item("dirt", Color.valueOf("46205a")){{
             hardness = 0;
             cost = 1;
+            lowPriority = true;
+        }};
+
+        wood = new Item("wood", Color.brown){{
+            hardness = 0;
+            flammability = 0.3f;
+            cost = 2;
         }};
 
         stone = new Item("stone", Color.gray){{
             hardness = 1;
+            cost = 3;
+        }};
+
+        brick = new Item("brick", Color.valueOf("bc4a3c")){{
             cost = 2;
         }};
 

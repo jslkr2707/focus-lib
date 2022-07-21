@@ -15,8 +15,8 @@ public class AgesBlocks{
     /* region production */
     ancientFarm,
     /* region crafting */
-    firepit,
-
+    firepit, potteryKiln,
+    /* region defense */
     woodenFence, advancedFence, bulwark;
     public static void load(){
         woodenFence = new AncientFence("wooden-fence"){{
@@ -55,7 +55,7 @@ public class AgesBlocks{
         firepit = new AncientCrafter("firepit"){{
             requirements(Category.crafting, with());
 
-            fuel = Items.coal;
+            addFuel(AgesItems.wood);
             size = 1;
             craftTime = 120f;
             consumeItems(with(AgesItems.wood, 1));
