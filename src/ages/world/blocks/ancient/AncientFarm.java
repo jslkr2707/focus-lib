@@ -8,6 +8,7 @@ import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.Reads;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
@@ -26,7 +27,6 @@ public class AncientFarm extends GenericCrafter{
     protected Item[] allCrops = {erwat};
     protected Block soil = Blocks.dirt;
     public TextureRegion[][] phases;
-    public TextureRegion toDraw;
     public Seq<ItemStack> availableCrops = new Seq<>();
 
     public AncientFarm(String name) {
@@ -137,9 +137,9 @@ public class AncientFarm extends GenericCrafter{
         }
 
         public void manualOffload(){
-            if(selectedCrop != null){
+            if (selectedCrop != null && progress >= 1f && shouldConsume()){
                 for(int i = 0; i < selectedCrop.amount; i++){
-                    offload(selectedCrop.item);
+                    handleItem(this, selectedCrop.item);
                 }
             }
             progress %= 1f;
@@ -169,10 +169,13 @@ public class AncientFarm extends GenericCrafter{
                 craft();
             }
 
-            phase = Mathf.round(progress / totalPhase);
+            phase = (int) (progress * totalPhase);
 
-            Log.info(phase);
-            Log.info(phases.length);
+            if (phase > 3) phase = 3;
+
+            if (timer(0, 60f) && selectedCrop != null){
+                Log.info(selectedCrop.item.name);
+            }
         }
 
         @Override
@@ -200,30 +203,28 @@ public class AncientFarm extends GenericCrafter{
 
             table.table(t -> {
                 for (ItemStack i: availableCrops){
-                    t.button(Core.bundle.format("item."+i.item.name), () -> {
+                    t.button(new TextureRegionDrawable(Core.atlas.find(i.item.name)), () -> {
                         selectedCrop = i;
                         totalPhase = ((OrganicItems) selectedCrop.item).phases;
-                    }).center().size(50f).growX().checked(i == selectedCrop);
+                    }).center().size(50).growX().checked(i == selectedCrop);
                 }
-
                 t.row();
-                t.button(new TextureRegionDrawable(Core.atlas.find("icon-harvest")), this::manualOffload).center();
+                t.button(new TextureRegionDrawable(Core.atlas.find("icon-harvest")), this::manualOffload).center().size(50);
             }).center().growX();
         }
 
-
         @Override
         public void draw(){
-            super.draw();
-
-            if (phases.length > 0 && phase >= 0){
-                toDraw = phaseRegion();
-            }
-
-            if (region != toDraw && toDraw != null){
-                Draw.rect(toDraw, x, y);
-            }
+            TextureRegion toDraw = phaseRegion();
+            Draw.z(Layer.block);
+            Draw.rect(toDraw, x, y);
         }
 
+        @Override
+        public void read(Reads read){
+            super.read(read);
+
+            selectedCrop = availableCrops.get(read.i());
+        }
     }
 }
