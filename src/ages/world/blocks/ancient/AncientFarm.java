@@ -4,21 +4,19 @@ import ages.type.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import arc.util.Log;
-import arc.util.Time;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.multicastPort;
 import static mindustry.Vars.world;
 import static mindustry.content.Blocks.*;
 import static ages.content.AgesItems.*;
@@ -27,7 +25,7 @@ public class AncientFarm extends GenericCrafter{
     protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
     protected Item[] allCrops = {erwat};
     protected Block soil = Blocks.dirt;
-    public Seq<TextureRegion> phases = new Seq<>();
+    public TextureRegion[][] phases;
     public TextureRegion toDraw;
     public Seq<ItemStack> availableCrops = new Seq<>();
 
@@ -63,10 +61,19 @@ public class AncientFarm extends GenericCrafter{
     public void load(){
         super.load();
 
+        int a = 0;
+        phases = new TextureRegion[allCrops.length][];
+
         for (Item i: allCrops){
-            for (int j = 0;j < ((OrganicItems) i).phases;j++){
-                phases.add(Core.atlas.find(i.name + "-phases-" + j));
+            int n = ((OrganicItems)i).phases;
+            TextureRegion[] t = new TextureRegion[n];
+            for (int j = 0;j<n;j++){
+                TextureRegion p = Core.atlas.find(i.name+"-"+j);
+                if (!p.found()) p = region;
+                t[j] = p;
             }
+            phases[a] = t;
+            a++;
         }
     }
 
@@ -108,10 +115,35 @@ public class AncientFarm extends GenericCrafter{
         return tiles;
     }
 
+    public int index(Item i){
+        int a = 0;
+        for (Item j: allCrops){
+            if (j == i){
+                return a;
+            }
+            a++;
+        }
+        return a;
+    }
+
     public class AncientFarmBuild extends GenericCrafterBuild{
         public int totalPhase;
         public ItemStack selectedCrop;
         public int phase = 0;
+
+        public TextureRegion phaseRegion(){
+            if (selectedCrop != null && phases != null) return phases[index(selectedCrop.item)][phase];
+            return region;
+        }
+
+        public void manualOffload(){
+            if(selectedCrop != null){
+                for(int i = 0; i < selectedCrop.amount; i++){
+                    offload(selectedCrop.item);
+                }
+            }
+            progress %= 1f;
+        }
 
         @Override
         public boolean productionValid(){
@@ -121,7 +153,6 @@ public class AncientFarm extends GenericCrafter{
         @Override
         public void updateTile(){
             if(efficiency > 0 && selectedCrop != null){
-
                 progress += getProgressIncrease(craftTime);
                 warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
 
@@ -138,34 +169,28 @@ public class AncientFarm extends GenericCrafter{
                 craft();
             }
 
-            dumpOutputs();
-
             phase = Mathf.round(progress / totalPhase);
 
-            Log.info(selectedCrop);
+            Log.info(phase);
+            Log.info(phases.length);
         }
 
         @Override
         public void craft(){
             consume();
 
-            if(selectedCrop != null){
-                for(int i = 0; i < selectedCrop.amount; i++){
-                    offload(selectedCrop.item);
-                }
-            }
-
             if(wasVisible){
                 craftEffect.at(x, y);
             }
-
-            progress %= 1f;
         }
 
         @Override
         public void dumpOutputs(){
+            Log.info("dumpOutputs called");
             if(selectedCrop != null && timer(timerDump, dumpTime / timeScale)){
-                dump(selectedCrop.item);
+                while (this.items.get(selectedCrop.item) > 0){
+                    dump(selectedCrop.item);
+                }
             }
         }
 
@@ -180,23 +205,25 @@ public class AncientFarm extends GenericCrafter{
                         totalPhase = ((OrganicItems) selectedCrop.item).phases;
                     }).center().size(50f).growX().checked(i == selectedCrop);
                 }
+
+                t.row();
+                t.button(new TextureRegionDrawable(Core.atlas.find("icon-harvest")), this::manualOffload).center();
             }).center().growX();
         }
 
 
-        /*
         @Override
         public void draw(){
             super.draw();
 
-            if (phases.size > 0){
-                toDraw = phases.get(phase);
+            if (phases.length > 0 && phase >= 0){
+                toDraw = phaseRegion();
             }
 
             if (region != toDraw && toDraw != null){
                 Draw.rect(toDraw, x, y);
             }
         }
-         */
+
     }
 }

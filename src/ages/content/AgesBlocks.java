@@ -69,6 +69,7 @@ public class AgesBlocks{
             health = 100 * size * size;
             itemCapacity = 60;
             addCrops(with(AgesItems.erwat, 60));
+            outputItem = new ItemStack(AgesItems.erwat, 1);
         }};
     }
 }
