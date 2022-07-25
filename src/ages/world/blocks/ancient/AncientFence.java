@@ -3,7 +3,7 @@ package ages.world.blocks.ancient;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.*;
@@ -43,7 +43,7 @@ public class AncientFence extends Wall {
         stats.add(Stat.abilities, t -> {
             t.left().defaults().padRight(3).left();
             t.row();
-            t.add(Core.bundle.format("ages.fencedamage", fenceDamage));
+            t.add(Core.bundle.format("stat.fencedamage", fenceDamage));
         });
     }
 

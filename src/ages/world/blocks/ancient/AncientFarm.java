@@ -2,13 +2,14 @@ package ages.world.blocks.ancient;
 
 import ages.type.*;
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.style.TextureRegionDrawable;
+import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.Reads;
+import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
@@ -20,11 +21,9 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.world;
 import static mindustry.content.Blocks.*;
-import static ages.content.AgesItems.*;
 
 public class AncientFarm extends GenericCrafter{
     protected Seq<Block> waterBlocks = new Seq<>(new Block[]{water, taintedWater, deepwater});
-    protected Item[] allCrops = {erwat};
     protected Block soil = Blocks.dirt;
     public TextureRegion[][] phases;
     public Seq<ItemStack> availableCrops = new Seq<>();
@@ -37,40 +36,41 @@ public class AncientFarm extends GenericCrafter{
         hasPower = false;
 
         configurable = true;
-        craftTime = 1800f;
     }
 
     public void addCrops(ItemStack... item){
         availableCrops.add(item);
     }
 
-    /*
     @Override
     public void setStats(){
         super.setStats();
 
         stats.add(Stat.reload, t -> {
             t.row();
-            t.add("[lightgray]" + Core.bundle.format("ages.block.ancientfarm.phase") + ": [white]" + totalPhase + Core.bundle.format("ages.values.phasevalue"));
+            t.add("[lightgray]" + Core.bundle.format("stat.phase") + ": [white]");
+            for (ItemStack i: availableCrops){
+                t.add(new ItemImage(i));
+                t.add((int)(((OrganicItems)i.item).growTime) + StatUnit.seconds.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+            }
         });
     }
-
-     */
 
     @Override
     public void load(){
         super.load();
 
         int a = 0;
-        phases = new TextureRegion[allCrops.length][];
+        phases = new TextureRegion[availableCrops.size][];
 
-        for (Item i: allCrops){
-            int n = ((OrganicItems)i).phases;
+        for (ItemStack i: availableCrops){
+            OrganicItems j = (OrganicItems)i.item;
+            int n = j.phases;
             TextureRegion[] t = new TextureRegion[n];
-            for (int j = 0;j<n;j++){
-                TextureRegion p = Core.atlas.find(i.name+"-"+j);
+            for (int l = 0;l<n;l++){
+                TextureRegion p = Core.atlas.find(j.name+"-"+l);
                 if (!p.found()) p = region;
-                t[j] = p;
+                t[l] = p;
             }
             phases[a] = t;
             a++;
@@ -81,13 +81,13 @@ public class AncientFarm extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        addBar("progress", (AncientFarmBuild e) -> new Bar(Core.bundle.format("farmprogress"), Pal.lightOrange, () -> e.progress));
+        addBar("progress", (AncientFarmBuild e) -> new Bar(Core.bundle.format("bar.farmprogress"), Pal.lightOrange, () -> e.progress));
     }
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
         for (Tile other: getNearbyTiles(tile, this)){
-            if (waterBlocks.contains(other.floor()) && !waterBlocks.contains(tile.floor()) && other.block() == air) return true;
+            if (waterBlocks.contains(other.floor()) && !waterBlocks.contains(tile.floor()) && other.block() == air && tile.block() == soil) return true;
         }
 
         return false;
@@ -117,8 +117,8 @@ public class AncientFarm extends GenericCrafter{
 
     public int index(Item i){
         int a = 0;
-        for (Item j: allCrops){
-            if (j == i){
+        for (ItemStack j: availableCrops){
+            if (j.item == i){
                 return a;
             }
             a++;
@@ -153,7 +153,7 @@ public class AncientFarm extends GenericCrafter{
         @Override
         public void updateTile(){
             if(efficiency > 0 && selectedCrop != null){
-                progress += getProgressIncrease(craftTime);
+                progress += getProgressIncrease(((OrganicItems) selectedCrop.item).growTime);
                 warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
 
                 if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
@@ -167,6 +167,7 @@ public class AncientFarm extends GenericCrafter{
 
             if(progress >= 1f){
                 craft();
+                progress = 1f;
             }
 
             phase = (int) (progress * totalPhase);
@@ -221,10 +222,17 @@ public class AncientFarm extends GenericCrafter{
         }
 
         @Override
-        public void read(Reads read){
-            super.read(read);
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
 
             selectedCrop = availableCrops.get(read.i());
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.i(availableCrops.indexOf(selectedCrop));
         }
     }
 }

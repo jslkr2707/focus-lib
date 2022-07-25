@@ -1,9 +1,9 @@
 package ages.world.blocks.ancient;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.struct.Seq;
+import arc.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.struct.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -43,7 +43,7 @@ public class AncientCrafter extends GenericCrafter{
             t.row();
             for (Item i: fuel){
                 t.add(new ItemImage(i.uiIcon, 1));
-                t.add(Core.bundle.format("stat.ages.fuel") + fuelUse + heatCapacity / 60 + StatUnit.seconds.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+                t.add(Core.bundle.format("stat.fuel") + fuelUse + heatCapacity / 60 + StatUnit.seconds.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
             }
         });
     }
@@ -52,8 +52,8 @@ public class AncientCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        addBar(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("ages.fuel", Pal.accent, e::heatf));
-        addBar(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("ages.heat", Pal.heal, e::heathf));
+        addBar(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("bar.fuel", Pal.accent, e::heatf));
+        addBar(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("bar.heat", Pal.heal, e::heathf));
     }
 
     public class AncientCrafterBuild extends GenericCrafterBuild{

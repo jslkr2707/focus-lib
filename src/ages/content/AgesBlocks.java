@@ -70,6 +70,7 @@ public class AgesBlocks{
             itemCapacity = 60;
             addCrops(with(AgesItems.erwat, 60));
             outputItem = new ItemStack(AgesItems.erwat, 1);
+            hasShadow = false;
         }};
     }
 }

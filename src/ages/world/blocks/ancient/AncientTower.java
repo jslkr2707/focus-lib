@@ -25,8 +25,8 @@ public class AncientTower extends ItemTurret {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.abilities, "@", Core.bundle.format("ages.leastunit", leastUnits));
-        stats.add(Stat.abilities, "@", Core.bundle.format("ages.unitlimit", unitLimit));
+        stats.add(Stat.abilities, "@", Core.bundle.format("stat.leastunit", leastUnits));
+        stats.add(Stat.abilities, "@", Core.bundle.format("stat.unitlimit", unitLimit));
     }
 
     public class AncientTowerBuild extends ItemTurretBuild{
