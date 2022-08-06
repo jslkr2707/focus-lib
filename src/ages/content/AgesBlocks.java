@@ -2,7 +2,7 @@ package ages.content;
 
 import ages.world.blocks.ancient.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
@@ -16,6 +16,8 @@ public class AgesBlocks{
     ancientFarm,
     /* region crafting */
     firepit, potteryKiln,
+    /* region religion */
+    altar,
     /* region defense */
     woodenFence, advancedFence, bulwark;
     public static void load(){
@@ -58,8 +60,8 @@ public class AgesBlocks{
             addFuel(AgesItems.wood);
             size = 1;
             craftTime = 120f;
-            consumeItems(with(AgesItems.wood, 1));
-            outputItem = new ItemStack(Items.copper, 1);
+            consumeItems(with(AgesItems.wood, 2));
+            outputItem = new ItemStack(Items.coal, 1);
         }};
 
         ancientFarm = new AncientFarm("ancient-farm"){{
@@ -67,8 +69,8 @@ public class AgesBlocks{
 
             size = 2;
             health = 100 * size * size;
-            itemCapacity = 60;
-            addCrops(with(AgesItems.erwat, 60));
+            itemCapacity = 20;
+            addCrops(with(AgesItems.erwat, 10, AgesItems.zibel, 10));
             outputItem = new ItemStack(AgesItems.erwat, 1);
             hasShadow = false;
         }};

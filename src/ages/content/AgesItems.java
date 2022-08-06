@@ -14,7 +14,7 @@ public class AgesItems{
     bauxite, aluminum,
     */
     /* region organic */
-    erwat;
+    erwat, zibel;
     public static void load(){
         dirt = new Item("dirt", Color.valueOf("46205a")){{
             hardness = 0;
@@ -75,7 +75,14 @@ public class AgesItems{
 
         erwat = new OrganicItems("erwat", Color.rgb(248, 180, 35)){{
             flammability = 0.2f;
-            buildable = false;
+            cost = 1;
+            calories = 1;
+            phases = 4;
+            growTime = 1800f;
+        }};
+
+        zibel = new OrganicItems("zibel", Color.rgb(120, 191, 56)){{
+            flammability = 0f;
             cost = 1;
             calories = 1;
             phases = 4;

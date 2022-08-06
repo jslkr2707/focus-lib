@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.Log;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -12,6 +13,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static ages.AgesVars.*;
@@ -33,6 +35,29 @@ public class AncientCrafter extends GenericCrafter{
 
     public void addFuel(Item... item){
         fuel.add(item);
+    }
+
+    public boolean inFuel(Item item){
+        for (Item i: overlap()){
+            if (item == i) return true;
+        }
+        return false;
+    }
+
+    public Item[] overlap(){
+        Item[] overlapItems = new Item[fuel.size];
+        int n = 0;
+
+        for (Consume i: consumeBuilder){
+            for (ItemStack j: ((ConsumeItems)i).items){
+                if (fuel.contains(j.item)){
+                    overlapItems[n] = j.item;
+                    n++;
+                }
+            }
+        }
+
+        return overlapItems;
     }
 
     @Override
@@ -71,7 +96,7 @@ public class AncientCrafter extends GenericCrafter{
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            if (fuel.contains(item)) currentFuel = item;
+            if (fuel.contains(item) && currentFuel == null) currentFuel = item;
             return super.acceptItem(source, item) || (fuel.contains(item) && items.get(item) < fuelCapacity * fuelCapMulti) && items.get(currentFuel) < 1;
         }
 

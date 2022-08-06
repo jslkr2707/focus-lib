@@ -81,16 +81,14 @@ public class AncientFarm extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
+        removeBar("items");
         addBar("progress", (AncientFarmBuild e) -> new Bar(Core.bundle.format("bar.farmprogress"), Pal.lightOrange, () -> e.progress));
     }
-
+    
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation) {
-        for (Tile other: getNearbyTiles(tile, this)){
-            if (waterBlocks.contains(other.floor()) && !waterBlocks.contains(tile.floor()) && other.block() == air && tile.block() == soil) return true;
-        }
-
-        return false;
+        return getNearbyTiles(tile, this).count(other -> waterBlocks.contains(other.floor()) && !waterBlocks.contains(tile.floor()) && other.block() == air && tile.floor() == soil) > 0
+                && tile.getLinkedTilesAs(this, tempTiles).count(t -> t.drop() != null || waterBlocks.contains(t.floor())) == 0;
     }
 
     public Seq<Tile> getNearbyTiles(Tile tile, Block block){
@@ -141,13 +139,13 @@ public class AncientFarm extends GenericCrafter{
                 for(int i = 0; i < selectedCrop.amount; i++){
                     handleItem(this, selectedCrop.item);
                 }
+                progress %= 1f;
             }
-            progress %= 1f;
         }
 
         @Override
-        public boolean productionValid(){
-            return super.productionValid();
+        public boolean shouldConsume(){
+            return selectedCrop != null && this.items.get(selectedCrop.item) + selectedCrop.amount <= itemCapacity;
         }
 
         @Override
