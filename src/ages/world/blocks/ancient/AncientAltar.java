@@ -1,18 +1,21 @@
 package ages.world.blocks.ancient;
 
-import arc.scene.ui.layout.Table;
+import arc.math.*;
 import arc.struct.*;
-import mindustry.content.StatusEffects;
+import mindustry.entities.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.consumers.ConsumeItemFilter;
+import mindustry.world.consumers.*;
 
 public class AncientAltar extends Block {
     public ObjectMap<Item, StatusEffect> effectTypes = new ObjectMap<Item, StatusEffect>();
-    public int offUse = 1;
     public float effProb = 0.5f;
-
+    public float range = 1200f;
+    public float effCap;
+    public boolean blockOnly = true;
     public AncientAltar(String name) {
         super(name);
 
@@ -29,22 +32,69 @@ public class AncientAltar extends Block {
         consume(new ConsumeItemFilter(i -> effectTypes.containsKey(i)){
             @Override
             public float efficiency(Building build){
-                return build instanceof AncientAltarBuild b && b.effecting ? 1f : 0f;
+                return build instanceof AncientAltarBuild b && b.canEffect()? 1f : 0f;
             }
         });
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        addBar("effTime", (AncientAltarBuild e) -> new Bar("stat.effTime", Pal.accent, e::effTimef));
+    }
+
     public class AncientAltarBuild extends Building {
         public float effTime = 0;
-        public boolean effecting = false;
+        public boolean doEffect;
+        public StatusEffect effect;
+
 
         public boolean canEffect(){
-            return effTime <= 0;
+            return !doEffect;
         }
 
         @Override
         public boolean acceptItem(Building source, Item item){
             return super.acceptItem(source, item) && canEffect() && effectTypes.containsKey(item);
+        }
+
+        @Override
+        public void handleItem(Building source, Item item){
+            super.handleItem(source, item);
+            if (Mathf.chance(effProb)){
+                effTime = effCap;
+                doEffect = true;
+                effect = effectTypes.get(item);
+            }
+        }
+
+        @Override
+        public void updateTile(){
+            super.updateTile();
+
+            if (doEffect && effect != null){
+                Units.nearbyBuildings(x, y, range, b -> {
+                    b.applyBoost(effect.speedMultiplier, 600f);
+                });
+
+                if (!blockOnly){
+                    Units.nearby(team, x, y, range, u -> {
+                        u.apply(effect);
+                    });
+                }
+
+                if (effTime > 0){
+                    effTime -= 1;
+                }else{
+                    doEffect = false;
+                    effect = null;
+                }
+            }
+        }
+
+        public float effTimef(){
+            return effTime / effCap;
         }
     }
 }
