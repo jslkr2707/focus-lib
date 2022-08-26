@@ -3,6 +3,7 @@ package ages.content;
 import ages.world.blocks.ancient.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.*;
 
@@ -73,6 +74,31 @@ public class AgesBlocks{
             addCrops(with(AgesItems.erwat, 10, AgesItems.zibel, 10));
             outputItem = new ItemStack(AgesItems.erwat, 1);
             hasShadow = false;
+        }};
+
+        altar = new AncientAltar("altar"){{
+            requirements(Category.effect, with());
+
+            size = 2;
+            health = 100 * size * size;
+            itemCapacity = 10;
+            effCapacity = 600;
+            addEffect(
+                    AgesItems.erwat, new StatusEffect("heal"){{
+                        healthMultiplier = 1.5f;
+                        color = Pal.health;
+                    }},
+
+                    AgesItems.wood, new StatusEffect("build"){{
+                        buildCostMultiplier = 0.7f;
+                        color = Pal.darkMetal;
+                    }},
+
+                    AgesItems.stone, new StatusEffect("damage"){{
+                        damageMultiplier = 1.5f;
+                        color = Pal.ammo;
+                    }}
+            );
         }};
     }
 }

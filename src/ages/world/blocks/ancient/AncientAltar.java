@@ -2,9 +2,12 @@ package ages.world.blocks.ancient;
 
 import arc.math.*;
 import arc.struct.*;
+import arc.util.io.*;
+import mindustry.content.Blocks;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -14,7 +17,7 @@ public class AncientAltar extends Block {
     public ObjectMap<Item, StatusEffect> effectTypes = new ObjectMap<Item, StatusEffect>();
     public float effProb = 0.5f;
     public float range = 1200f;
-    public float effCap;
+    public float effCapacity;
     public boolean blockOnly = true;
     public AncientAltar(String name) {
         super(name);
@@ -23,7 +26,7 @@ public class AncientAltar extends Block {
         hasLiquids = false;
     }
 
-    public void effect(Object... obj){
+    public void addEffect(Object... obj){
         effectTypes = ObjectMap.of(obj);
     }
 
@@ -63,9 +66,11 @@ public class AncientAltar extends Block {
         public void handleItem(Building source, Item item){
             super.handleItem(source, item);
             if (Mathf.chance(effProb)){
-                effTime = effCap;
-                doEffect = true;
+                effTime = effCapacity;
                 effect = effectTypes.get(item);
+                Units.nearbyBuildings(x, y, range, b -> {
+                    b.applyBoost(effect.speedMultiplier, effCapacity);
+                });
             }
         }
 
@@ -73,11 +78,10 @@ public class AncientAltar extends Block {
         public void updateTile(){
             super.updateTile();
 
-            if (doEffect && effect != null){
-                Units.nearbyBuildings(x, y, range, b -> {
-                    b.applyBoost(effect.speedMultiplier, 600f);
-                });
+            doEffect = effTime > 0;
+            if(!doEffect) effect = null;
 
+            if (doEffect){
                 if (!blockOnly){
                     Units.nearby(team, x, y, range, u -> {
                         u.apply(effect);
@@ -86,15 +90,28 @@ public class AncientAltar extends Block {
 
                 if (effTime > 0){
                     effTime -= 1;
-                }else{
-                    doEffect = false;
-                    effect = null;
                 }
             }
         }
 
         public float effTimef(){
-            return effTime / effCap;
+            return effTime / effCapacity;
+        }
+
+        @Override
+        public void read(Reads read){
+            super.read(read);
+
+            effTime = read.f();
+            effect = (StatusEffect) TypeIO.readObject(read);
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(effTime);
+            TypeIO.writeObject(write, effect);
         }
     }
 }
