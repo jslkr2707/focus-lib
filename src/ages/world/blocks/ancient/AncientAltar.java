@@ -11,6 +11,7 @@ import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.consumers.*;
 
 public class AncientAltar extends Block {
@@ -96,6 +97,14 @@ public class AncientAltar extends Block {
 
         public float effTimef(){
             return effTime / effCapacity;
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+
+            Item item = items.first();
+
         }
 
         @Override

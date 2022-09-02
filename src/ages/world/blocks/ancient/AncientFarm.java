@@ -128,7 +128,6 @@ public class AncientFarm extends GenericCrafter{
         public int totalPhase;
         public ItemStack selectedCrop;
         public int phase = 0;
-
         public TextureRegion phaseRegion(){
             if (selectedCrop != null && phases != null) return phases[index(selectedCrop.item)][phase];
             return region;
