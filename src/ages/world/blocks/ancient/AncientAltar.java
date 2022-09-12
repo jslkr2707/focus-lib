@@ -1,7 +1,12 @@
 package ages.world.blocks.ancient;
 
+import arc.Core;
+import arc.graphics.Texture;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.Log;
 import arc.util.io.*;
 import mindustry.content.Blocks;
 import mindustry.entities.*;
@@ -11,8 +16,12 @@ import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.BlockFlag;
+
+import static mindustry.Vars.tilesize;
 
 public class AncientAltar extends Block {
     public ObjectMap<Item, StatusEffect> effectTypes = new ObjectMap<Item, StatusEffect>();
@@ -20,17 +29,25 @@ public class AncientAltar extends Block {
     public float range = 1200f;
     public float effCapacity;
     public boolean blockOnly = true;
+
     public AncientAltar(String name) {
         super(name);
 
         hasPower = false;
         hasLiquids = false;
+        hasItems = true;
+        rotate = false;
+        configurable = true;
+        update = true;
+        sync = true;
+        flags = EnumSet.of(BlockFlag.repair);
     }
 
     public void addEffect(Object... obj){
         effectTypes = ObjectMap.of(obj);
     }
 
+    /*
     @Override
     public void init(){
         consume(new ConsumeItemFilter(i -> effectTypes.containsKey(i)){
@@ -40,6 +57,7 @@ public class AncientAltar extends Block {
             }
         });
     }
+     */
 
     @Override
     public void setBars(){
@@ -50,28 +68,33 @@ public class AncientAltar extends Block {
 
     public class AncientAltarBuild extends Building {
         public float effTime = 0;
-        public boolean doEffect;
         public StatusEffect effect;
 
+        public TextureRegion placeRegion;
+        public Item currentItem;
 
         public boolean canEffect(){
-            return !doEffect;
+            return effTime <= 0;
+        }
+
+        public boolean isAffecting(){
+            return effect != null;
         }
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return super.acceptItem(source, item) && canEffect() && effectTypes.containsKey(item);
+            return canEffect() && effectTypes.containsKey(item);
         }
 
         @Override
         public void handleItem(Building source, Item item){
             super.handleItem(source, item);
+
+            effTime = effCapacity;
             if (Mathf.chance(effProb)){
-                effTime = effCapacity;
-                effect = effectTypes.get(item);
-                Units.nearbyBuildings(x, y, range, b -> {
-                    b.applyBoost(effect.speedMultiplier, effCapacity);
-                });
+                currentItem = item;
+                initialBoost(currentItem);
+                placeRegion = currentItem.fullIcon;
             }
         }
 
@@ -79,19 +102,19 @@ public class AncientAltar extends Block {
         public void updateTile(){
             super.updateTile();
 
-            doEffect = effTime > 0;
-            if(!doEffect) effect = null;
-
-            if (doEffect){
-                if (!blockOnly){
+            if (effTime > 0){
+                if (!blockOnly && isAffecting()){
                     Units.nearby(team, x, y, range, u -> {
                         u.apply(effect);
                     });
                 }
 
-                if (effTime > 0){
-                    effTime -= 1;
+                effTime -= 1f;
+            } else {
+                if (isAffecting()){
+                    effect = null;
                 }
+                items.remove(currentItem, 1);
             }
         }
 
@@ -99,12 +122,21 @@ public class AncientAltar extends Block {
             return effTime / effCapacity;
         }
 
+        public void initialBoost(Item item){
+            effect = effectTypes.get(item);
+            Units.nearbyBuildings(x, y, range, b -> {
+                b.applyBoost(effect.speedMultiplier, effCapacity);
+            });
+        }
+
         @Override
         public void draw(){
             super.draw();
 
-            Item item = items.first();
-
+            if (isAffecting() && placeRegion != null) {
+                Draw.rect(placeRegion, x, y);
+                Drawf.circles(x, y, range, effect.color);
+            }
         }
 
         @Override

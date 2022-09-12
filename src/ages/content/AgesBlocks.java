@@ -76,15 +76,16 @@ public class AgesBlocks{
             hasShadow = false;
         }};
 
-        altar = new AncientAltar("altar"){{
+        altar = new AncientAltar("ancient-altar"){{
             requirements(Category.effect, with());
 
             size = 2;
-            health = 100 * size * size;
+            health = 400;
             itemCapacity = 10;
-            effCapacity = 600;
+            effCapacity = 600f;
+
             addEffect(
-                    AgesItems.erwat, new StatusEffect("heal"){{
+                    Items.copper, new StatusEffect("heal"){{
                         healthMultiplier = 1.5f;
                         color = Pal.health;
                     }},
