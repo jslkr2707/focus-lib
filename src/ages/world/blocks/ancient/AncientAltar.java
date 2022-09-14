@@ -2,8 +2,7 @@ package ages.world.blocks.ancient;
 
 import arc.Core;
 import arc.graphics.Texture;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.Log;
@@ -19,7 +18,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.consumers.*;
-import mindustry.world.meta.BlockFlag;
+import mindustry.world.draw.*;
 
 import static mindustry.Vars.tilesize;
 
@@ -30,34 +29,36 @@ public class AncientAltar extends Block {
     public float effCapacity;
     public boolean blockOnly = true;
 
+    public DrawBlock drawer = new DrawDefault();
+
     public AncientAltar(String name) {
         super(name);
 
         hasPower = false;
         hasLiquids = false;
         hasItems = true;
-        rotate = false;
-        configurable = true;
+        rotate = false;jhjh
         update = true;
         sync = true;
-        flags = EnumSet.of(BlockFlag.repair);
     }
 
     public void addEffect(Object... obj){
         effectTypes = ObjectMap.of(obj);
     }
 
-    /*
+
     @Override
     public void init(){
         consume(new ConsumeItemFilter(i -> effectTypes.containsKey(i)){
             @Override
             public float efficiency(Building build){
-                return build instanceof AncientAltarBuild b && b.canEffect()? 1f : 0f;
+                return build instanceof AncientAltarBuild b && !b.itemPlaced() ? 1f : 0f;
             }
         });
+
+        super.init();
     }
-     */
+
 
     @Override
     public void setBars(){
@@ -67,71 +68,83 @@ public class AncientAltar extends Block {
     }
 
     public class AncientAltarBuild extends Building {
-        public float effTime = 0;
+        public float effectTime = 0;
         public StatusEffect effect;
+        public boolean blockEffected = false;
 
         public TextureRegion placeRegion;
         public Item currentItem;
 
-        public boolean canEffect(){
-            return effTime <= 0;
-        }
-
-        public boolean isAffecting(){
-            return effect != null;
-        }
-
         @Override
         public boolean acceptItem(Building source, Item item){
-            return canEffect() && effectTypes.containsKey(item);
+            return !itemPlaced() && effectTypes.get(item) != null;
         }
 
         @Override
         public void handleItem(Building source, Item item){
-            super.handleItem(source, item);
+            effect = effectTypes.get(item);
 
-            effTime = effCapacity;
+            if (effect == null) return;
+
+            effectTime = effCapacity;
+
             if (Mathf.chance(effProb)){
                 currentItem = item;
-                initialBoost(currentItem);
                 placeRegion = currentItem.fullIcon;
             }
+        }
+
+        @Override
+        public int removeStack(Item item, int amount){
+            return 0;
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
 
-            if (effTime > 0){
+            if (itemPlaced()){
+                if (!blockEffected){
+                    initialBoost(currentItem);
+                    blockEffected = true;
+                }
+
                 if (!blockOnly && isAffecting()){
                     Units.nearby(team, x, y, range, u -> {
                         u.apply(effect);
                     });
                 }
 
-                effTime -= 1f;
+                effectTime -= 1f;
             } else {
-                if (isAffecting()){
-                    effect = null;
-                }
+                effect = null;
                 items.remove(currentItem, 1);
+                blockEffected = false;
             }
         }
 
         public float effTimef(){
-            return effTime / effCapacity;
+            return effectTime / effCapacity;
+        }
+
+        public boolean itemPlaced(){
+            return effectTime > 0;
+        }
+
+        public boolean isAffecting(){
+            return effect != null;
         }
 
         public void initialBoost(Item item){
-            effect = effectTypes.get(item);
             Units.nearbyBuildings(x, y, range, b -> {
                 b.applyBoost(effect.speedMultiplier, effCapacity);
+
             });
         }
 
         @Override
         public void draw(){
-            super.draw();
+            drawer.draw(this);
 
             if (isAffecting() && placeRegion != null) {
                 Draw.rect(placeRegion, x, y);
@@ -143,7 +156,7 @@ public class AncientAltar extends Block {
         public void read(Reads read){
             super.read(read);
 
-            effTime = read.f();
+            effectTime = read.f();
             effect = (StatusEffect) TypeIO.readObject(read);
         }
 
@@ -151,7 +164,7 @@ public class AncientAltar extends Block {
         public void write(Writes write){
             super.write(write);
 
-            write.f(effTime);
+            write.f(effectTime);
             TypeIO.writeObject(write, effect);
         }
     }

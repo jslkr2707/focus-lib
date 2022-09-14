@@ -81,8 +81,9 @@ public class AgesBlocks{
 
             size = 2;
             health = 400;
-            itemCapacity = 10;
             effCapacity = 600f;
+
+            draw
 
             addEffect(
                     Items.copper, new StatusEffect("heal"){{
