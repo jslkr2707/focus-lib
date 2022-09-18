@@ -3,6 +3,7 @@ package ages.world.blocks.ancient;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.Log;
 import arc.util.io.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -11,14 +12,17 @@ import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.production.Separator;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+
+import javax.swing.*;
 
 import static mindustry.Vars.indexer;
 
 public class AncientAltar extends Block {
     public ObjectMap<Item, StatusEffect> effectTypes = new ObjectMap<Item, StatusEffect>();
-    public float effProb = 0.2f, range = 1200f, reload = 60f;
+    public float chance = 0.5f, range = 1200f, reload = 60f;
     public float effCapacity;
 
     public DrawBlock drawer = new DrawDefault();
@@ -44,7 +48,7 @@ public class AncientAltar extends Block {
         consume(new ConsumeItemFilter(i -> effectTypes.containsKey(i)){
             @Override
             public float efficiency(Building build){
-                return build instanceof AncientAltarBuild b && b.affecting ? 1f : 0f;
+                return build instanceof AncientAltarBuild b && b.efficiency > 0 ? 1f : 0f;
             }
         });
 
@@ -60,9 +64,8 @@ public class AncientAltar extends Block {
     }
 
     public class AncientAltarBuild extends Building {
-        public float effectTime = 0;
+        public float effectTime = 0, reloadTimer = 0f, heat, warmup;
         public StatusEffect effect;
-        public boolean blockEffected = false;
         public boolean affecting;
 
         public TextureRegion placeRegion;
@@ -70,12 +73,12 @@ public class AncientAltar extends Block {
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            return !this.acceptItem(this, item) || !this.block.hasItems || source != null && source.team() != this.team || !items.empty() ? 0 : 1;
+            return !this.acceptItem(this, item) || !this.block.hasItems || source != null && source.team() != this.team || !items.empty() || !reloaded() ? 0 : 1;
         }
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            if (affecting || effectTypes.get(item) == null /* || !timer(timerUse, reload */) return false;
+            if (affecting || effectTypes.get(item) == null || !items.empty() || !reloaded()) return false;
             currentItem = item;
             // timer.reset(timerUse, 0);
             return true;
@@ -90,31 +93,41 @@ public class AncientAltar extends Block {
         public void updateTile(){
             super.updateTile();
 
-            if (affecting){
-                //disable timer during effect
-                // timer.reset(timerUse, 0);
+            warmup = Mathf.approachDelta(warmup, efficiency > 0 ? 1f : 0f, 0.05f);
 
+            if (affecting){
                 if (effectTime > 0){
                     //block effects
                     indexer.eachBlock(this, range, b -> b.block.canOverdrive && effect != null, b -> {
-                        b.applyBoost(effect.speedMultiplier, 2f);
-                        if (b.damaged()) b.heal((b.maxHealth - b.health) / effectTime);
+                        b.applyBoost(effect.speedMultiplier * warmup, 2f);
+                        if (b.damaged()) b.heal((b.maxHealth - b.health) / effectTime * warmup);
                     });
 
+                    //apply the effect to units within range
                     Units.nearby(team, x, y, range, u -> {
                         u.apply(effect);
                     });
-
-                    effectTime -= 1f;
                 } else {
+                    // consume item
                     items.remove(currentItem, 1);
                     disableBoost();
                 }
             } else {
-                if (currentItem != null && !items.empty()){
+                if (currentItem != null && !items.empty() && effectTime <= 0f) {
                     enableBoost();
                 }
+
+                reloadTimer += reloaded() ? 0f : warmup * delta();
             }
+
+            if (effectTime > 0){
+                effectTime -= warmup * delta();
+                reloadTimer = 0f;
+            } else {
+                reloadTimer += reloaded() ? 0f : warmup * delta();
+            }
+
+            Log.info(reloadTimer);
         }
 
         public float effTimef(){
@@ -124,18 +137,10 @@ public class AncientAltar extends Block {
         public void enableBoost(){
             effectTime = effCapacity;
 
-            if (Mathf.chance(effProb)){
+            if (Mathf.randomBoolean(chance)){
                 effect = effectTypes.get(currentItem);
                 placeRegion = currentItem.fullIcon;
                 affecting = true;
-
-                //boost blocks, only once
-                if (!blockEffected){
-                    Units.nearbyBuildings(x, y, range, b -> {
-                        b.applyBoost(effect.speedMultiplier, effCapacity);
-                    });
-                    blockEffected = true;
-                }
             }
         }
 
@@ -144,7 +149,10 @@ public class AncientAltar extends Block {
             placeRegion = null;
             currentItem = null;
             effect = null;
-            blockEffected = false;
+        }
+
+        public boolean reloaded(){
+            return reloadTimer >= reload;
         }
 
         @Override
@@ -153,6 +161,8 @@ public class AncientAltar extends Block {
 
             if (affecting && placeRegion != null) {
                 Draw.rect(placeRegion, x, y);
+                Draw.z(Layer.effect);
+                Draw.alpha(Mathf.absin(6f, 6f));
                 Drawf.circles(x, y, range, effect.color);
             }
         }
@@ -162,8 +172,14 @@ public class AncientAltar extends Block {
             super.read(read);
 
             effectTime = read.f();
+            reloadTimer = read.f();
             affecting = read.bool();
-            effect = (StatusEffect) TypeIO.readObject(read);
+            // currentItem = TypeIO.readItem(read);
+            /* if (currentItem != null && affecting){
+                placeRegion = currentItem.fullIcon;
+                effect = effectTypes.get(currentItem);
+            }
+             */
         }
 
         @Override
@@ -171,8 +187,9 @@ public class AncientAltar extends Block {
             super.write(write);
 
             write.f(effectTime);
+            write.f(reloadTimer);
             write.bool(affecting);
-            TypeIO.writeObject(write, effect);
+            // if (currentItem != null) TypeIO.writeItem(write, currentItem);
         }
     }
 }
