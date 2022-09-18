@@ -1,5 +1,6 @@
 package ages.world.blocks.ancient;
 
+import arc.graphics.Blending;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -15,8 +16,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.Separator;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
-
-import javax.swing.*;
 
 import static mindustry.Vars.indexer;
 
@@ -48,7 +47,7 @@ public class AncientAltar extends Block {
         consume(new ConsumeItemFilter(i -> effectTypes.containsKey(i)){
             @Override
             public float efficiency(Building build){
-                return build instanceof AncientAltarBuild b && b.efficiency > 0 ? 1f : 0f;
+                return build instanceof AncientAltarBuild b && b.effectTime > 0 ? b.warmup : 0f;
             }
         });
 
@@ -60,11 +59,11 @@ public class AncientAltar extends Block {
     public void setBars(){
         super.setBars();
 
-        addBar("effectTime", (AncientAltarBuild e) -> new Bar("stat.effectTime", Pal.accent, e::effTimef));
+        addBar("effectTime", (AncientAltarBuild e) -> new Bar("stat.effectTime", Pal.accent, e::effectTimef));
     }
 
     public class AncientAltarBuild extends Building {
-        public float effectTime = 0, reloadTimer = 0f, heat, warmup;
+        public float effectTime = 0, reloadTimer = 0f, warmup;
         public StatusEffect effect;
         public boolean affecting;
 
@@ -73,7 +72,7 @@ public class AncientAltar extends Block {
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            return !this.acceptItem(this, item) || !this.block.hasItems || source != null && source.team() != this.team || !items.empty() || !reloaded() ? 0 : 1;
+            return !this.acceptItem(this, item) || !this.block.hasItems || source != null && source.team() != this.team ? 0 : 1;
         }
 
         @Override
@@ -104,34 +103,34 @@ public class AncientAltar extends Block {
                     });
 
                     //apply the effect to units within range
-                    Units.nearby(team, x, y, range, u -> {
-                        u.apply(effect);
-                    });
+                    Units.nearby(team, x, y, range, u -> u.apply(effect));
                 } else {
                     // consume item
                     items.remove(currentItem, 1);
                     disableBoost();
                 }
             } else {
-                if (currentItem != null && !items.empty() && effectTime <= 0f) {
-                    enableBoost();
+                if (currentItem != null && effectTime <= 0 && items.any()) {
+                    if (reloaded()){
+                        enableBoost();
+                    } else {
+                        items.remove(currentItem, 1);
+                    }
                 }
-
-                reloadTimer += reloaded() ? 0f : warmup * delta();
             }
 
             if (effectTime > 0){
-                effectTime -= warmup * delta();
+                effectTime -= delta();
                 reloadTimer = 0f;
             } else {
-                reloadTimer += reloaded() ? 0f : warmup * delta();
+                reloadTimer += delta();
             }
 
-            Log.info(reloadTimer);
+            Log.info(currentItem == null);
         }
 
-        public float effTimef(){
-            return effectTime / effCapacity;
+        public float effectTimef(){
+            return effectTime >= 0 ? effectTime / effCapacity : 0;
         }
 
         public void enableBoost(){
@@ -157,13 +156,19 @@ public class AncientAltar extends Block {
 
         @Override
         public void draw(){
-            drawer.draw(this);
+            super.draw();
 
-            if (affecting && placeRegion != null) {
+            if (affecting) {
+                Draw.z(Layer.blockOver+0.001f);
+                Draw.alpha(effectTimef());
                 Draw.rect(placeRegion, x, y);
-                Draw.z(Layer.effect);
-                Draw.alpha(Mathf.absin(6f, 6f));
-                Drawf.circles(x, y, range, effect.color);
+                Draw.blend(Blending.additive);
+
+                Draw.color(effect.color, Mathf.absin(24f, 0.15f));
+                Draw.z(Layer.floor+0.001f);
+                Fill.circle(x, y, range);
+                Draw.blend();
+                Draw.color();
             }
         }
 
