@@ -166,7 +166,7 @@ public class AncientAltar extends Block {
 
                 Draw.color(effect.color, Mathf.absin(24f, 0.15f));
                 Draw.z(Layer.floor+0.001f);
-                Fill.circle(x, y, range);
+                Fill.poly(x, y, Lines.circleVertices(range), range);
                 Draw.blend();
                 Draw.color();
             }

@@ -82,8 +82,9 @@ public class AgesBlocks{
             size = 2;
             health = 400;
             effCapacity = 600f;
-
-            draw
+            chance = 0.5f;
+            range = 200f;
+            reload = 180f;
 
             addEffect(
                     Items.copper, new StatusEffect("heal"){{
@@ -99,6 +100,11 @@ public class AgesBlocks{
                     AgesItems.stone, new StatusEffect("damage"){{
                         damageMultiplier = 1.5f;
                         color = Pal.ammo;
+                    }},
+
+                    Items.lead, new StatusEffect("speed"){{
+                        speedMultiplier = 2f;
+                        color = Pal.stoneGray;
                     }}
             );
         }};
