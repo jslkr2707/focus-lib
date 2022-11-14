@@ -1,4 +1,4 @@
-package ages.entities.bullet.modern;
+package ages.entities.bullet;
 
 import mindustry.content.Fx;
 import mindustry.entities.Damage;

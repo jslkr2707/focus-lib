@@ -1,4 +1,4 @@
-package ages.entities.bullet.contemporary;
+package ages.entities.bullet;
 
 import arc.math.Mathf;
 import arc.math.geom.Vec2;

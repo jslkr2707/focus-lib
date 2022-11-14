@@ -1,20 +1,17 @@
-package ages.world.blocks.ancient;
+package ages.world.blocks.defense;
 
 import arc.*;
-import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.io.Writes;
 import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 
-public class AncientTower extends ItemTurret {
+public class DefenseTower extends ItemTurret {
     public int unitLimit = 2;
     public int leastUnits = 1;
 
-    public AncientTower(String name) {
+    public DefenseTower(String name) {
         super(name);
 
         targetAir = false;
@@ -29,7 +26,7 @@ public class AncientTower extends ItemTurret {
         stats.add(Stat.abilities, "@", Core.bundle.format("stat.unitlimit", unitLimit));
     }
 
-    public class AncientTowerBuild extends ItemTurretBuild{
+    public class DefenseTowerBuild extends ItemTurretBuild{
         public Seq<Unit> inUnits = new Seq<>();
 
         @Override

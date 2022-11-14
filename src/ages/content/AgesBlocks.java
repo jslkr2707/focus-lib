@@ -1,9 +1,10 @@
 package ages.content;
 
-import ages.world.blocks.ancient.*;
+import ages.world.blocks.defense.WiredFence;
+import ages.world.blocks.defense.DefenseTower;
+import ages.world.blocks.production.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
-import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.*;
 
@@ -20,25 +21,29 @@ public class AgesBlocks{
     /* region religion */
     altar,
     /* region defense */
-    woodenFence, advancedFence, bulwark;
+    woodenFence, barbedFence, bulwark;
     public static void load(){
-        woodenFence = new AncientFence("wooden-fence"){{
+        woodenFence = new WiredFence("wooden-fence"){{
             requirements(Category.defense, with(AgesItems.wood, 6));
 
-            health = 150;
+            health = 200;
             size = 1;
+            speedMultiplier = 0.25f;
+            fenceDamage = 5f;
+            maxDurability = 400f;
         }};
 
-        advancedFence = new AncientFence("complex-wooden-fence"){{
-            requirements(Category.defense, with(AgesItems.wood, 24));
+        barbedFence = new WiredFence("complex-wooden-fence"){{
+            requirements(Category.defense, with(AgesItems.iron, 8));
 
-            health = 600;
+            health = 800;
             size = 2;
             speedMultiplier = 0.15f;
             fenceDamage = 10f;
+            maxDurability = 1000f;
         }};
 
-        bulwark = new AncientTower("bulwark"){{
+        bulwark = new DefenseTower("bulwark"){{
             requirements(Category.turret, with());
 
             health = 500;
@@ -55,7 +60,7 @@ public class AgesBlocks{
             );
         }};
 
-        firepit = new AncientCrafter("firepit"){{
+        firepit = new ModernCrafter("firepit"){{
             requirements(Category.crafting, with());
 
             addFuel(AgesItems.wood);
@@ -63,50 +68,6 @@ public class AgesBlocks{
             craftTime = 120f;
             consumeItems(with(AgesItems.wood, 2));
             outputItem = new ItemStack(Items.coal, 1);
-        }};
-
-        ancientFarm = new AncientFarm("ancient-farm"){{
-            requirements(Category.production, with());
-
-            size = 2;
-            health = 100 * size * size;
-            itemCapacity = 20;
-            addCrops(with(AgesItems.erwat, 10, AgesItems.zibel, 10));
-            outputItem = new ItemStack(AgesItems.erwat, 1);
-            hasShadow = false;
-        }};
-
-        altar = new AncientAltar("ancient-altar"){{
-            requirements(Category.effect, with());
-
-            size = 2;
-            health = 400;
-            effCapacity = 600f;
-            chance = 0.5f;
-            range = 200f;
-            reload = 180f;
-
-            addEffect(
-                    Items.copper, new StatusEffect("heal"){{
-                        healthMultiplier = 1.5f;
-                        color = Pal.health;
-                    }},
-
-                    AgesItems.wood, new StatusEffect("build"){{
-                        buildCostMultiplier = 0.7f;
-                        color = Pal.darkMetal;
-                    }},
-
-                    AgesItems.stone, new StatusEffect("damage"){{
-                        damageMultiplier = 1.5f;
-                        color = Pal.ammo;
-                    }},
-
-                    Items.lead, new StatusEffect("speed"){{
-                        speedMultiplier = 2f;
-                        color = Pal.stoneGray;
-                    }}
-            );
         }};
     }
 }

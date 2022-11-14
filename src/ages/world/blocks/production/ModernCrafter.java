@@ -1,10 +1,9 @@
-package ages.world.blocks.ancient;
+package ages.world.blocks.production;
 
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.util.Log;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -19,7 +18,7 @@ import mindustry.world.meta.*;
 import static ages.AgesVars.*;
 import static arc.Core.bundle;
 
-public class AncientCrafter extends GenericCrafter{
+public class ModernCrafter extends GenericCrafter{
     protected Seq<Item> fuel = new Seq<>();
     protected int fuelUse = 1;
     protected int fuelCapacity = 15;
@@ -27,7 +26,7 @@ public class AncientCrafter extends GenericCrafter{
     protected float heatCapacity = 600f;
     protected float minCraftHeat = 100f;
 
-    public AncientCrafter(String name) {
+    public ModernCrafter(String name) {
         super(name);
 
         hasPower = false;
@@ -77,11 +76,11 @@ public class AncientCrafter extends GenericCrafter{
     public void setBars(){
         super.setBars();
 
-        addBar(bundle.format("fuel"), (AncientCrafterBuild e) -> new Bar("bar.fuel", Pal.accent, e::heatf));
-        addBar(bundle.format("heat"), (AncientCrafterBuild e) -> new Bar("bar.heat", Pal.heal, e::heathf));
+        addBar(bundle.format("fuel"), (ModernCrafterBuild e) -> new Bar("bar.fuel", Pal.accent, e::heatf));
+        addBar(bundle.format("heat"), (ModernCrafterBuild e) -> new Bar("bar.heat", Pal.heal, e::heathf));
     }
 
-    public class AncientCrafterBuild extends GenericCrafterBuild{
+    public class ModernCrafterBuild extends GenericCrafterBuild{
         public Item currentFuel;
         protected float heat = 0;
         protected float heath = 0;

@@ -8,13 +8,11 @@ public class AgesItems{
     public static Item
     /* region ancient */
     wood, stone, dirt, brick,
-    /* region metal
-    ironOre, iron, ironPowder, steel,
+    /* region metal */
+    ironOre, iron, steel,
     tinOre, tin, tinPowder,
-    bauxite, aluminum,
-    */
-    /* region organic */
-    erwat, zibel;
+    bauxite, aluminum;
+
     public static void load(){
         dirt = new Item("dirt", Color.valueOf("46205a")){{
             hardness = 0;
@@ -72,21 +70,5 @@ public class AgesItems{
             cost = 4;
         }};
          */
-
-        erwat = new OrganicItems("erwat", Color.rgb(248, 180, 35)){{
-            flammability = 0.2f;
-            cost = 1;
-            calories = 1;
-            phases = 4;
-            growTime = 1800f;
-        }};
-
-        zibel = new OrganicItems("zibel", Color.rgb(120, 191, 56)){{
-            flammability = 0f;
-            cost = 1;
-            calories = 1;
-            phases = 4;
-            growTime = 1800f;
-        }};
     }
 }

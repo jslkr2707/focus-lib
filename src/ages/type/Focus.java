@@ -19,7 +19,7 @@ public class Focus extends UnlockableContent{
     }
 
 
-    public void addUnlocks(UnlockableContent... content){
+    public void unlock(UnlockableContent... content){
         for (UnlockableContent i: content){
             this.unlockContents.add(i);
         }
@@ -27,10 +27,8 @@ public class Focus extends UnlockableContent{
 
     @Override
     public void onUnlock(){
-        if (this.unlockContents != null){
-            for (UnlockableContent content: this.unlockContents) {
-                content.unlock();
-            }
+        for (UnlockableContent content: this.unlockContents){
+            content.unlock();
         }
     }
 
@@ -41,6 +39,6 @@ public class Focus extends UnlockableContent{
 
     @Override
     public ContentType getContentType(){
-        return ContentType.effect_UNUSED;
+        return ContentType.valueOf("focus");
     }
 }

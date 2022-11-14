@@ -29,6 +29,7 @@ jar {
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
+    implementation 'com.github.liplum:MultiCrafterLib:v1.7'
     compileOnly "com.github.Anuken.Mindustry:core:v137"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
