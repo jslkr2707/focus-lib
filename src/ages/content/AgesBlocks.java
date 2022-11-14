@@ -7,6 +7,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.Wall;
 
 import static mindustry.type.ItemStack.*;
 
@@ -15,7 +16,7 @@ public class AgesBlocks{
     /* region environment */
     soil,
     /* region production */
-    ancientFarm,
+    ancientFarm, lumber, basicMine,
     /* region crafting */
     firepit, potteryKiln,
     /* region religion */
@@ -68,6 +69,12 @@ public class AgesBlocks{
             craftTime = 120f;
             consumeItems(with(AgesItems.wood, 2));
             outputItem = new ItemStack(Items.coal, 1);
+        }};
+
+        lumber = new Wall("lumber"){{
+            requirements(Category.defense, with(AgesItems.wood, 24));
+            health = 400;
+            size=1;
         }};
     }
 }

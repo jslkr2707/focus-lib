@@ -8,6 +8,7 @@ import static mindustry.type.ItemStack.*;
 
 public class AgesFocus{
     public static Focus
+    ages,
     /* region industry */
     logging, mining, charcoal, farming,
     forging, sawing, provision,
@@ -15,5 +16,28 @@ public class AgesFocus{
 
     /* region defense */
     public static void load(){
+        ages = new Focus("ages"){{
+            requirements(with());
+            unlock(AgesItems.wood);
+            reward(with(AgesItems.wood, 200));
+        }};
+
+        logging = new Focus("logging"){{
+            requirements(with(AgesItems.wood, 100));
+            reward(with());
+            unlock(AgesBlocks.lumber);
+        }};
+
+        mining = new Focus("mining"){{
+            requirements(with(AgesItems.wood, 150));
+            reward(with(AgesItems.stone, 100));
+            unlock(AgesBlocks.basicMine, AgesItems.stone);
+        }};
+
+        charcoal = new Focus("charcoal"){{
+            requirements(with(AgesItems.wood, 200));
+            reward(with(Items.coal, 100));
+            unlock(Items.coal, AgesBlocks.firepit);
+        }};
     }
 }
