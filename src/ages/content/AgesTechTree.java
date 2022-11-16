@@ -5,6 +5,7 @@ import mindustry.content.TechTree;
 
 import static mindustry.content.TechTree.*;
 import static mindustry.game.Objectives.*;
+import static ages.util.AgesObjectives.*;
 import static mindustry.content.SectorPresets.*;
 import static ages.content.AgesFocus.*;
 
@@ -14,9 +15,9 @@ public class AgesTechTree {
 
     public static void load() {
         nodeRoot("Pre-mindustry Research Focus", ages, () -> {
-            node(logging, Seq.with(new SectorComplete(groundZero)), () -> {});
-            node(mining, Seq.with(new SectorComplete(groundZero)), () -> {});
-            node(charcoal, Seq.with(new SectorComplete(groundZero)), () -> {});
+            node(logging, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
+            node(mining, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
+            node(charcoal, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
         });
     }
 }

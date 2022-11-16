@@ -1,18 +1,11 @@
 package ages.type;
 
 import arc.Core;
-import arc.Events;
 import arc.struct.Seq;
-import mindustry.ctype.ContentType;
-import mindustry.ctype.UnlockableContent;
-import mindustry.game.EventType;
-import mindustry.game.SectorInfo;
+import mindustry.ctype.*;
 import mindustry.type.ItemStack;
-import mindustry.type.Planet;
-import mindustry.type.Sector;
 
-import static ages.AgesVars.*;
-import static mindustry.Vars.*;
+import static ages.util.Overwriter.*;
 
 public class Focus extends UnlockableContent{
     public ItemStack[] requirements;
@@ -28,10 +21,6 @@ public class Focus extends UnlockableContent{
         this.localizedName = Core.bundle.get("focus." + this.name + ".name", this.name);
         this.description = Core.bundle.get("focus." + this.name + ".description");
         this.details = Core.bundle.getOrNull("focus." + this.name + ".details");
-
-        if (rewards == null){
-            description += "\n\n" + "[red]" + Core.bundle.format("focus.nonerequired") + "\n";
-        }
     }
 
     public void requirements(ItemStack[] stack){
@@ -54,7 +43,7 @@ public class Focus extends UnlockableContent{
             if (content != null) content.unlock();
         }
 
-        focusDialog.items.add(rewards);
+        focusDialog.focusRewards.add(rewards);
         focusDialog.updateVisibility();
     }
 

@@ -1,5 +1,7 @@
 package ages.ui.dialogs;
 
+import ages.type.Focus;
+import ages.util.AgesObjectives;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -15,6 +17,7 @@ import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
@@ -23,6 +26,7 @@ import mindustry.game.Objectives.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
+import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.BaseDialog;
@@ -37,7 +41,7 @@ import static mindustry.gen.Tex.*;
 public class FocusDialog extends BaseDialog{
     public static boolean debugShowRequirements = false;
 
-    public final float nodeSize = Scl.scl(60f);
+    public final float nodeSize = Scl.scl(90f);
     public ObjectSet<TechTreeNode> nodes = new ObjectSet<>();
     public TechTreeNode root = new TechTreeNode(TechTree.roots.get(2), null);
     public TechNode lastNode = root.node;
@@ -46,6 +50,7 @@ public class FocusDialog extends BaseDialog{
     public View view;
 
     public ItemSeq items;
+    public ItemSeq focusRewards = new ItemSeq();
 
     private boolean showTechSelect;
 
@@ -105,6 +110,11 @@ public class FocusDialog extends BaseDialog{
                                 });
                             }
                         }
+                    }
+
+                    for (ItemStack stack: focusRewards){
+                        values[stack.item.id] += Math.max(stack.amount, 0);
+                        total += Math.max(stack.amount, 0);
                     }
                 }
 
@@ -359,6 +369,7 @@ public class FocusDialog extends BaseDialog{
 
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.uiIcon, Styles.nodei);
+                button.row();
                 button.visible(() -> node.visible);
                 button.clicked(() -> {
                     if(moved) return;
@@ -554,7 +565,6 @@ public class FocusDialog extends BaseDialog{
                     desc.add(node.content.localizedName);
                     desc.row();
                     if(locked(node) || debugShowRequirements){
-
                         desc.table(t -> {
                             t.left();
                             if(selectable){
@@ -586,12 +596,13 @@ public class FocusDialog extends BaseDialog{
                                     r.row();
                                     for(Objective o : node.objectives){
                                         if(o.complete()) continue;
-
-                                        r.add("> " + o.display()).color(Color.lightGray).left();
-                                        r.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lightGray : Color.scarlet).padLeft(3);
-                                        r.row();
+                                        if (!(o instanceof AgesObjectives.focusResearch)){
+                                            r.add("> " + o.display()).color(Color.lightGray).left();
+                                            r.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lightGray : Color.scarlet).padLeft(3);
+                                            r.row();
+                                        }
                                     }
-                                });
+                                }).left();
                                 t.row();
                             }
 
@@ -646,9 +657,37 @@ public class FocusDialog extends BaseDialog{
             });
 
             infoTable.row();
-            if(node.content.description != null && node.content.inlineDescription && selectable){
+            if(node.content.description != null && node.content.inlineDescription){
                 infoTable.table(t -> t.margin(3f).left().labelWrap(node.content.displayDescription()).color(Color.lightGray).growX()).fillX();
             }
+
+            infoTable.row();
+            infoTable.table(t -> {
+                        t.margin(0).left().defaults().left();
+
+                        t.table(b -> {
+                            b.left().defaults().left();
+                            b.row();
+
+                            b.table(r -> {
+                                r.left();
+                                if (node.objectives.contains(o -> o instanceof AgesObjectives.focusResearch)) {
+                                    r.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.white).left();
+                                    r.row();
+                                    Objective o = node.objectives.find(a -> a instanceof AgesObjectives.focusResearch);
+                                    Focus[] pre = ((AgesObjectives.focusResearch) o).prerequisite;
+
+                                    for (Focus f : pre) {
+                                        r.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                        r.row();
+                                    }
+                                } else {
+                                    r.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
+                                    r.row();
+                                }
+                            }).left().pad(9);
+                        });
+            });
 
             addChild(infoTable);
             infoTable.pack();

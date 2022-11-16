@@ -4,7 +4,6 @@ import ages.*;
 import ages.content.*;
 import ages.ui.dialogs.*;
 import arc.*;
-import arc.*;
 import arc.func.*;
 import arc.scene.*;
 import arc.util.*;
@@ -13,7 +12,7 @@ import mindustry.mod.*;
 import mindustry.ui.*;
 
 import static mindustry.Vars.*;
-import static ages.AgesVars.*;
+import static ages.util.Overwriter.*;
 
 public class Ages extends Mod{
     public Ages(){
@@ -27,7 +26,7 @@ public class Ages extends Mod{
         focusDialog = dialog;
 
         if(!headless){
-            //Partial credits to BM and PU
+            //credits to BM and PU
 
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
@@ -40,23 +39,7 @@ public class Ages extends Mod{
 
         //i... don't know what im doing, but it works so ugh
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            try{
-                var group = (Group)ui.research.getChildren().first();
-
-                if (mobile){
-
-                } else {
-                    ui.research.titleTable.remove();
-                    group.fill(c -> AgesVars.focusBtn(c.top()));
-                    group.fill(c -> c.top().marginTop(70f)
-                            .button("Focus", Styles.black, dialog::show)
-                            .size(240, 48)
-                            .name("Focus Tree")
-                    );
-                }
-            } catch(Throwable t) {
-                Log.info("Couldn't create button", Strings.getFinalCause(t));
-            }
+            addSelect(dialog);
         });
     }
 
@@ -67,5 +50,25 @@ public class Ages extends Mod{
         AgesBlocks.load();
         AgesFocus.load();
         AgesTechTree.load();
+    }
+
+    public void addSelect(FocusDialog dialog){
+        try{
+            var group = (Group)ui.research.getChildren().first();
+
+            if (mobile){
+
+            } else {
+                ui.research.titleTable.remove();
+                group.fill(c -> focusBtn(c.center().top()));
+                group.fill(c -> c.center().top().marginTop(70f)
+                        .button("Focus", Styles.black, dialog::show)
+                        .size(240, 48)
+                        .name("Focus Tree")
+                );
+            }
+        } catch(Throwable t) {
+            Log.info("Couldn't create button", Strings.getFinalCause(t));
+        }
     }
 }

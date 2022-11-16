@@ -1,14 +1,16 @@
 package ages.util;
 
-import arc.Core;
-import mindustry.ctype.UnlockableContent;
-import mindustry.game.Objectives;
+import ages.type.*;
+import arc.*;
+import arc.util.Log;
+import mindustry.ctype.*;
+import mindustry.game.Objectives.*;
 import mindustry.type.*;
 
 import static mindustry.Vars.*;
 
 public class AgesObjectives {
-    public static class sectorsCompleted implements Objectives.Objective {
+    public static class sectorsCompleted implements Objective {
         public int standard;
 
         public sectorsCompleted(int standard){
@@ -38,7 +40,7 @@ public class AgesObjectives {
         }
     }
 
-    public static class notUnlocked implements Objectives.Objective{
+    public static class notUnlocked implements Objective{
         public UnlockableContent content;
 
         public notUnlocked(UnlockableContent content) { this.content = content; }
@@ -51,6 +53,25 @@ public class AgesObjectives {
         @Override
         public String display(){
             return Core.bundle.format("requirements.notUnlocked", content.toString());
+        }
+    }
+
+    public static class focusResearch implements Objective {
+        public Focus[] prerequisite;
+
+        public focusResearch(Focus... focus) { this.prerequisite = focus; }
+
+        @Override
+        public boolean complete() {
+            for (Focus f: prerequisite) {
+                if (!f.unlocked()) return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String display(){
+            return Core.bundle.format("focus.prerequisite") + "\n";
         }
     }
 }
