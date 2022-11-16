@@ -8,8 +8,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
-import static mindustry.Vars.iconMed;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 public class Overwriter {
     public static FocusDialog focusDialog;

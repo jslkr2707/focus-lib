@@ -22,6 +22,8 @@ public class AgesFocus{
             reward(with(AgesItems.wood, 200));
         }};
 
+        //region tier 1 industry
+
         logging = new Focus("logging"){{
             requirements(with(AgesItems.wood, 100));
             reward(with());
@@ -39,5 +41,16 @@ public class AgesFocus{
             reward(with(Items.coal, 100));
             unlock(Items.coal, AgesBlocks.firepit);
         }};
+
+        farming = new Focus("farming"){{
+            requirements(with());
+            reward(with());
+            /* unlock(AgesBlocks.farm) */
+        }};
+
+        //endregion
+
+        //region tier 2 industry
+
     }
 }

@@ -36,7 +36,7 @@ public class AgesObjectives {
 
         @Override
         public String display(){
-            return Core.bundle.format("requirements.sectorsCompleted", standard);
+            return Core.bundle.format("requirements.sectorscompleted", standard);
         }
     }
 

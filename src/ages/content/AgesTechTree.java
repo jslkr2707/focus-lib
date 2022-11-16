@@ -15,9 +15,9 @@ public class AgesTechTree {
 
     public static void load() {
         nodeRoot("Pre-mindustry Research Focus", ages, () -> {
-            node(logging, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
-            node(mining, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
-            node(charcoal, Seq.with(new SectorComplete(groundZero), new focusResearch(ages)), () -> {});
+            node(logging, Seq.with(new sectorsCompleted(1)), () -> {});
+            node(mining, Seq.with(new sectorsCompleted(1)), () -> {});
+            node(charcoal, Seq.with(new sectorsCompleted(1)), () -> {});
         });
     }
 }

@@ -14,11 +14,12 @@ import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+import multicraft.MultiCrafter;
 
 import static ages.AgesVars.*;
 import static arc.Core.bundle;
 
-public class ModernCrafter extends GenericCrafter{
+public class ModernCrafter extends MultiCrafter{
     protected Seq<Item> fuel = new Seq<>();
     protected int fuelUse = 1;
     protected int fuelCapacity = 15;
@@ -80,7 +81,7 @@ public class ModernCrafter extends GenericCrafter{
         addBar(bundle.format("heat"), (ModernCrafterBuild e) -> new Bar("bar.heat", Pal.heal, e::heathf));
     }
 
-    public class ModernCrafterBuild extends GenericCrafterBuild{
+    public class ModernCrafterBuild extends MultiCrafterBuild{
         public Item currentFuel;
         protected float heat = 0;
         protected float heath = 0;

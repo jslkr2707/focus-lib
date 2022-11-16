@@ -658,36 +658,36 @@ public class FocusDialog extends BaseDialog{
 
             infoTable.row();
             if(node.content.description != null && node.content.inlineDescription){
-                infoTable.table(t -> t.margin(3f).left().labelWrap(node.content.displayDescription()).color(Color.lightGray).growX()).fillX();
+                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description + "\n" + Core.bundle.format("mod.display", node.content.minfo.mod.meta.displayName())).color(Color.lightGray).growX()).fillX();
             }
 
             infoTable.row();
             infoTable.table(t -> {
-                        t.margin(0).left().defaults().left();
+                t.margin(3f).left().defaults().left();
 
-                        t.table(b -> {
-                            b.left().defaults().left();
-                            b.row();
+                t.table(b -> {
+                    b.left();
+                    if (node.parent != null) {
+                        b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.white).left();
+                        b.row();
+                        b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.red).left();
+                        b.row();
 
-                            b.table(r -> {
-                                r.left();
-                                if (node.objectives.contains(o -> o instanceof AgesObjectives.focusResearch)) {
-                                    r.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.white).left();
-                                    r.row();
-                                    Objective o = node.objectives.find(a -> a instanceof AgesObjectives.focusResearch);
-                                    Focus[] pre = ((AgesObjectives.focusResearch) o).prerequisite;
+                        Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
+                        if (pre != null){
+                            Focus[] foc = ((AgesObjectives.focusResearch)pre).prerequisite;
 
-                                    for (Focus f : pre) {
-                                        r.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
-                                        r.row();
-                                    }
-                                } else {
-                                    r.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
-                                    r.row();
-                                }
-                            }).left().pad(9);
-                        });
-            });
+                            for (Focus f: foc){
+                                b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                b.row();
+                            }
+                        }
+                    } else {
+                        b.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
+                        b.row();
+                    }
+                }).left();
+            }).margin(9f).left();
 
             addChild(infoTable);
             infoTable.pack();

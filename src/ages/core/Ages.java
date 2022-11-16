@@ -1,13 +1,14 @@
 package ages.core;
 
-import ages.*;
 import ages.content.*;
 import ages.ui.dialogs.*;
 import arc.*;
 import arc.func.*;
 import arc.scene.*;
+import arc.scene.style.TextureRegionDrawable;
 import arc.util.*;
 import mindustry.game.*;
+import mindustry.graphics.Pal;
 import mindustry.mod.*;
 import mindustry.ui.*;
 
@@ -62,7 +63,13 @@ public class Ages extends Mod{
                 ui.research.titleTable.remove();
                 group.fill(c -> focusBtn(c.center().top()));
                 group.fill(c -> c.center().top().marginTop(70f)
-                        .button("Focus", Styles.black, dialog::show)
+                        .button(b -> {
+                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).padRight(8).size(iconMed);
+                            b.add().growX();
+                            b.label(() -> Core.bundle.format("focus")).color(Pal.accent);
+                            b.add().growX();
+                            b.add().size(iconMed);
+                        }, dialog::show)
                         .size(240, 48)
                         .name("Focus Tree")
                 );
