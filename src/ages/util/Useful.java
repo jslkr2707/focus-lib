@@ -4,13 +4,14 @@ import ages.ui.dialogs.FocusDialog;
 import arc.scene.ui.layout.Table;
 import mindustry.content.TechTree;
 import mindustry.gen.Tex;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
 import static mindustry.Vars.*;
 
-public class Overwriter {
+public class Useful {
     public static FocusDialog focusDialog;
     public static boolean showTechSelect;
     public static void focusBtn(Table t){
@@ -44,5 +45,17 @@ public class Overwriter {
                 addCloseButton();
             }}.show();
         }).visible(() -> showTechSelect = TechTree.roots.count(node -> !(node.requiresUnlock && !node.content.unlocked())) > 1).minWidth(300f);
+    }
+
+    public static int completed(){
+        int a = 0;
+        for(Planet planet: content.planets()){
+            for (Sector sector: planet.sectors){
+                if (sector.isCaptured()){
+                    a += 1;
+                }
+            }
+        }
+        return a;
     }
 }

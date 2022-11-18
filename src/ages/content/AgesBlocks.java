@@ -8,6 +8,7 @@ import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.production.GenericCrafter;
 
 import static mindustry.type.ItemStack.*;
 
@@ -18,7 +19,7 @@ public class AgesBlocks{
     /* region production */
     ancientFarm, lumber, basicMine,
     /* region crafting */
-    firepit, potteryKiln,
+    pitKiln, furnace,
     /* region religion */
     altar,
     /* region defense */
@@ -61,20 +62,49 @@ public class AgesBlocks{
             );
         }};
 
-        firepit = new ModernCrafter("firepit"){{
+        /*
+        pitKiln = new ModernCrafter("pit-kiln"){{
             requirements(Category.crafting, with());
 
-            addFuel(AgesItems.wood);
             size = 1;
-            craftTime = 120f;
             consumeItems(with(AgesItems.wood, 2));
-            outputItem = new ItemStack(Items.coal, 1);
+            consumeFuel(
+                    new Fuel(AgesItems.wood, 2){{
+                        heatCapacity = 300f;
+                        heatRate = 0.8f;
+                        burnEffect = Fx.smoke;
+                    }},
+
+                    new Fuel(Items.coal, 1){{
+                        heatCapacity = 800f;
+                        heatRate = 1.3f;
+                        burnEffect = Fx.smeltsmoke;
+                        capacityMultiplier = 1.2f;
+                    }}
+            );
         }};
+
+
+        furnace = new ModernCrafter("furnace"){{
+
+            requirements(Category.crafting, with());
+            size = 2;
+            consumeFuel(
+                    new Fuel(AgesItems.wood, 2){{
+                        heatCapacity = 300f;
+                        heatRate = 0.8f;
+                        burnEffect = Fx.smoke;
+                    }}
+            );
+        }};
+
+         */
 
         lumber = new Wall("lumber"){{
             requirements(Category.defense, with(AgesItems.wood, 24));
             health = 400;
             size=1;
         }};
+
     }
 }

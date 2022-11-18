@@ -1,5 +1,6 @@
 package ages.util;
 
+import ages.core.*;
 import ages.type.*;
 import arc.*;
 import arc.util.Log;
@@ -8,6 +9,7 @@ import mindustry.game.Objectives.*;
 import mindustry.type.*;
 
 import static mindustry.Vars.*;
+import static ages.util.Useful.*;
 
 public class AgesObjectives {
     public static class sectorsCompleted implements Objective {
@@ -22,18 +24,6 @@ public class AgesObjectives {
             return completed() >= this.standard;
         }
 
-        public static int completed(){
-            int a = 0;
-            for(Planet planet: content.planets()){
-                for (Sector sector: planet.sectors){
-                    if (sector.isCaptured()){
-                        a += 1;
-                    }
-                }
-            }
-            return a;
-        }
-
         @Override
         public String display(){
             return Core.bundle.format("requirements.sectorscompleted", standard);
@@ -41,18 +31,18 @@ public class AgesObjectives {
     }
 
     public static class notUnlocked implements Objective{
-        public UnlockableContent content;
+        public Focus opposite;
 
-        public notUnlocked(UnlockableContent content) { this.content = content; }
+        public notUnlocked(Focus content) { this.opposite = content; }
 
         @Override
         public boolean complete(){
-            return !content.unlocked();
+            return !opposite.unlocked();
         }
 
         @Override
         public String display(){
-            return Core.bundle.format("requirements.notUnlocked", content.toString());
+            return Core.bundle.format("requirements.notunlocked", opposite.localizedName);
         }
     }
 

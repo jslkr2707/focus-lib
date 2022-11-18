@@ -1,5 +1,7 @@
 package ages.ui.dialogs;
 
+import ages.content.*;
+import ages.core.*;
 import ages.type.Focus;
 import ages.util.AgesObjectives;
 import arc.*;
@@ -21,6 +23,7 @@ import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
+import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
@@ -48,6 +51,11 @@ public class FocusDialog extends BaseDialog{
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
     public View view;
+    public Focus researching;
+    public float focusTimer;
+    public int reqComplete = -1;
+    public Interval timer;
+    public Drawable buttonGreen = Core.atlas.drawable("button-green");
 
     public ItemSeq items;
     public ItemSeq focusRewards = new ItemSeq();
@@ -78,6 +86,8 @@ public class FocusDialog extends BaseDialog{
             itemDisplay.invalidate();
             itemDisplay.layout();
         };
+
+        this.timer = new Interval(2);
 
         onResize(checkMargin);
 
@@ -219,6 +229,10 @@ public class FocusDialog extends BaseDialog{
         });
     }
 
+    public float getTimer(){
+        return this.timer.getTime(0);
+    }
+
     public void switchTree(TechNode node){
         if(lastNode == node || node == null) return;
         nodes.clear();
@@ -313,7 +327,7 @@ public class FocusDialog extends BaseDialog{
     }
 
     boolean selectable(TechNode node){
-        return node.content.unlocked() || !node.objectives.contains(i -> !i.complete());
+        return (node.content.unlocked() || !node.objectives.contains(i -> !i.complete())) && (node.parent == null || node.parent.content.unlocked());
     }
 
     boolean locked(TechNode node){
@@ -361,6 +375,8 @@ public class FocusDialog extends BaseDialog{
             rebuildAll();
         }
 
+
+
         public void rebuildAll(){
             clear();
             hoverNode = null;
@@ -392,7 +408,8 @@ public class FocusDialog extends BaseDialog{
                                 }
                             });
                         }
-                    }else if(canSpend(node.node) && locked(node.node)){
+                    }else if(canSpend(node.node) && locked(node.node) && researching == null && reqComplete == -1){
+                        researching = (Focus) node.node.content;
                         spend(node.node);
                     }
                 });
@@ -414,7 +431,8 @@ public class FocusDialog extends BaseDialog{
                 button.update(() -> {
                     float offset = (Core.graphics.getHeight() % 2) / 2f;
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
-                    button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed : Tex.button;
+                    button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed
+                            : researching == null ? Tex.button : node.node.content == researching ? reqComplete == 1 ? buttonGreen : Tex.button : Tex.buttonRed;
 
                     ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.uiIcon);
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
@@ -436,6 +454,14 @@ public class FocusDialog extends BaseDialog{
             setOrigin(Align.center);
             setTransform(true);
             released(() -> moved = false);
+        }
+
+        public Objective getCompleteObjective(TechNode node){
+            return node.objectives.find(b -> b instanceof Objectives.SectorComplete);
+        }
+
+        public Objective getSectorsCompletedObjective(TechNode node){
+            return node.objectives.find(b -> b instanceof AgesObjectives.sectorsCompleted);
         }
 
         void clamp(){
@@ -493,11 +519,20 @@ public class FocusDialog extends BaseDialog{
             }
 
             if(complete){
-                unlock(node);
+                focusTimer = ((Focus)node.content).time;
+                reqComplete = 1;
+                timer.reset(0, 0);
+                Time.run(focusTimer, () -> {
+                    unlock(node);
+                    researching = null;
+                    focusTimer = 0;
+                    reqComplete = -1;
+                    timer.reset(0, 0);
+                });
             }
 
             node.save();
-
+            Log.info("reached spend2");
             //??????
             Core.scene.act();
             rebuild(shine);
@@ -590,52 +625,50 @@ public class FocusDialog extends BaseDialog{
 
                                     t.row();
                                 }
+
+                                for(int i = 0; i < node.requirements.length; i++){
+                                    ItemStack req = node.requirements[i];
+                                    ItemStack completed = node.finishedRequirements[i];
+
+                                    //skip finished stacks
+                                    if(req.amount <= completed.amount && !debugShowRequirements) continue;
+                                    boolean shiny = shine != null && shine[i];
+
+                                    t.table(list -> {
+                                        int reqAmount = debugShowRequirements ? req.amount : req.amount - completed.amount;
+
+                                        list.left();
+                                        list.image(req.item.uiIcon).size(8 * 3).padRight(3);
+                                        list.add(req.item.localizedName).color(Color.lightGray);
+                                        Label label = list.label(() -> " " +
+                                                UI.formatAmount(Math.min(items.get(req.item), reqAmount)) + " / "
+                                                + UI.formatAmount(reqAmount)).get();
+
+                                        Color targetColor = items.has(req.item) ? Color.lightGray : Color.scarlet;
+
+                                        if(shiny){
+                                            label.setColor(Pal.accent);
+                                            label.actions(Actions.color(targetColor, 0.75f, Interp.fade));
+                                        }else{
+                                            label.setColor(targetColor);
+                                        }
+
+                                    }).fillX().left();
+                                    t.row();
+                                }
                             }else if(node.objectives.size > 0){
                                 t.table(r -> {
                                     r.add("@complete").left();
                                     r.row();
                                     for(Objective o : node.objectives){
-                                        if(o.complete()) continue;
-                                        if (!(o instanceof AgesObjectives.focusResearch)){
-                                            r.add("> " + o.display()).color(Color.lightGray).left();
-                                            r.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lightGray : Color.scarlet).padLeft(3);
-                                            r.row();
-                                        }
+                                        r.add(o.display()).color(o.complete() ? Color.white : Color.red).left();
+                                        r.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lime : Color.scarlet).padLeft(6);
+                                        r.row();
                                     }
                                 }).left();
                                 t.row();
                             }
 
-                            for(int i = 0; i < node.requirements.length; i++){
-                                ItemStack req = node.requirements[i];
-                                ItemStack completed = node.finishedRequirements[i];
-
-                                //skip finished stacks
-                                if(req.amount <= completed.amount && !debugShowRequirements) continue;
-                                boolean shiny = shine != null && shine[i];
-
-                                t.table(list -> {
-                                    int reqAmount = debugShowRequirements ? req.amount : req.amount - completed.amount;
-
-                                    list.left();
-                                    list.image(req.item.uiIcon).size(8 * 3).padRight(3);
-                                    list.add(req.item.localizedName).color(Color.lightGray);
-                                    Label label = list.label(() -> " " +
-                                            UI.formatAmount(Math.min(items.get(req.item), reqAmount)) + " / "
-                                            + UI.formatAmount(reqAmount)).get();
-
-                                    Color targetColor = items.has(req.item) ? Color.lightGray : Color.scarlet;
-
-                                    if(shiny){
-                                        label.setColor(Pal.accent);
-                                        label.actions(Actions.color(targetColor, 0.75f, Interp.fade));
-                                    }else{
-                                        label.setColor(targetColor);
-                                    }
-
-                                }).fillX().left();
-                                t.row();
-                            }
                         });
                     }else{
                         desc.add("@completed");
@@ -655,10 +688,17 @@ public class FocusDialog extends BaseDialog{
                             .disabled(i -> !canSpend(node)).growX().height(44f).colspan(3);
                 }
             });
+            if (researching != null) if (node.content == researching && reqComplete == 1) {
+                infoTable.row();
+                infoTable.table(t -> {
+                    t.add(Core.bundle.format("focus.timeleft", (int)(timer.getTime(0) / 60), focusTimer)).left();
+                    t.row();
+                }).margin(9).left();
+            }
 
             infoTable.row();
             if(node.content.description != null && node.content.inlineDescription){
-                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description + "\n" + Core.bundle.format("mod.display", node.content.minfo.mod.meta.displayName())).color(Color.lightGray).growX()).fillX();
+                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description + "\n\n" + Core.bundle.format("mod.display", node.content.minfo.mod.meta.displayName())).color(Color.lightGray).growX()).fillX();
             }
 
             infoTable.row();
@@ -668,9 +708,10 @@ public class FocusDialog extends BaseDialog{
                 t.table(b -> {
                     b.left();
                     if (node.parent != null) {
-                        b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.white).left();
+                        b.add(Core.bundle.format("focus.prerequisite") + ":").left();
                         b.row();
-                        b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.red).left();
+                        b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
+                        b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
                         b.row();
 
                         Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);

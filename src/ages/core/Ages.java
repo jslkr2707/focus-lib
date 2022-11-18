@@ -2,6 +2,7 @@ package ages.core;
 
 import ages.content.*;
 import ages.ui.dialogs.*;
+import ages.util.*;
 import arc.*;
 import arc.func.*;
 import arc.scene.*;
@@ -10,10 +11,9 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.graphics.Pal;
 import mindustry.mod.*;
-import mindustry.ui.*;
 
 import static mindustry.Vars.*;
-import static ages.util.Overwriter.*;
+import static ages.util.Useful.*;
 
 public class Ages extends Mod{
     public Ages(){

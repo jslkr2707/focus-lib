@@ -25,28 +25,31 @@ public class AgesFocus{
         //region tier 1 industry
 
         logging = new Focus("logging"){{
-            requirements(with(AgesItems.wood, 100));
+            requirements(with(AgesItems.wood, 300));
             reward(with());
             unlock(AgesBlocks.lumber);
         }};
 
         mining = new Focus("mining"){{
-            requirements(with(AgesItems.wood, 150));
+            requirements(with(AgesItems.wood, 100));
             reward(with(AgesItems.stone, 100));
-            unlock(AgesBlocks.basicMine, AgesItems.stone);
+            unlock(/*AgesBlocks.basicMine,*/ AgesItems.stone);
         }};
 
         charcoal = new Focus("charcoal"){{
-            requirements(with(AgesItems.wood, 200));
+            time = 300f;
+            requirements(with(AgesItems.wood, 100));
             reward(with(Items.coal, 100));
-            unlock(Items.coal, AgesBlocks.firepit);
+            unlock(Items.coal/*, AgesBlocks.pitKiln*/);
         }};
 
+        /*
         farming = new Focus("farming"){{
-            requirements(with());
+
             reward(with());
-            /* unlock(AgesBlocks.farm) */
+            unlock(AgesBlocks.farm)
         }};
+        */
 
         //endregion
 

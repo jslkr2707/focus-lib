@@ -2,6 +2,7 @@ package ages.content;
 
 import arc.struct.Seq;
 import mindustry.content.TechTree;
+import mindustry.type.*;
 
 import static mindustry.content.TechTree.*;
 import static mindustry.game.Objectives.*;
@@ -15,9 +16,9 @@ public class AgesTechTree {
 
     public static void load() {
         nodeRoot("Pre-mindustry Research Focus", ages, () -> {
-            node(logging, Seq.with(new sectorsCompleted(1)), () -> {});
-            node(mining, Seq.with(new sectorsCompleted(1)), () -> {});
-            node(charcoal, Seq.with(new sectorsCompleted(1)), () -> {});
+            node(logging, Seq.with(new sectorsCompleted(1), new notUnlocked(mining)), () -> {});
+            node(mining, Seq.with(new sectorsCompleted(1), new notUnlocked(logging)), () -> {});
+            node(charcoal, Seq.with(new sectorsCompleted(0)), () -> {});
         });
     }
 }

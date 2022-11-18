@@ -5,9 +5,10 @@ import arc.struct.Seq;
 import mindustry.ctype.*;
 import mindustry.type.ItemStack;
 
-import static ages.util.Overwriter.*;
+import static ages.util.Useful.*;
 
 public class Focus extends UnlockableContent{
+    public float time;
     public ItemStack[] requirements;
     public ItemStack[] rewards;
     /* contents to unlock together when unlocked */
@@ -18,14 +19,13 @@ public class Focus extends UnlockableContent{
 
         hideDetails = false;
 
+
         this.localizedName = Core.bundle.get("focus." + this.name + ".name", this.name);
         this.description = Core.bundle.get("focus." + this.name + ".description");
         this.details = Core.bundle.getOrNull("focus." + this.name + ".details");
     }
 
-    public void requirements(ItemStack[] stack){
-        this.requirements = stack;
-    }
+    public void setDelay(float time){ this.time = time; }
 
     public void reward(ItemStack[] stack){
         this.rewards = stack;
@@ -35,6 +35,10 @@ public class Focus extends UnlockableContent{
         for (UnlockableContent i: content){
             this.unlockContents.add(i);
         }
+    }
+
+    public void requirements(ItemStack... stack){
+        this.requirements = stack;
     }
 
     @Override
@@ -48,8 +52,8 @@ public class Focus extends UnlockableContent{
     }
 
     @Override
-    public ItemStack[] researchRequirements() {
-        return this.requirements;
+    public ItemStack[] researchRequirements(){
+        return requirements;
     }
 
     @Override
