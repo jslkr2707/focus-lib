@@ -46,9 +46,6 @@ public class Focus extends UnlockableContent{
         for (UnlockableContent content: this.unlockContents){
             if (content != null) content.unlock();
         }
-
-        focusDialog.focusRewards.add(rewards);
-        focusDialog.updateVisibility();
     }
 
     @Override

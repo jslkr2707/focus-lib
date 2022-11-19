@@ -38,13 +38,14 @@ import mindustry.ui.layout.TreeLayout.*;
 
 import java.util.*;
 
+import static ages.util.Useful.focusDialog;
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
 public class FocusDialog extends BaseDialog{
     public static boolean debugShowRequirements = false;
 
-    public final float nodeSize = Scl.scl(90f);
+    public final float nodeSize = Scl.scl(128f);
     public ObjectSet<TechTreeNode> nodes = new ObjectSet<>();
     public TechTreeNode root = new TechTreeNode(TechTree.roots.get(2), null);
     public TechNode lastNode = root.node;
@@ -120,11 +121,6 @@ public class FocusDialog extends BaseDialog{
                                 });
                             }
                         }
-                    }
-
-                    for (ItemStack stack: focusRewards){
-                        values[stack.item.id] += Math.max(stack.amount, 0);
-                        total += Math.max(stack.amount, 0);
                     }
                 }
 
@@ -384,9 +380,10 @@ public class FocusDialog extends BaseDialog{
             infoTable.touchable = Touchable.enabled;
 
             for(TechTreeNode node : nodes){
-                ImageButton button = new ImageButton(node.node.content.uiIcon, Styles.nodei);
+                ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
                 button.row();
                 button.visible(() -> node.visible);
+
                 button.clicked(() -> {
                     if(moved) return;
 
@@ -541,6 +538,7 @@ public class FocusDialog extends BaseDialog{
 
         void unlock(TechNode node){
             node.content.unlock();
+            items.add(((Focus)node.content).rewards);
 
             //unlock parent nodes in multiplayer.
             TechNode parent = node.parent;
@@ -588,6 +586,12 @@ public class FocusDialog extends BaseDialog{
 
             boolean selectable = selectable(node);
 
+            infoTable.row();
+            infoTable.table(t -> {
+                t.add(Core.bundle.format("focus.timeleft", ((Focus)node.content).time)).left();
+                t.row();
+            }).margin(9).left();
+
             infoTable.table(b -> {
                 b.margin(0).left().defaults().left();
 
@@ -597,7 +601,9 @@ public class FocusDialog extends BaseDialog{
                 b.add().grow();
                 b.table(desc -> {
                     desc.left().defaults().left();
-                    desc.add(node.content.localizedName);
+                    desc.add(node.content.localizedName).color(Pal.accent);
+                    desc.row();
+                    desc.add(Core.bundle.format("focus.timeleft", ((Focus)node.content).time)).color(Color.white).left();
                     desc.row();
                     if(locked(node) || debugShowRequirements){
                         desc.table(t -> {
@@ -657,6 +663,7 @@ public class FocusDialog extends BaseDialog{
                                     t.row();
                                 }
                             }else if(node.objectives.size > 0){
+                                t.row();
                                 t.table(r -> {
                                     r.add("@complete").left();
                                     r.row();
@@ -688,47 +695,42 @@ public class FocusDialog extends BaseDialog{
                             .disabled(i -> !canSpend(node)).growX().height(44f).colspan(3);
                 }
             });
-            if (researching != null) if (node.content == researching && reqComplete == 1) {
-                infoTable.row();
-                infoTable.table(t -> {
-                    t.add(Core.bundle.format("focus.timeleft", (int)(timer.getTime(0) / 60), focusTimer)).left();
-                    t.row();
-                }).margin(9).left();
-            }
 
             infoTable.row();
             if(node.content.description != null && node.content.inlineDescription){
-                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description + "\n\n" + Core.bundle.format("mod.display", node.content.minfo.mod.meta.displayName())).color(Color.lightGray).growX()).fillX();
+                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description).color(Color.lightGray).growX()).fillX();
             }
 
             infoTable.row();
-            infoTable.table(t -> {
-                t.margin(3f).left().defaults().left();
+            if (!node.content.unlocked()){
+                infoTable.table(t -> {
+                    t.margin(3f).left().defaults().left();
 
-                t.table(b -> {
-                    b.left();
-                    if (node.parent != null) {
-                        b.add(Core.bundle.format("focus.prerequisite") + ":").left();
-                        b.row();
-                        b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
-                        b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
-                        b.row();
+                    t.table(b -> {
+                        b.left();
+                        if (node.parent != null) {
+                            b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.lightGray).left();
+                            b.row();
+                            b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
+                            b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
+                            b.row();
 
-                        Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
-                        if (pre != null){
-                            Focus[] foc = ((AgesObjectives.focusResearch)pre).prerequisite;
+                            Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
+                            if (pre != null){
+                                Focus[] foc = ((AgesObjectives.focusResearch)pre).prerequisite;
 
-                            for (Focus f: foc){
-                                b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
-                                b.row();
+                                for (Focus f: foc){
+                                    b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                    b.row();
+                                }
                             }
+                        } else {
+                            b.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
+                            b.row();
                         }
-                    } else {
-                        b.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
-                        b.row();
-                    }
-                }).left();
-            }).margin(9f).left();
+                    }).left();
+                }).margin(9f).left();
+            }
 
             addChild(infoTable);
             infoTable.pack();
@@ -748,7 +750,7 @@ public class FocusDialog extends BaseDialog{
                     boolean lock = locked(node.node) || locked(child.node);
                     Draw.z(lock ? 1f : 2f);
 
-                    Lines.stroke(Scl.scl(4f), lock ? Pal.gray : Pal.accent);
+                    Lines.stroke(Scl.scl(8f), lock ? Pal.gray : Pal.accent);
                     Draw.alpha(parentAlpha);
                     if(Mathf.equal(Math.abs(node.y - child.y), Math.abs(node.x - child.x), 1f) && Mathf.dstm(node.x, node.y, child.x, child.y) <= node.width*3){
                         Lines.line(node.x + offsetX, node.y + offsetY, child.x + offsetX, child.y + offsetY);
