@@ -381,6 +381,9 @@ public class FocusDialog extends BaseDialog{
 
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
+                button.image().marginTop(3f).marginBottom(0f);
+                button.row();
+                button.add(node.node.content.localizedName, Styles.defaultLabel).marginBottom(3f).maxSize(nodeSize).center();
                 button.row();
                 button.visible(() -> node.visible);
 
@@ -587,10 +590,6 @@ public class FocusDialog extends BaseDialog{
             boolean selectable = selectable(node);
 
             infoTable.row();
-            infoTable.table(t -> {
-                t.add(Core.bundle.format("focus.timeleft", ((Focus)node.content).time)).left();
-                t.row();
-            }).margin(9).left();
 
             infoTable.table(b -> {
                 b.margin(0).left().defaults().left();
