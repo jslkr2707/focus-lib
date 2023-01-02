@@ -1,14 +1,11 @@
 package ages.content;
 
 import ages.world.blocks.defense.WiredFence;
-import ages.world.blocks.defense.DefenseTower;
 import ages.world.blocks.production.*;
-import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.production.GenericCrafter;
 
 import static mindustry.type.ItemStack.*;
 
@@ -19,7 +16,7 @@ public class AgesBlocks{
     /* region production */
     ancientFarm, lumber, basicMine,
     /* region crafting */
-    pitKiln, furnace,
+    pitKiln, furnace, bellow,
     /* region religion */
     altar,
     /* region defense */
@@ -45,23 +42,6 @@ public class AgesBlocks{
             maxDurability = 1000f;
         }};
 
-        bulwark = new DefenseTower("bulwark"){{
-            requirements(Category.turret, with());
-
-            health = 500;
-            size = 2;
-
-            reload = 120f;
-            range = 150f;
-
-            ammo(
-                    AgesItems.stone, new BasicBulletType(1.5f, 5){{
-                        width = height = 4f;
-                        lifetime = 120f;
-                    }}
-            );
-        }};
-
         /*
         pitKiln = new ModernCrafter("pit-kiln"){{
             requirements(Category.crafting, with());
@@ -82,23 +62,9 @@ public class AgesBlocks{
                         capacityMultiplier = 1.2f;
                     }}
             );
-        }};
+       }};
 
-
-        furnace = new ModernCrafter("furnace"){{
-
-            requirements(Category.crafting, with());
-            size = 2;
-            consumeFuel(
-                    new Fuel(AgesItems.wood, 2){{
-                        heatCapacity = 300f;
-                        heatRate = 0.8f;
-                        burnEffect = Fx.smoke;
-                    }}
-            );
-        }};
-
-         */
+       */
 
         lumber = new Wall("lumber"){{
             requirements(Category.defense, with(AgesItems.wood, 24));
@@ -106,5 +72,11 @@ public class AgesBlocks{
             size=1;
         }};
 
+        bellow = new FuelConsumer("bellow"){{
+            requirements(Category.crafting, with());
+            health = 400;
+            size = 1;
+            addFuel(AgesFuels.wood);
+        }};
     }
 }

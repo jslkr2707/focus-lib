@@ -6,18 +6,18 @@ import mindustry.type.*;
 
 public class AgesItems{
     public static Item
-    /* region ancient */
-    wood, stone, dirt, brick,
-    /* region metal */
+    charcoal,
+
+    wood, stone,
+
     ironOre, iron, steel,
-    tinOre, tin, tinPowder,
+    tinOre, tin,
     bauxite, aluminum;
 
     public static void load(){
-        dirt = new Item("dirt", Color.valueOf("46205a")){{
-            hardness = 0;
-            cost = 1;
-            lowPriority = true;
+        charcoal = new Item("charcoal", Color.brick){{
+            flammability = 0.5f;
+            buildable = false;
         }};
 
         wood = new Item("wood", Color.brown){{
@@ -29,10 +29,6 @@ public class AgesItems{
         stone = new Item("stone", Color.gray){{
             hardness = 1;
             cost = 3;
-        }};
-
-        brick = new Item("brick", Color.valueOf("bc4a3c")){{
-            cost = 2;
         }};
 
         /*

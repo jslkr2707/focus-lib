@@ -1,23 +1,14 @@
 package ages.world.blocks.production;
 
+import ages.type.*;
 import arc.*;
 import arc.graphics.*;
-import arc.math.*;
-import arc.struct.*;
-import arc.util.io.*;
-import mindustry.content.*;
-import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import multicraft.MultiCrafter;
 
-import static ages.AgesVars.*;
-import static arc.Core.bundle;
 import static mindustry.type.ItemStack.with;
 
 public class ModernCrafter extends MultiCrafter{
@@ -62,6 +53,10 @@ public class ModernCrafter extends MultiCrafter{
         public boolean acceptItem(Building source, Item item){
             if (currentFuel() == null || item != currentFuel().item) return false;
             return super.acceptItem(source, item);
+        }
+
+        public float realEfficiency(){
+            return efficiency * heat * warmup;
         }
 
         public Fuel currentFuel(){

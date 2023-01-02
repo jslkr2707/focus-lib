@@ -37,7 +37,6 @@ public class AgesFocus{
         }};
 
         charcoal = new Focus("charcoal"){{
-            time = 300f;
             requirements(with(AgesItems.wood, 100));
             reward(with(Items.coal, 100));
             unlock(Items.coal/*, AgesBlocks.pitKiln*/);

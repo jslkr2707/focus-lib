@@ -23,8 +23,7 @@ public class Ages extends Mod{
     public void init(){
         Mods.LoadedMod mod = mods.locateMod("ages");
 
-        FocusDialog dialog = new FocusDialog();
-        focusDialog = dialog;
+        focusDialog = new FocusDialog();
 
         if(!headless){
             //credits to BM and PU
@@ -40,7 +39,7 @@ public class Ages extends Mod{
 
         //i... don't know what im doing, but it works so ugh
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            addSelect(dialog);
+            addSelect(focusDialog);
         });
     }
 

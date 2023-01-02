@@ -1,6 +1,7 @@
 package ages.util;
 
 import ages.ui.dialogs.FocusDialog;
+import arc.*;
 import arc.scene.ui.layout.Table;
 import mindustry.content.TechTree;
 import mindustry.gen.Tex;
@@ -57,5 +58,9 @@ public class Useful {
             }
         }
         return a;
+    }
+
+    public static void putSettings(Item item, int amount){
+        Core.settings.put(item.localizedName, amount);
     }
 }

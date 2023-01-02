@@ -2,13 +2,13 @@ package ages.type;
 
 import arc.Core;
 import arc.struct.Seq;
+import mindustry.*;
 import mindustry.ctype.*;
-import mindustry.type.ItemStack;
+import mindustry.type.*;
 
 import static ages.util.Useful.*;
 
 public class Focus extends UnlockableContent{
-    public float time;
     public ItemStack[] requirements;
     public ItemStack[] rewards;
     /* contents to unlock together when unlocked */
@@ -24,8 +24,6 @@ public class Focus extends UnlockableContent{
         this.description = Core.bundle.get("focus." + this.name + ".description");
         this.details = Core.bundle.getOrNull("focus." + this.name + ".details");
     }
-
-    public void setDelay(float time){ this.time = time; }
 
     public void reward(ItemStack[] stack){
         this.rewards = stack;
@@ -45,6 +43,15 @@ public class Focus extends UnlockableContent{
     public void onUnlock(){
         for (UnlockableContent content: this.unlockContents){
             if (content != null) content.unlock();
+        }
+    }
+
+    @Override
+    public void clearUnlock(){
+        super.clearUnlock();
+
+        for (Item i: Vars.content.items()){
+            Core.settings.put(i.localizedName, 0);
         }
     }
 

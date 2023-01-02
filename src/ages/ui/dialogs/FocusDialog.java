@@ -3,7 +3,7 @@ package ages.ui.dialogs;
 import ages.content.*;
 import ages.core.*;
 import ages.type.Focus;
-import ages.util.AgesObjectives;
+import ages.util.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -20,9 +20,11 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Objectives.*;
@@ -38,7 +40,7 @@ import mindustry.ui.layout.TreeLayout.*;
 
 import java.util.*;
 
-import static ages.util.Useful.focusDialog;
+import static ages.util.Useful.*;
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
@@ -53,12 +55,11 @@ public class FocusDialog extends BaseDialog{
     public ItemsDisplay itemDisplay;
     public View view;
     public Focus researching;
-    public float focusTimer;
     public int reqComplete = -1;
-    public Interval timer;
     public Drawable buttonGreen = Core.atlas.drawable("button-green");
 
     public ItemSeq items;
+    public Seq<Item> allItems = content.items();
     public ItemSeq focusRewards = new ItemSeq();
 
     private boolean showTechSelect;
@@ -88,8 +89,6 @@ public class FocusDialog extends BaseDialog{
             itemDisplay.layout();
         };
 
-        this.timer = new Interval(2);
-
         onResize(checkMargin);
 
         shown(() -> {
@@ -104,59 +103,7 @@ public class FocusDialog extends BaseDialog{
                 switchTree(TechTree.roots.get(2));
             }
 
-            items = new ItemSeq(){
-                //store sector item amounts for modifications
-                ObjectMap<Sector, ItemSeq> cache = new ObjectMap<>();
-
-                {
-                    //add global counts of each sector
-                    for(Planet planet : content.planets()){
-                        for(Sector sector : planet.sectors){
-                            if(sector.hasBase()){
-                                ItemSeq cached = sector.items();
-                                cache.put(sector, cached);
-                                cached.each((item, amount) -> {
-                                    values[item.id] += Math.max(amount, 0);
-                                    total += Math.max(amount, 0);
-                                });
-                            }
-                        }
-                    }
-                }
-
-                //this is the only method that actually modifies the sequence itself.
-                @Override
-                public void add(Item item, int amount){
-                    //only have custom removal logic for when the sequence gets items taken out of it (e.g. research)
-                    if(amount < 0){
-                        //remove items from each sector's storage, one by one
-
-                        //negate amount since it's being *removed* - this makes it positive
-                        amount = -amount;
-
-                        //% that gets removed from each sector
-                        double percentage = (double)amount / get(item);
-                        int[] counter = {amount};
-                        cache.each((sector, seq) -> {
-                            if(counter[0] == 0) return;
-
-                            //amount that will be removed
-                            int toRemove = Math.min((int)Math.ceil(percentage * seq.get(item)), counter[0]);
-
-                            //actually remove it from the sector
-                            sector.removeItem(item, toRemove);
-                            seq.remove(item, toRemove);
-
-                            counter[0] -= toRemove;
-                        });
-
-                        //negate again to display correct number
-                        amount = -amount;
-                    }
-
-                    super.add(item, amount);
-                }
-            };
+            items = items();
 
             checkNodes(root);
             treeLayout();
@@ -223,10 +170,6 @@ public class FocusDialog extends BaseDialog{
                 view.clamp();
             }
         });
-    }
-
-    public float getTimer(){
-        return this.timer.getTime(0);
     }
 
     public void switchTree(TechNode node){
@@ -330,6 +273,50 @@ public class FocusDialog extends BaseDialog{
         return node.content.locked();
     }
 
+    ItemSeq items(){
+        return new ItemSeq() {
+            //store sector item amounts for modifications
+            ObjectMap<Sector, ItemSeq> cache = new ObjectMap<>();
+
+            {
+                for (Item item : content.items()) {
+                    values[item.id] = 0;
+                }
+                total = 0;
+
+                //add global counts of each sector
+                for (Planet planet : content.planets()) {
+                    for (Sector sector : planet.sectors) {
+                        if (sector.hasBase()) {
+                            ItemSeq cached = sector.items();
+                            cache.put(sector, cached);
+                            cached.each((item, amount) -> {
+                                values[item.id] += Math.max(amount, 0);
+                                total += Math.max(amount, 0);
+                            });
+                        }
+                    }
+                }
+            }
+
+            {
+                for (Focus focus : view.completedFocus()) {
+                    if (focus != null) {
+                        for (ItemStack stack : focus.rewards) {
+                            values[stack.item.id] += stack.amount;
+                            total += stack.amount;
+                        }
+
+                        for (ItemStack stack : focus.requirements) {
+                            values[stack.item.id] -= stack.amount;
+                            total -= stack.amount;
+                        }
+                    }
+                }
+            }
+        };
+    }
+
     class LayoutNode extends TreeNode<LayoutNode>{
         final TechTreeNode node;
 
@@ -371,7 +358,18 @@ public class FocusDialog extends BaseDialog{
             rebuildAll();
         }
 
+        public Focus[] completedFocus(){
+            Seq<Content> focusList = content.getBy(ContentType.typeid_UNUSED).filter(c -> c instanceof Focus);
+            Focus[] arr = new Focus[focusList.size];
+            for (int i = 0;i < focusList.size; i++){
+                if (((Focus)focusList.get(i)).unlocked()) arr[i] = (Focus)focusList.get(i);
+            }
+            return arr;
+        }
 
+        public void editSettings(Item item, int amount){
+            if (Core.settings.has(item.localizedName)) Core.settings.put(item.localizedName, amount);
+        }
 
         public void rebuildAll(){
             clear();
@@ -456,14 +454,6 @@ public class FocusDialog extends BaseDialog{
             released(() -> moved = false);
         }
 
-        public Objective getCompleteObjective(TechNode node){
-            return node.objectives.find(b -> b instanceof Objectives.SectorComplete);
-        }
-
-        public Objective getSectorsCompletedObjective(TechNode node){
-            return node.objectives.find(b -> b instanceof AgesObjectives.sectorsCompleted);
-        }
-
         void clamp(){
             float pad = nodeSize;
 
@@ -519,20 +509,16 @@ public class FocusDialog extends BaseDialog{
             }
 
             if(complete){
-                focusTimer = ((Focus)node.content).time;
                 reqComplete = 1;
-                timer.reset(0, 0);
-                Time.run(focusTimer, () -> {
-                    unlock(node);
-                    researching = null;
-                    focusTimer = 0;
-                    reqComplete = -1;
-                    timer.reset(0, 0);
-                });
+
+                unlock(node);
+                researching = null;
+                reqComplete = -1;
+                items = items();
             }
 
             node.save();
-            Log.info("reached spend2");
+
             //??????
             Core.scene.act();
             rebuild(shine);
@@ -541,7 +527,6 @@ public class FocusDialog extends BaseDialog{
 
         void unlock(TechNode node){
             node.content.unlock();
-            items.add(((Focus)node.content).rewards);
 
             //unlock parent nodes in multiplayer.
             TechNode parent = node.parent;
@@ -557,6 +542,7 @@ public class FocusDialog extends BaseDialog{
             Core.scene.act();
             Sounds.unlock.play();
             Events.fire(new ResearchEvent(node.content));
+            ui.research.updateVisibility();
         }
 
         void rebuild(){
@@ -602,8 +588,7 @@ public class FocusDialog extends BaseDialog{
                     desc.left().defaults().left();
                     desc.add(node.content.localizedName).color(Pal.accent);
                     desc.row();
-                    desc.add(Core.bundle.format("focus.timeleft", ((Focus)node.content).time)).color(Color.white).left();
-                    desc.row();
+
                     if(locked(node) || debugShowRequirements){
                         desc.table(t -> {
                             t.left();
@@ -728,6 +713,25 @@ public class FocusDialog extends BaseDialog{
                             b.row();
                         }
                     }).left();
+                }).margin(9f).left();
+
+                infoTable.row();
+                infoTable.table(b -> {
+                    b.margin(3f).left().defaults().left();
+                    ItemStack[] rew = ((Focus)node.content).rewards;
+
+                    if (rew != null){
+                        b.add(Core.bundle.format("focus.reward"));
+                        b.row();
+                        for (ItemStack i: rew){
+                            b.table(re -> {
+                                re.left().margin(4f).marginLeft(9f);
+                                re.image(i.item.uiIcon).left().padRight(3f);
+                                re.add(Core.bundle.format("focus.rewards", i.item.localizedName, i.amount));
+                            }).left();
+                            b.row();
+                        }
+                    }
                 }).margin(9f).left();
             }
 
