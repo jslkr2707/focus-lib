@@ -2,6 +2,7 @@ package ages.content;
 
 import ages.type.*;
 import arc.graphics.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class AgesItems{
@@ -31,7 +32,6 @@ public class AgesItems{
             cost = 3;
         }};
 
-        /*
         ironOre = new Item("ironOre", Pal.metalGrayDark){{
             hardness = 2;
         }};
@@ -44,9 +44,6 @@ public class AgesItems{
             cost = 6;
         }};
 
-        ironPowder = new Item("iron-powder", Color.darkGray){{
-        }};
-
         tinOre = new Item("tinOre", Color.rgb(167, 166, 186)){{
             hardness = 2;
             cost = 2;
@@ -56,8 +53,6 @@ public class AgesItems{
             cost = 3;
         }};
 
-        tinPowder = new Item("tin-powder", Color.rgb(154, 177, 173)){};
-
         bauxite = new Item("bauxite", Color.rgb(237,238,218)){{
             hardness = 2;
         }};
@@ -65,6 +60,6 @@ public class AgesItems{
         aluminum = new Item("aluminum", Color.rgb(80, 80, 80)){{
             cost = 4;
         }};
-         */
+
     }
 }

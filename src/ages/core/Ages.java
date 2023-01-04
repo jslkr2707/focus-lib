@@ -50,6 +50,7 @@ public class Ages extends Mod{
         AgesBlocks.load();
         AgesFocus.load();
         AgesTechTree.load();
+        AgesSounds.load();
     }
 
     public void addSelect(FocusDialog dialog){

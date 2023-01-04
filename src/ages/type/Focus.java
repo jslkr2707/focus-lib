@@ -4,11 +4,13 @@ import arc.Core;
 import arc.struct.Seq;
 import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 
 import static ages.util.Useful.*;
 
 public class Focus extends UnlockableContent{
+    public int addSectors = 1;
     public ItemStack[] requirements;
     public ItemStack[] rewards;
     /* contents to unlock together when unlocked */
@@ -18,8 +20,6 @@ public class Focus extends UnlockableContent{
         super(name);
 
         hideDetails = false;
-
-
         this.localizedName = Core.bundle.get("focus." + this.name + ".name", this.name);
         this.description = Core.bundle.get("focus." + this.name + ".description");
         this.details = Core.bundle.getOrNull("focus." + this.name + ".details");

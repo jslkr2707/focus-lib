@@ -1,7 +1,5 @@
 package ages.ui.dialogs;
 
-import ages.content.*;
-import ages.core.*;
 import ages.type.Focus;
 import ages.util.*;
 import arc.*;
@@ -19,19 +17,15 @@ import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
-import mindustry.io.TypeIO;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.BaseDialog;
@@ -40,7 +34,6 @@ import mindustry.ui.layout.TreeLayout.*;
 
 import java.util.*;
 
-import static ages.util.Useful.*;
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
@@ -54,13 +47,10 @@ public class FocusDialog extends BaseDialog{
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
     public View view;
-    public Focus researching;
-    public int reqComplete = -1;
-    public Drawable buttonGreen = Core.atlas.drawable("button-green");
+    public Focus current;
+    public int currentSectors = -1;
 
     public ItemSeq items;
-    public Seq<Item> allItems = content.items();
-    public ItemSeq focusRewards = new ItemSeq();
 
     private boolean showTechSelect;
 
@@ -266,7 +256,7 @@ public class FocusDialog extends BaseDialog{
     }
 
     boolean selectable(TechNode node){
-        return (node.content.unlocked() || !node.objectives.contains(i -> !i.complete())) && (node.parent == null || node.parent.content.unlocked());
+        return current == node.content ? view.reqComplete(node) : (node.content.unlocked() || !node.objectives.contains(i -> !i.complete())) && (node.parent == null || node.parent.content.unlocked());
     }
 
     boolean locked(TechNode node){
@@ -379,10 +369,9 @@ public class FocusDialog extends BaseDialog{
 
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
-                button.image().marginTop(3f).marginBottom(0f);
+                button.getImageCell().marginTop(3f).marginBottom(0f);
                 button.row();
-                button.add(node.node.content.localizedName, Styles.defaultLabel).marginBottom(3f).maxSize(nodeSize).center();
-                button.row();
+                button.add(node.node.content.localizedName).marginBottom(3f).center();
                 button.visible(() -> node.visible);
 
                 button.clicked(() -> {
@@ -406,8 +395,7 @@ public class FocusDialog extends BaseDialog{
                                 }
                             });
                         }
-                    }else if(canSpend(node.node) && locked(node.node) && researching == null && reqComplete == -1){
-                        researching = (Focus) node.node.content;
+                    }else if(canSpend(node.node) && locked(node.node)){
                         spend(node.node);
                     }
                 });
@@ -430,9 +418,9 @@ public class FocusDialog extends BaseDialog{
                     float offset = (Core.graphics.getHeight() % 2) / 2f;
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
                     button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed
-                            : researching == null ? Tex.button : node.node.content == researching ? reqComplete == 1 ? buttonGreen : Tex.button : Tex.buttonRed;
+                            : current == null ? Tex.button : node.node.content == current ? reqComplete(node.node) ? Core.atlas.drawable("button-green") : Tex.button : Tex.buttonRed;
 
-                    ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.uiIcon);
+                    ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.fullIcon);
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
                     button.getImage().setScaling(Scaling.bounded);
                 });
@@ -488,33 +476,37 @@ public class FocusDialog extends BaseDialog{
             boolean[] shine = new boolean[node.requirements.length];
             boolean[] usedShine = new boolean[content.items().size];
 
-            for(int i = 0; i < node.requirements.length; i++){
-                ItemStack req = node.requirements[i];
-                ItemStack completed = node.finishedRequirements[i];
+            if (current == null) {
+                for (int i = 0; i < node.requirements.length; i++) {
+                    ItemStack req = node.requirements[i];
+                    ItemStack completed = node.finishedRequirements[i];
 
-                //amount actually taken from inventory
-                int used = Math.max(Math.min(req.amount - completed.amount, items.get(req.item)), 0);
-                items.remove(req.item, used);
-                completed.amount += used;
+                    //amount actually taken from inventory
+                    int used = Math.max(Math.min(req.amount - completed.amount, items.get(req.item)), 0);
+                    items.remove(req.item, used);
+                    completed.amount += used;
 
-                if(used > 0){
-                    shine[i] = true;
-                    usedShine[req.item.id] = true;
+                    if (used > 0) {
+                        shine[i] = true;
+                        usedShine[req.item.id] = true;
+                    }
+
+                    //disable completion if the completed amount has not reached requirements
+                    if (completed.amount < req.amount) {
+                        complete = false;
+                    }
                 }
 
-                //disable completion if the completed amount has not reached requirements
-                if(completed.amount < req.amount){
-                    complete = false;
+                if(complete){
+                    current = (Focus)node.content;
+                    currentSectors = Useful.completed();
+                    AgesSounds.startResearch.play();
                 }
-            }
-
-            if(complete){
-                reqComplete = 1;
-
+            } else if (reqComplete(node)){
                 unlock(node);
-                researching = null;
-                reqComplete = -1;
                 items = items();
+                current = null;
+                currentSectors = -1;
             }
 
             node.save();
@@ -543,6 +535,10 @@ public class FocusDialog extends BaseDialog{
             Sounds.unlock.play();
             Events.fire(new ResearchEvent(node.content));
             ui.research.updateVisibility();
+        }
+
+        boolean reqComplete(TechNode node){
+            return Useful.completed() >= currentSectors + ((Focus)node.content).addSectors;
         }
 
         void rebuild(){
@@ -593,60 +589,62 @@ public class FocusDialog extends BaseDialog{
                         desc.table(t -> {
                             t.left();
                             if(selectable){
-                                //check if there is any progress, add research progress text
-                                if(Structs.contains(node.finishedRequirements, s -> s.amount > 0)){
-                                    float sum = 0f, used = 0f;
-                                    boolean shiny = false;
+                                if (current != node.content) {
+                                    //check if there is any progress, add research progress text
+                                    if (Structs.contains(node.finishedRequirements, s -> s.amount > 0)) {
+                                        float sum = 0f, used = 0f;
+                                        boolean shiny = false;
 
-                                    for(int i = 0; i < node.requirements.length; i++){
-                                        sum += node.requirements[i].item.cost * node.requirements[i].amount;
-                                        used += node.finishedRequirements[i].item.cost * node.finishedRequirements[i].amount;
-                                        if(shine != null) shiny |= shine[i];
-                                    }
-
-                                    Label label = t.add(Core.bundle.format("research.progress", Math.min((int)(used / sum * 100), 99))).left().get();
-
-                                    if(shiny){
-                                        label.setColor(Pal.accent);
-                                        label.actions(Actions.color(Color.lightGray, 0.75f, Interp.fade));
-                                    }else{
-                                        label.setColor(Color.lightGray);
-                                    }
-
-                                    t.row();
-                                }
-
-                                for(int i = 0; i < node.requirements.length; i++){
-                                    ItemStack req = node.requirements[i];
-                                    ItemStack completed = node.finishedRequirements[i];
-
-                                    //skip finished stacks
-                                    if(req.amount <= completed.amount && !debugShowRequirements) continue;
-                                    boolean shiny = shine != null && shine[i];
-
-                                    t.table(list -> {
-                                        int reqAmount = debugShowRequirements ? req.amount : req.amount - completed.amount;
-
-                                        list.left();
-                                        list.image(req.item.uiIcon).size(8 * 3).padRight(3);
-                                        list.add(req.item.localizedName).color(Color.lightGray);
-                                        Label label = list.label(() -> " " +
-                                                UI.formatAmount(Math.min(items.get(req.item), reqAmount)) + " / "
-                                                + UI.formatAmount(reqAmount)).get();
-
-                                        Color targetColor = items.has(req.item) ? Color.lightGray : Color.scarlet;
-
-                                        if(shiny){
-                                            label.setColor(Pal.accent);
-                                            label.actions(Actions.color(targetColor, 0.75f, Interp.fade));
-                                        }else{
-                                            label.setColor(targetColor);
+                                        for (int i = 0; i < node.requirements.length; i++) {
+                                            sum += node.requirements[i].item.cost * node.requirements[i].amount;
+                                            used += node.finishedRequirements[i].item.cost * node.finishedRequirements[i].amount;
+                                            if (shine != null) shiny |= shine[i];
                                         }
 
-                                    }).fillX().left();
-                                    t.row();
+                                        Label label = t.add(Core.bundle.format("research.progress", Math.min((int) (used / sum * 100), 99))).left().get();
+
+                                        if (shiny) {
+                                            label.setColor(Pal.accent);
+                                            label.actions(Actions.color(Color.lightGray, 0.75f, Interp.fade));
+                                        } else {
+                                            label.setColor(Color.lightGray);
+                                        }
+
+                                        t.row();
+                                    }
+
+                                    for (int i = 0; i < node.requirements.length; i++) {
+                                        ItemStack req = node.requirements[i];
+                                        ItemStack completed = node.finishedRequirements[i];
+
+                                        //skip finished stacks
+                                        if (req.amount <= completed.amount && !debugShowRequirements) continue;
+                                        boolean shiny = shine != null && shine[i];
+
+                                        t.table(list -> {
+                                            int reqAmount = debugShowRequirements ? req.amount : req.amount - completed.amount;
+
+                                            list.left();
+                                            list.image(req.item.uiIcon).size(8 * 3).padRight(3);
+                                            list.add(req.item.localizedName).color(Color.lightGray);
+                                            Label label = list.label(() -> " " +
+                                                    UI.formatAmount(Math.min(items.get(req.item), reqAmount)) + " / "
+                                                    + UI.formatAmount(reqAmount)).get();
+
+                                            Color targetColor = items.has(req.item) ? Color.lightGray : Color.scarlet;
+
+                                            if (shiny) {
+                                                label.setColor(Pal.accent);
+                                                label.actions(Actions.color(targetColor, 0.75f, Interp.fade));
+                                            } else {
+                                                label.setColor(targetColor);
+                                            }
+
+                                        }).fillX().left();
+                                        t.row();
+                                    }
                                 }
-                            }else if(node.objectives.size > 0){
+                            }else if(current == null){
                                 t.row();
                                 t.table(r -> {
                                     r.add("@complete").left();
@@ -679,59 +677,88 @@ public class FocusDialog extends BaseDialog{
                             .disabled(i -> !canSpend(node)).growX().height(44f).colspan(3);
                 }
             });
-
             infoTable.row();
-            if(node.content.description != null && node.content.inlineDescription){
-                infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description).color(Color.lightGray).growX()).fillX();
-            }
-
-            infoTable.row();
-            if (!node.content.unlocked()){
-                infoTable.table(t -> {
-                    t.margin(3f).left().defaults().left();
-
-                    t.table(b -> {
-                        b.left();
-                        if (node.parent != null) {
-                            b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.lightGray).left();
-                            b.row();
-                            b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
-                            b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
-                            b.row();
-
-                            Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
-                            if (pre != null){
-                                Focus[] foc = ((AgesObjectives.focusResearch)pre).prerequisite;
-
-                                for (Focus f: foc){
-                                    b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
-                                    b.row();
-                                }
-                            }
-                        } else {
-                            b.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
-                            b.row();
-                        }
-                    }).left();
-                }).margin(9f).left();
+            if (current != node.content) {
+                if (node.content.description != null && node.content.inlineDescription) {
+                    infoTable.table(t -> t.margin(9f).left().labelWrap(node.content.description).color(Color.lightGray).growX()).fillX();
+                }
 
                 infoTable.row();
-                infoTable.table(b -> {
-                    b.margin(3f).left().defaults().left();
-                    ItemStack[] rew = ((Focus)node.content).rewards;
+                if (!node.content.unlocked()) {
+                    infoTable.table(t -> {
+                        t.margin(3f).left().defaults().left();
 
-                    if (rew != null){
-                        b.add(Core.bundle.format("focus.reward"));
-                        b.row();
-                        for (ItemStack i: rew){
-                            b.table(re -> {
-                                re.left().margin(4f).marginLeft(9f);
-                                re.image(i.item.uiIcon).left().padRight(3f);
-                                re.add(Core.bundle.format("focus.rewards", i.item.localizedName, i.amount));
-                            }).left();
+                        t.table(b -> {
+                            b.left();
+                            if (node.parent != null) {
+                                b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.lightGray).left();
+                                b.row();
+                                b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
+                                b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
+                                b.row();
+
+                                Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
+                                if (pre != null) {
+                                    Focus[] foc = ((AgesObjectives.focusResearch) pre).prerequisite;
+
+                                    for (Focus f : foc) {
+                                        b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                        b.row();
+                                    }
+                                }
+                            } else {
+                                b.add(Core.bundle.format("focus.nonerequired")).color(Color.red).left();
+                                b.row();
+                            }
+                        }).left();
+                    }).margin(9f).left();
+
+                    infoTable.row();
+                    if (((Focus) node.content).rewards.length > 0) {
+                        infoTable.table(b -> {
+                            b.margin(3f).left().defaults().left();
+                            ItemStack[] rew = ((Focus) node.content).rewards;
+
+                            b.add(Core.bundle.format("focus.reward")).color(Color.lime);
                             b.row();
-                        }
+                            for (ItemStack i : rew) {
+                                b.table(re -> {
+                                    re.left().margin(4f).marginLeft(9f);
+                                    re.image(i.item.uiIcon).left().padRight(3f);
+                                    re.add(Core.bundle.format("focus.rewards", i.item.localizedName, i.amount)).color(Color.white);
+                                }).left();
+                                b.row();
+                            }
+                        }).margin(9f).left();
                     }
+
+                    infoTable.row();
+                    if (((Focus) node.content).unlockContents.size > 0) {
+                        infoTable.table(r -> {
+                            r.margin(3f).left().defaults().left();
+
+                            r.add(Core.bundle.format("focus.additional")).color(Pal.accent);
+                            r.row();
+                            for (UnlockableContent c : ((Focus) node.content).unlockContents) {
+                                r.table(u -> {
+                                    u.left().margin(4f).marginLeft(9f);
+                                    u.image(c.uiIcon).left().padRight(3f);
+                                    u.add(c.localizedName).color(Color.white);
+                                }).left();
+                                r.row();
+                            }
+                        }).margin(9f).left();
+                    }
+                }
+            } else {
+                infoTable.table(tbl -> {
+                    tbl.margin(3f).left().defaults().left();
+                    tbl.add(Core.bundle.format("focus.untilcomplete")).color(Color.red);
+                    tbl.row();
+                    tbl.table(ad -> {
+                        ad.margin(3f).left().marginLeft(9f);
+                        ad.add(Core.bundle.format("focus.moresectors", Useful.completed() - currentSectors, ((Focus)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
+                    }).left();
                 }).margin(9f).left();
             }
 
