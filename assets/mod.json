@@ -5,7 +5,7 @@
   "author": "AshesKaiser",
   "description": "My first [orange]java [white]Mindustry mod",
   "version": "0.1",
-  "main": "ages.core.Ages",
+  "main": "ages.Ages",
   "minGameVersion": "136",
   "dependencies": [],
   "hidden": false

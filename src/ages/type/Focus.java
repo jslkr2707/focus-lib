@@ -2,12 +2,8 @@ package ages.type;
 
 import arc.Core;
 import arc.struct.Seq;
-import mindustry.*;
 import mindustry.ctype.*;
-import mindustry.gen.*;
 import mindustry.type.*;
-
-import static ages.util.Useful.*;
 
 public class Focus extends UnlockableContent{
     public int addSectors = 1;
@@ -50,9 +46,7 @@ public class Focus extends UnlockableContent{
     public void clearUnlock(){
         super.clearUnlock();
 
-        for (Item i: Vars.content.items()){
-            Core.settings.put(i.localizedName, 0);
-        }
+        if (Core.settings.has("current")) Core.settings.remove("current");
     }
 
     @Override

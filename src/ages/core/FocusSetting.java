@@ -1,19 +1,19 @@
-package ages.util;
+package ages.core;
 
 import ages.ui.dialogs.FocusDialog;
 import arc.*;
+import arc.scene.*;
+import arc.scene.style.*;
 import arc.scene.ui.layout.Table;
 import mindustry.content.TechTree;
 import mindustry.gen.Tex;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
 import static mindustry.Vars.*;
 
-public class Useful {
-    public static FocusDialog focusDialog;
+public class FocusSetting {
     public static boolean showTechSelect;
     public static void focusBtn(Table t){
         t.button(b -> {
@@ -28,9 +28,8 @@ public class Useful {
                     t.table(Tex.button, in -> {
                         in.defaults().width(300f).height(60f);
                         for(TechTree.TechNode node : TechTree.roots){
-                            if(node.requiresUnlock && !node.content.unlocked() && node != ui.research.getPrefRoot()) continue;
-                            if (node.localizedName().equals("Pre-mindustry Research Focus")) continue;
-                            //TODO toggle
+                            if ((node.requiresUnlock && !node.content.unlocked() && node != ui.research.getPrefRoot()) || node.localizedName().equals("Pre-mindustry Research Focus")) continue;
+
                             in.button(node.localizedName(), node.icon(), Styles.flatTogglet, iconMed, () -> {
                                 if(node == ui.research.lastNode){
                                     return;
@@ -42,25 +41,34 @@ public class Useful {
                         }
                     });
                 });
-
                 addCloseButton();
             }}.show();
-        }).visible(() -> showTechSelect = TechTree.roots.count(node -> !(node.requiresUnlock && !node.content.unlocked())) > 1).minWidth(300f);
+        }).visible(showTechSelect = TechTree.roots.count(node -> !(node.requiresUnlock && !node.content.unlocked())) > 1).minWidth(300f);
     }
 
-    public static int completed(){
-        int a = 0;
-        for(Planet planet: content.planets()){
-            for (Sector sector: planet.sectors){
-                if (sector.isCaptured()){
-                    a += 1;
-                }
+    public static void init(){
+        FocusDialog dialog = new FocusDialog();
+
+        ui.research.shown(() -> {
+            var group = (Group)ui.research.getChildren().first();
+
+            if (mobile){
+
+            } else {
+                ui.research.titleTable.remove();
+                group.fill(c -> focusBtn(c.center().top()));
+                group.fill(c -> c.center().top().marginTop(70f)
+                        .button(b -> {
+                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).padRight(8).size(iconMed);
+                            b.add().growX();
+                            b.label(() -> Core.bundle.format("focus")).color(Pal.accent);
+                            b.add().growX();
+                            b.add().size(iconMed);
+                        }, dialog::show)
+                        .size(240, 48)
+                        .name("Focus Tree")
+                );
             }
-        }
-        return a;
-    }
-
-    public static void putSettings(Item item, int amount){
-        Core.settings.put(item.localizedName, amount);
+        });
     }
 }

@@ -19,6 +19,7 @@ public class AgesFocus{
     public static void load(){
         ages = new Focus("ages"){{
             requirements(with());
+            addSectors = 0;
             unlock(AgesItems.wood);
             reward(with(AgesItems.wood, 200));
             unlock(Blocks.copperWall);
@@ -34,13 +35,13 @@ public class AgesFocus{
         resII = new Focus("resource-ii"){{
             addSectors = 2;
             requirements(with());
-            reward(with(AgesItems.stone, 200));
+            reward(with(AgesItems.wood, 300, AgesItems.stone, 200));
         }};
 
         resIII = new Focus("resource-iii"){{
             addSectors = 2;
             requirements(with());
-            reward(with(AgesItems.wood, 100, AgesItems.charcoal, 200));
+            reward(with(AgesItems.wood, 300, Items.coal, 100));
         }};
 
         resIV = new Focus("resource-iv"){{

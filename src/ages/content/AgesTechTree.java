@@ -1,7 +1,7 @@
 package ages.content;
 
 import arc.struct.Seq;
-import mindustry.content.TechTree;
+import mindustry.content.*;
 import mindustry.type.*;
 
 import static mindustry.content.TechTree.*;
@@ -15,11 +15,11 @@ public class AgesTechTree {
     static TechTree.TechNode context = null;
 
     public static void load() {
-        nodeRoot("Pre-mindustry Research Focus", ages, () -> {
-            node(resI, Seq.with(new Research(AgesItems.wood), new sectorsCompleted(1)), () -> {
-                node(resII, Seq.with(new Research(AgesItems.stone), new sectorsCompleted(3)), () -> {
-                    node(resIII, Seq.with(new Research(AgesItems.charcoal), new sectorsCompleted(5)), () -> {
-                        node(resIV, Seq.with(new Research(AgesItems.ironOre), new Research(AgesItems.iron), new Research(AgesBlocks.furnace), new sectorsCompleted(10)), () -> {});
+        nodeRoot("Pre-mindustry research Focus", ages, () -> {
+            node(resI, Seq.with(new customResearch(AgesItems.wood), new sectorsCompleted(1)), () -> {
+                node(resII, Seq.with(new customResearch(AgesItems.stone), new sectorsCompleted(3)), () -> {
+                    node(resIII, Seq.with(new customResearch(Items.coal), new sectorsCompleted(5)), () -> {
+                        node(resIV, Seq.with(new customResearch(AgesItems.ironOre), new customResearch(AgesItems.iron), new sectorsCompleted(10)), () -> {});
                     });
                 });
             });

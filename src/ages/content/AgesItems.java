@@ -7,8 +7,6 @@ import mindustry.type.*;
 
 public class AgesItems{
     public static Item
-    charcoal,
-
     wood, stone,
 
     ironOre, iron, steel,
@@ -16,11 +14,6 @@ public class AgesItems{
     bauxite, aluminum;
 
     public static void load(){
-        charcoal = new Item("charcoal", Color.brick){{
-            flammability = 0.5f;
-            buildable = false;
-        }};
-
         wood = new Item("wood", Color.brown){{
             hardness = 0;
             flammability = 0.3f;

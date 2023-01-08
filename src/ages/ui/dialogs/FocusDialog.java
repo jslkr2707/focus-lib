@@ -1,6 +1,8 @@
 package ages.ui.dialogs;
 
+import ages.core.*;
 import ages.type.Focus;
+import ages.ui.*;
 import ages.util.*;
 import arc.*;
 import arc.graphics.*;
@@ -17,6 +19,7 @@ import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
 import mindustry.core.*;
@@ -85,6 +88,7 @@ public class FocusDialog extends BaseDialog{
             checkMargin.run();
             Core.app.post(checkMargin);
 
+            current = all(Core.settings.getString("current", null));
             Planet currPlanet = ui.planet.isShown() ?
                     ui.planet.state.planet :
                     state.isCampaign() ? state.rules.sector.planet : null;
@@ -307,6 +311,24 @@ public class FocusDialog extends BaseDialog{
         };
     }
 
+    public Focus all(String name){
+        if (name == null) return null;
+        for (Content c: Vars.content.getBy(ContentType.typeid_UNUSED)){
+            if (((Focus) c).localizedName.equals(name)) return (Focus) c;
+        }
+        return null;
+    }
+
+    public static int completed(){
+        int a = 0;
+        for(Planet planet: content.planets()){
+            for (Sector sector: planet.sectors){
+                if (sector.isCaptured()) a += 1;
+            }
+        }
+        return a;
+    }
+
     class LayoutNode extends TreeNode<LayoutNode>{
         final TechTreeNode node;
 
@@ -346,6 +368,14 @@ public class FocusDialog extends BaseDialog{
 
         {
             rebuildAll();
+        }
+
+        public void putCurrent(){
+            Core.settings.put("current", current.localizedName);
+        }
+
+        public void delCurrent(){
+            Core.settings.remove("current");
         }
 
         public Focus[] completedFocus(){
@@ -418,7 +448,7 @@ public class FocusDialog extends BaseDialog{
                     float offset = (Core.graphics.getHeight() % 2) / 2f;
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
                     button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed
-                            : current == null ? Tex.button : node.node.content == current ? reqComplete(node.node) ? Core.atlas.drawable("button-green") : Tex.button : Tex.buttonRed;
+                            : current == null ? Tex.button : node.node.content == current ? FocusTex.buttonGreen : Tex.button;
 
                     ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.fullIcon);
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
@@ -499,13 +529,15 @@ public class FocusDialog extends BaseDialog{
 
                 if(complete){
                     current = (Focus)node.content;
-                    currentSectors = Useful.completed();
+                    putCurrent();
+                    currentSectors = completed();
                     AgesSounds.startResearch.play();
                 }
             } else if (reqComplete(node)){
                 unlock(node);
                 items = items();
                 current = null;
+                delCurrent();
                 currentSectors = -1;
             }
 
@@ -538,7 +570,7 @@ public class FocusDialog extends BaseDialog{
         }
 
         boolean reqComplete(TechNode node){
-            return Useful.completed() >= currentSectors + ((Focus)node.content).addSectors;
+            return completed() >= currentSectors + ((Focus)node.content).addSectors;
         }
 
         void rebuild(){
@@ -583,6 +615,8 @@ public class FocusDialog extends BaseDialog{
                 b.table(desc -> {
                     desc.left().defaults().left();
                     desc.add(node.content.localizedName).color(Pal.accent);
+                    desc.row();
+                    if (node.content == current) desc.add(Core.bundle.format("focus.researching")).color(Color.red);
                     desc.row();
 
                     if(locked(node) || debugShowRequirements){
@@ -644,14 +678,18 @@ public class FocusDialog extends BaseDialog{
                                         t.row();
                                     }
                                 }
-                            }else if(current == null){
+                            }else if(current != (Focus)node.content){
                                 t.row();
                                 t.table(r -> {
-                                    r.add("@complete").left();
+                                    r.add("@complete").color(Color.white).left();
                                     r.row();
                                     for(Objective o : node.objectives){
-                                        r.add(o.display()).color(o.complete() ? Color.white : Color.red).left();
-                                        r.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lime : Color.scarlet).padLeft(6);
+                                        r.table(ob -> {
+                                            ob.left().margin(3f).marginLeft(9f);
+                                            ob.add(o.display()).color(o.complete() ? Color.white : Color.red).left();
+                                            ob.image(o.complete() ? Icon.ok : Icon.cancel, o.complete() ? Color.lime : Color.scarlet).padLeft(6);
+                                            ob.row();
+                                        }).left();
                                         r.row();
                                     }
                                 }).left();
@@ -702,7 +740,11 @@ public class FocusDialog extends BaseDialog{
                                     Focus[] foc = ((AgesObjectives.focusResearch) pre).prerequisite;
 
                                     for (Focus f : foc) {
-                                        b.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                        b.table(fo -> {
+                                            fo.left().margin(3f).marginLeft(9f);
+                                            fo.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                            fo.row();
+                                        }).left();
                                         b.row();
                                     }
                                 }
@@ -753,11 +795,11 @@ public class FocusDialog extends BaseDialog{
             } else {
                 infoTable.table(tbl -> {
                     tbl.margin(3f).left().defaults().left();
-                    tbl.add(Core.bundle.format("focus.untilcomplete")).color(Color.red);
+                    tbl.add(Core.bundle.format("focus.untilcomplete")).center();
                     tbl.row();
                     tbl.table(ad -> {
                         ad.margin(3f).left().marginLeft(9f);
-                        ad.add(Core.bundle.format("focus.moresectors", Useful.completed() - currentSectors, ((Focus)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
+                        ad.add(Core.bundle.format("focus.moresectors", completed() - currentSectors, ((Focus)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
                     }).left();
                 }).margin(9f).left();
             }

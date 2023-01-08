@@ -1,6 +1,7 @@
 package ages.content;
 
 import ages.type.*;
+import mindustry.content.*;
 import mindustry.type.*;
 
 public class AgesFuels{
@@ -14,7 +15,7 @@ public class AgesFuels{
             heatRate = 1f;
         }};
 
-        charcoal = new Fuel(AgesItems.charcoal){{
+        charcoal = new Fuel(Items.coal){{
             heatCapacity = 400f;
             fuelUse = 1;
             lifetime = 900f;
