@@ -1,6 +1,3 @@
 # About
-
-
-# Dev-log
-![2022/11/18](https://i.ibb.co/HNrJ0B2/a.png)
-* Focus System
+This library enables your mod to create a techtree that resembles "National Focus Tree" system in the game HOI4.
+Currently supporting only **Java**. Planning to support json and js.
