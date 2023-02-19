@@ -15,7 +15,7 @@ public class FocusLib extends Mod{
 
     @Override
     public void init(){
-        Mods.LoadedMod mod = mods.locateMod("focus");
+        Mods.LoadedMod mod = mods.locateMod("focus-lib");
 
         if(!headless){
             //credits to BM and PU
@@ -29,7 +29,7 @@ public class FocusLib extends Mod{
         mod.meta.version = mod.meta.version + "\n";
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            FocusSetting.init();
+            FocusSetting.init("focus.title");
             FocusTex.load();
         });
     }

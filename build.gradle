@@ -2,14 +2,13 @@ plugins {
     id 'java'
 }
 
-group pGroup
+group "focus"
 
 
 sourceSets.main {
     java.srcDir("src/")
     resources.srcDir("assets/")
 }
-
 
 repositories {
     mavenCentral()
@@ -28,10 +27,10 @@ jar {
 
 
 dependencies{
-    annotationProcessor 'com.github.Anuken:jabel:0.8.0'
-    implementation 'com.github.liplum:MultiCrafterLib:v1.7'
-    compileOnly "com.github.Anuken.Mindustry:core:v137"
-    compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
+    annotationProcessor 'com.github.Anuken:jabel:0.9.0'
+    compileOnly "com.github.Anuken.Arc:flabel:v141"
+    compileOnly "com.github.Anuken.Arc:arc-core:v141"
+    compileOnly "com.github.Anuken.Mindustry:core:v141"
 }
 
 task dexify(type: Jar) {
@@ -65,4 +64,15 @@ tasks.withType(JavaCompile){
         options.compilerArgs.addAll(['--release', '8'])
     }
     compileJava.options.fork = true
+
+    options.forkOptions.jvmArgs += [
+            '--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+            '--add-opens=java.base/sun.reflect.annotation=ALL-UNNAMED'
+    ]
 }

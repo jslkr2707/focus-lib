@@ -60,8 +60,8 @@ public class FocusDialog extends BaseDialog{
 
     private boolean showTechSelect;
 
-    public FocusDialog(){
-        super("");
+    public FocusDialog(String name){
+        super("name");
 
         titleTable.remove();
         titleTable.clear();
@@ -403,7 +403,7 @@ public class FocusDialog extends BaseDialog{
                 ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
                 button.getImageCell().marginTop(3f).marginBottom(0f);
                 button.row();
-                button.add(node.node.content.localizedName).marginBottom(3f).center();
+                button.add(node.node.content.localizedName).marginBottom(3f).center().scaling(Scaling.fit);
                 button.visible(() -> node.visible);
 
                 button.clicked(() -> {
@@ -680,7 +680,7 @@ public class FocusDialog extends BaseDialog{
                                         t.row();
                                     }
                                 }
-                            }else if(current != (Focus)node.content){
+                            }else if(current != node.content){
                                 t.row();
                                 t.table(r -> {
                                     r.add("@complete").color(Color.white).left();

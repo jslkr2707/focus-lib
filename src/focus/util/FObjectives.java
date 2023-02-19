@@ -6,9 +6,6 @@ import arc.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
-import mindustry.type.*;
-
-import static mindustry.Vars.*;
 
 public class FObjectives {
     public static class customResearch implements Objective {
@@ -77,7 +74,7 @@ public class FObjectives {
     }
 
     public static class inGame implements Objective {
-        boolean playing = Vars.state.isCampaign();
+        boolean playing = Vars.state.isCampaign() && Vars.state.hasSector();
 
         @Override
         public boolean complete() {

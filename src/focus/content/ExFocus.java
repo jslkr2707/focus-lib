@@ -4,8 +4,6 @@ import focus.type.*;
 import mindustry.content.*;
 import mindustry.type.*;
 
-import static mindustry.type.ItemStack.*;
-
 public class ExFocus {
     public static Focus
     example, advanced;

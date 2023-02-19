@@ -1,12 +1,11 @@
 {
   "name": "focus-lib",
   "short": "focus-lib",
-  "displayName": "Focus System Lib",
+  "displayName": "Focus System Library",
   "author": "AshesKaiser",
-  "description": "Create a hoi4-like research tree",
   "version": "0.1",
   "main": "focus.FocusLib",
-  "minGameVersion": "136",
+  "minGameVersion": "141",
   "dependencies": [],
   "hidden": false
 }
