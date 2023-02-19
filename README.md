@@ -2,8 +2,8 @@
 
 # [FocusLib](https://github.com/jslkr2707/focus-lib/)
 
-A Mindustry mod library that enables you to create a techtree that resembles "National Focus Tree" system in the game HOI4.
-**Currently supporting only Java. Planning to support json and js.**
+A Mindustry mod library that enables you to create a techtree that resembles "National Focus Tree" system in the game HOI4.<br>
+Currently supporting only Java. Planning to support json and js.
 
 Check the instruction below for usage.
 ___
