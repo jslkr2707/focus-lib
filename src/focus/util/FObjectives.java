@@ -1,15 +1,16 @@
-package ages.util;
+package focus.util;
 
-import ages.type.*;
-import ages.ui.dialogs.*;
+import focus.type.*;
+import focus.ui.dialogs.*;
 import arc.*;
+import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 
 import static mindustry.Vars.*;
 
-public class AgesObjectives {
+public class FObjectives {
     public static class customResearch implements Objective {
         public UnlockableContent content;
 
@@ -21,6 +22,7 @@ public class AgesObjectives {
         @Override
         public String display() { return Core.bundle.format("requirements.unlocked", content.localizedName); }
     }
+
     public static class sectorsCompleted implements Objective {
         public int standard;
 
@@ -75,7 +77,7 @@ public class AgesObjectives {
     }
 
     public static class inGame implements Objective {
-        boolean playing = ui.planet.state.planet.sectors.count(Sector::isAttacked) != 0;
+        boolean playing = Vars.state.isCampaign();
 
         @Override
         public boolean complete() {

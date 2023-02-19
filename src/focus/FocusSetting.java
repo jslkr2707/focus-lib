@@ -1,6 +1,6 @@
-package ages.core;
+package focus;
 
-import ages.ui.dialogs.FocusDialog;
+import focus.ui.dialogs.FocusDialog;
 import arc.*;
 import arc.scene.*;
 import arc.scene.style.*;
@@ -28,7 +28,7 @@ public class FocusSetting {
                     t.table(Tex.button, in -> {
                         in.defaults().width(300f).height(60f);
                         for(TechTree.TechNode node : TechTree.roots){
-                            if ((node.requiresUnlock && !node.content.unlocked() && node != ui.research.getPrefRoot()) || node.localizedName().equals("Pre-mindustry Research Focus")) continue;
+                            if ((node.requiresUnlock && !node.content.unlocked() && node != ui.research.getPrefRoot()) || node.localizedName().equals(Core.bundle.get("techtree.name"))) continue;
 
                             in.button(node.localizedName(), node.icon(), Styles.flatTogglet, iconMed, () -> {
                                 if(node == ui.research.lastNode){
@@ -66,7 +66,7 @@ public class FocusSetting {
                             b.add().size(iconMed);
                         }, dialog::show)
                         .size(240, 48)
-                        .name("Focus Tree")
+                        .name(Core.bundle.get("focustree"))
                 );
             }
         });

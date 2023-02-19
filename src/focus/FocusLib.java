@@ -1,28 +1,21 @@
-package ages;
+package focus;
 
-import ages.content.*;
-import ages.core.*;
-import ages.ui.*;
-import ages.ui.dialogs.*;
-import ages.util.*;
+import focus.content.*;
+import focus.ui.*;
 import arc.*;
 import arc.func.*;
-import arc.scene.*;
-import arc.scene.style.*;
-import arc.util.*;
 import mindustry.game.*;
-import mindustry.graphics.*;
 import mindustry.mod.*;
 
 import static mindustry.Vars.*;
 
-public class Ages extends Mod{
-    public Ages(){
+public class FocusLib extends Mod{
+    public FocusLib(){
     }
 
     @Override
     public void init(){
-        Mods.LoadedMod mod = mods.locateMod("ages");
+        Mods.LoadedMod mod = mods.locateMod("focus");
 
         if(!headless){
             //credits to BM and PU
@@ -35,7 +28,6 @@ public class Ages extends Mod{
         }
         mod.meta.version = mod.meta.version + "\n";
 
-        //i... don't know what im doing, but it works so ugh
         Events.on(EventType.ClientLoadEvent.class, e -> {
             FocusSetting.init();
             FocusTex.load();
@@ -44,11 +36,7 @@ public class Ages extends Mod{
 
     @Override
     public void loadContent(){
-        AgesItems.load();
-        AgesBullets.load();
-        AgesBlocks.load();
-        AgesFocus.load();
-        AgesTechTree.load();
-        AgesSounds.load();
+        ExFocus.load();
+        ExTechTree.load();
     }
 }

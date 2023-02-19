@@ -1,9 +1,8 @@
-package ages.ui.dialogs;
+package focus.ui.dialogs;
 
-import ages.core.*;
-import ages.type.Focus;
-import ages.ui.*;
-import ages.util.*;
+import arc.audio.*;
+import focus.type.Focus;
+import focus.ui.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -19,6 +18,7 @@ import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import focus.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
@@ -52,7 +52,10 @@ public class FocusDialog extends BaseDialog{
     public View view;
     public Focus current;
     public int currentSectors = -1;
+    public FocusDatabaseDialog database = new FocusDatabaseDialog();
 
+    /* put a sound file in the "sounds/" directory */
+    public Sound researchSound = Vars.tree.loadSound("research");
     public ItemSeq items;
 
     private boolean showTechSelect;
@@ -116,8 +119,7 @@ public class FocusDialog extends BaseDialog{
         });
 
         buttons.button("@database", Icon.book, () -> {
-            hide();
-            ui.database.show();
+            database.show();
         }).size(210f, 64f).name("database");
 
         //scaling/drag input
@@ -531,7 +533,7 @@ public class FocusDialog extends BaseDialog{
                     current = (Focus)node.content;
                     putCurrent();
                     currentSectors = completed();
-                    AgesSounds.startResearch.play();
+                    researchSound.play();
                 }
             } else if (reqComplete(node)){
                 unlock(node);
@@ -735,9 +737,9 @@ public class FocusDialog extends BaseDialog{
                                 b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
                                 b.row();
 
-                                Objective pre = node.objectives.find(o -> o instanceof AgesObjectives.focusResearch);
+                                Objective pre = node.objectives.find(o -> o instanceof FObjectives.focusResearch);
                                 if (pre != null) {
-                                    Focus[] foc = ((AgesObjectives.focusResearch) pre).prerequisite;
+                                    Focus[] foc = ((FObjectives.focusResearch) pre).prerequisite;
 
                                     for (Focus f : foc) {
                                         b.table(fo -> {

@@ -1,4 +1,4 @@
-package ages.type;
+package focus.type;
 
 import arc.Core;
 import arc.struct.Seq;
@@ -31,7 +31,7 @@ public class Focus extends UnlockableContent{
         }
     }
 
-    public void requirements(ItemStack... stack){
+    public void requirements(ItemStack[] stack){
         this.requirements = stack;
     }
 

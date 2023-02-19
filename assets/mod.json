@@ -1,11 +1,11 @@
 {
-  "name": "ages",
-  "short": "mindustry-ages",
-  "displayName": "Mindustry: Ages",
+  "name": "focus-lib",
+  "short": "focus-lib",
+  "displayName": "Focus System Lib",
   "author": "AshesKaiser",
-  "description": "My first [orange]java [white]Mindustry mod",
+  "description": "Create a hoi4-like research tree",
   "version": "0.1",
-  "main": "ages.Ages",
+  "main": "focus.FocusLib",
   "minGameVersion": "136",
   "dependencies": [],
   "hidden": false

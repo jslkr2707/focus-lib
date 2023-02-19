@@ -1,4 +1,4 @@
-package ages.ui;
+package focus.ui;
 
 import arc.scene.style.*;
 
