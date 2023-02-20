@@ -1,6 +1,7 @@
 package focus.ui.dialogs;
 
 import arc.audio.*;
+import focus.*;
 import focus.type.Focus;
 import focus.ui.*;
 import arc.*;
@@ -43,7 +44,6 @@ import static mindustry.gen.Tex.*;
 public class FocusDialog extends BaseDialog{
     public static boolean debugShowRequirements = false;
 
-    public final float nodeSize = Scl.scl(128f);
     public ObjectSet<TechTreeNode> nodes = new ObjectSet<>();
     public TechTreeNode root = new TechTreeNode(TechTree.roots.get(2), null);
     public TechNode lastNode = root.node;
@@ -229,7 +229,7 @@ public class FocusDialog extends BaseDialog{
             maxy = Math.max(n.y + n.height/2f, maxy);
         }
         bounds = new Rect(minx, miny, maxx - minx, maxy - miny);
-        bounds.y += nodeSize*1.5f;
+        bounds.y += FocusSetting.nodeSize(node.node.node) *1.5f;
     }
 
     void shift(LayoutNode[] children, float amount){
@@ -337,7 +337,7 @@ public class FocusDialog extends BaseDialog{
         LayoutNode(TechTreeNode node, LayoutNode parent){
             this.node = node;
             this.parent = parent;
-            this.width = this.height = nodeSize;
+            this.width = this.height = FocusSetting.nodeSize(node.node);
             if(node.children != null){
                 children = Seq.with(node.children).map(t -> new LayoutNode(t, this)).toArray(LayoutNode.class);
             }
@@ -351,7 +351,7 @@ public class FocusDialog extends BaseDialog{
         public TechTreeNode(TechNode node, TechTreeNode parent){
             this.node = node;
             this.parent = parent;
-            this.width = this.height = nodeSize;
+            this.width = this.height = FocusSetting.nodeSize(node);
             nodes.add(this);
             if(node.children != null){
                 children = new TechTreeNode[node.children.size];
@@ -445,7 +445,7 @@ public class FocusDialog extends BaseDialog{
                 });
                 button.touchable(() -> !node.visible ? Touchable.disabled : Touchable.enabled);
                 button.userObject = node.node;
-                button.setSize(nodeSize);
+                button.setSize(FocusSetting.nodeSize(node.node));
                 button.update(() -> {
                     float offset = (Core.graphics.getHeight() % 2) / 2f;
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
@@ -475,7 +475,7 @@ public class FocusDialog extends BaseDialog{
         }
 
         void clamp(){
-            float pad = nodeSize;
+            float pad = Scl.scl(128f);
 
             float ox = width/2f, oy = height/2f;
             float rx = bounds.x + panX + ox, ry = panY + oy + bounds.y;
@@ -731,10 +731,10 @@ public class FocusDialog extends BaseDialog{
                         t.table(b -> {
                             b.left();
                             if (node.parent != null) {
-                                b.add(Core.bundle.format("focus.prerequisite") + ":").color(Color.lightGray).left();
+                                b.add(Core.bundle.format("focus.prerequisite")).color(Color.lightGray).left();
                                 b.row();
-                                b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
-                                b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(6);
+                                b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).padLeft(9f).left();
+                                b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(3f);
                                 b.row();
 
                                 Objective pre = node.objectives.find(o -> o instanceof FObjectives.focusResearch);
@@ -786,8 +786,8 @@ public class FocusDialog extends BaseDialog{
                             for (UnlockableContent c : ((Focus) node.content).unlockContents) {
                                 r.table(u -> {
                                     u.left().margin(4f).marginLeft(9f);
-                                    u.image(c.uiIcon).left().padRight(3f);
-                                    u.add(c.localizedName).color(Color.white);
+                                    u.image(c.uiIcon).left().padRight(3f).size(20f);
+                                    u.add(c.localizedName).color(Color.white).marginLeft(3f);
                                 }).left();
                                 r.row();
                             }
@@ -797,12 +797,12 @@ public class FocusDialog extends BaseDialog{
             } else {
                 infoTable.table(tbl -> {
                     tbl.margin(3f).left().defaults().left();
-                    tbl.add(Core.bundle.format("focus.untilcomplete")).center();
+                    tbl.add(Core.bundle.format("focus.untilcomplete"));
                     tbl.row();
                     tbl.table(ad -> {
                         ad.margin(3f).left().marginLeft(9f);
                         ad.add(Core.bundle.format("focus.moresectors", completed() - currentSectors, ((Focus)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
-                    }).left();
+                    }).marginLeft(9f).left();
                 }).margin(9f).left();
             }
 

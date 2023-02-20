@@ -1,5 +1,6 @@
 package focus;
 
+import arc.util.*;
 import focus.type.*;
 import focus.ui.dialogs.FocusDialog;
 import arc.*;
@@ -59,16 +60,18 @@ public class FocusSetting {
                 group.fill(c -> focusBtn(c.center().top()));
                 group.fill(c -> c.center().top().marginTop(70f)
                         .button(b -> {
-                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).padRight(8).size(iconMed);
-                            b.add().growX();
+                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).marginRight(8f).size(8f);
+                            b.add().size(8f);
                             b.label(() -> Core.bundle.format(name)).color(Pal.accent);
-                            b.add().growX();
-                            b.add().size(iconMed);
                         }, dialog::show)
-                        .size(240, 48)
+                        .width(Core.bundle.format(name).length() * 12f + 36f)
                         .name(Core.bundle.get(name))
                 );
             }
         });
+    }
+
+    public static float nodeSize(TechTree.TechNode node){
+        return node.content.localizedName.length() * 12f + 36f;
     }
 }
