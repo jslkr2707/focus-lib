@@ -1,12 +1,12 @@
 package focus;
 
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import focus.type.*;
 import focus.ui.dialogs.FocusDialog;
 import arc.*;
 import arc.scene.*;
 import arc.scene.style.*;
-import arc.scene.ui.layout.Table;
 import mindustry.*;
 import mindustry.content.TechTree;
 import mindustry.gen.Tex;
@@ -60,7 +60,7 @@ public class FocusSetting {
                 group.fill(c -> focusBtn(c.center().top()));
                 group.fill(c -> c.center().top().marginTop(70f)
                         .button(b -> {
-                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).marginRight(8f).size(8f);
+                            b.imageDraw(() -> new TextureRegionDrawable(Core.atlas.find("research-focus"))).marginRight(8f).size(iconMed);
                             b.add().size(8f);
                             b.label(() -> Core.bundle.format(name)).color(Pal.accent);
                         }, dialog::show)
@@ -72,6 +72,6 @@ public class FocusSetting {
     }
 
     public static float nodeSize(TechTree.TechNode node){
-        return node.content.localizedName.length() * 12f + 36f;
+        return Math.max(node.content.localizedName.length() * 12f + 36f, Scl.scl(128f));
     }
 }

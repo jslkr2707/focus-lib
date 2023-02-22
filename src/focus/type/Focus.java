@@ -21,11 +21,6 @@ public class Focus extends UnlockableContent{
         this.details = Core.bundle.getOrNull("focus." + this.name + ".details");
     }
 
-    @Override
-    public void loadIcon(){
-        if (!Core.atlas.isFound(fullIcon)) fullIcon = uiIcon = Core.atlas.find("default");
-    }
-
     public void reward(ItemStack[] stack){
         this.rewards = stack;
     }

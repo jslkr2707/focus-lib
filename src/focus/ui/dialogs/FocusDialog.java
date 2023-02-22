@@ -92,6 +92,7 @@ public class FocusDialog extends BaseDialog{
             Core.app.post(checkMargin);
 
             current = all(Core.settings.getString("current", null));
+            currentSectors = Core.settings.getInt("sectors", -1);
             Planet currPlanet = ui.planet.isShown() ?
                     ui.planet.state.planet :
                     state.isCampaign() ? state.rules.sector.planet : null;
@@ -374,10 +375,12 @@ public class FocusDialog extends BaseDialog{
 
         public void putCurrent(){
             Core.settings.put("current", current.localizedName);
+            Core.settings.put("sectors", currentSectors);
         }
 
         public void delCurrent(){
             Core.settings.remove("current");
+            Core.settings.remove("sectors");
         }
 
         public Focus[] completedFocus(){
@@ -401,6 +404,7 @@ public class FocusDialog extends BaseDialog{
 
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
+                button.resizeImage(node.node.content.fullIcon.width * FocusSetting.nodeSize(node.node) / Scl.scl(128f));
                 button.getImageCell().marginTop(3f).marginBottom(0f);
                 button.row();
                 button.add(node.node.content.localizedName).marginBottom(3f).center().scaling(Scaling.fit);
@@ -531,8 +535,8 @@ public class FocusDialog extends BaseDialog{
 
                 if(complete){
                     current = (Focus)node.content;
-                    putCurrent();
                     currentSectors = completed();
+                    putCurrent();
                     researchSound.play();
                 }
             } else if (reqComplete(node)){
@@ -726,15 +730,15 @@ public class FocusDialog extends BaseDialog{
                 infoTable.row();
                 if (!node.content.unlocked()) {
                     infoTable.table(t -> {
-                        t.margin(3f).left().defaults().left();
+                        t.margin(3f).marginLeft(9f).left();
 
                         t.table(b -> {
-                            b.left();
+                            b.margin(3f).left();
                             if (node.parent != null) {
                                 b.add(Core.bundle.format("focus.prerequisite")).color(Color.lightGray).left();
                                 b.row();
-                                b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).padLeft(9f).left();
-                                b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).padLeft(3f);
+                                b.add(node.parent.content.localizedName).color(node.parent.content.unlocked() ? Color.white : Color.scarlet).left();
+                                b.image(node.parent.content.unlocked() ? Icon.ok : Icon.cancel, node.parent.content.unlocked() ? Color.lime : Color.scarlet).left();
                                 b.row();
 
                                 Objective pre = node.objectives.find(o -> o instanceof FObjectives.focusResearch);
@@ -745,6 +749,7 @@ public class FocusDialog extends BaseDialog{
                                         b.table(fo -> {
                                             fo.left().margin(3f).marginLeft(9f);
                                             fo.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
+                                            fo.image(f.unlocked() ? Icon.ok : Icon.cancel, f.unlocked() ? Color.lime : Color.scarlet).left();
                                             fo.row();
                                         }).left();
                                         b.row();
