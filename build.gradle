@@ -1,42 +1,44 @@
 apply plugin: "java"
+
 version '1.0'
-group "focus"
 
+sourceSets.main.java.srcDirs = ["src"]
 
-sourceSets.main {
-    java.srcDir("src/")
-    resources.srcDir("assets/")
-}
-
-ext {
-    mindustryVersion = "v146"
-    jabelVersion = "93fde537c7"
-}
-
-repositories {
+repositories{
     mavenCentral()
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-    maven{ url "https://jitpack.io" }
+    maven{ url 'https://www.jitpack.io' }
 }
 
-jar {
-    archiveFileName.set pArtifactFilename
+java{
+    targetCompatibility = 8
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
+ext{
+    //the build number that this mod is made for
+    mindustryVersion = 'v146'
+    jabelVersion = "93fde537c7"
+    //windows sucks
+    isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
+    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+}
+
+//java 8 backwards compatibility flag
+allprojects{
+    tasks.withType(JavaCompile){
+        options.compilerArgs.addAll(['--release', '8'])
     }
 }
 
-
 dependencies{
-    compileOnly "com.github.anuken.Mindustry:core:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
+//force arc version
 configurations.all{
     resolutionStrategy.eachDependency { details ->
         if(details.requested.group == 'com.github.Anuken.Arc'){
@@ -45,46 +47,54 @@ configurations.all{
     }
 }
 
-task dexify(type: Jar) {
-    archiveName "dexed-$pArtifactFilename"
+task jarAndroid{
+    dependsOn "jar"
 
-    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
-               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
-    doFirst {
-        exec {
-            workingDir dexedArtifact.parent
-            def command = ["d8", "--min-api", pMinApi, "--output", dexedArtifact, jarArtifact]
-            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
-                commandLine("cmd", "/c", *command)
-            else
-                commandLine(*command)
+    doLast{
+        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.");
 
-        }
+        def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists()}
+
+        if(!platformRoot) throw new GradleException("No android.jar found. Ensure that you have an Android platform installed.")
+
+        //collect dependencies needed for desugaring
+        def dependencies = (configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList() + [new File(platformRoot, "android.jar")]).collect{ "--classpath $it.path" }.join(" ")
+
+        def d8 = isWindows ? "d8.bat" : "d8"
+
+        //dex and desugar files - this requires d8 in your PATH
+        "$d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
+            .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
-
-    from(zipTree(jarArtifact), zipTree(dexedArtifact))
 }
 
-task buildDex dependsOn "build", "dexify"
+jar{
+    archiveFileName = "${base.archivesBaseName}Desktop.jar"
 
-tasks.withType(JavaCompile){
-    targetCompatibility = 8
-    sourceCompatibility = JavaVersion.VERSION_16
-    options.encoding = "UTF-8"
-    options.compilerArgs += ["-Xlint:deprecation"]
-    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-        options.compilerArgs.addAll(['--release', '8'])
+    from{
+        configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
     }
-    compileJava.options.fork = true
 
-    options.forkOptions.jvmArgs += [
-            '--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
-            '--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
-            '--add-opens=java.base/sun.reflect.annotation=ALL-UNNAMED'
-    ]
+    from(projectDir){
+        include "mod.hjson"
+    }
+
+    from("assets/"){
+        include "**"
+    }
+}
+
+task deploy(type: Jar){
+    dependsOn jarAndroid
+    dependsOn jar
+    archiveFileName = "${base.archivesBaseName}.jar"
+
+    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+
+    doLast{
+        delete{
+            delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
+            delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+        }
+    }
 }
