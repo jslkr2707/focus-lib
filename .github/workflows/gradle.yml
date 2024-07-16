@@ -5,34 +5,24 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  buildJar:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - name: Set up PATH
+      run: |
+        echo "${ANDROID_HOME}/build-tools/34.0.0" >> $GITHUB_PATH
     - name: Set up JDK 16
       uses: actions/setup-java@v1
       with:
         java-version: 16
-        
-    - name: Setup Android SDK Tools
-      uses: android-actions/setup-android@v2.0.1
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-        
-    - name: Add Android SDK to PATH
-      run: echo "${ANDROID_HOME}/build-tools/30.0.1" >> $GITHUB_PATH
-      
-    - name: build-tools
-      run: sdkmanager "build-tools;30.0.1"
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew buildDex
-
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v2.2.1
+    - name: Build mod jar
+      run: |
+        chmod +x ./gradlew
+        ./gradlew deploy
+    - name: Upload built jar file
+      uses: actions/upload-artifact@v2
       with:
-        name: dexed
-        path: build/libs/dexed-*.jar
+        name: ${{ github.event.repository.name }}
+        path: build/libs/${{ github.event.repository.name }}.jar
