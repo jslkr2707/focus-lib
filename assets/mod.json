@@ -2,10 +2,10 @@
   "name": "focus-lib",
   "short": "focus-lib",
   "displayName": "Focus System Library",
-  "author": "AshesKaiser",
+  "author": "jslkr2707",
   "version": "0.1",
   "main": "focus.FocusLib",
-  "minGameVersion": "141",
+  "minGameVersion": "144",
   "dependencies": [],
   "hidden": false
 }

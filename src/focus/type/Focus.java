@@ -6,11 +6,11 @@ import mindustry.ctype.*;
 import mindustry.type.*;
 
 public class Focus extends UnlockableContent{
-    public int addSectors = 1;
+    public int addSectors = 0;
     public ItemStack[] requirements;
     public ItemStack[] rewards;
-    /* contents to unlock together when unlocked */
     public Seq<UnlockableContent> unlockContents = new Seq<>();
+    public Seq<Focus> exclusives = new Seq<>();
 
     public Focus(String name){
         super(name);
@@ -23,6 +23,12 @@ public class Focus extends UnlockableContent{
 
     public void reward(ItemStack[] stack){
         this.rewards = stack;
+    }
+
+    public void exclude(Focus... content){
+        for (Focus f: content){
+            this.exclusives.add(f);
+        }
     }
 
     public void unlock(UnlockableContent... content){

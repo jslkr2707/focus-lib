@@ -10,6 +10,10 @@ sourceSets.main {
     resources.srcDir("assets/")
 }
 
+ext {
+    mindustryVersion = "v145"
+}
+
 repositories {
     mavenCentral()
     maven {url "https://jitpack.io"}
@@ -27,10 +31,9 @@ jar {
 
 
 dependencies{
-    annotationProcessor 'com.github.Anuken:jabel:0.9.0'
-    compileOnly "com.github.Anuken.Arc:flabel:v141"
-    compileOnly "com.github.Anuken.Arc:arc-core:v141"
-    compileOnly "com.github.Anuken.Mindustry:core:v141"
+    annotationProcessor 'com.github.Anuken:jabel:0.8.0'
+    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
 }
 
 task dexify(type: Jar) {

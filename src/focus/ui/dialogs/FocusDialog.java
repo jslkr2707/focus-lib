@@ -52,7 +52,6 @@ public class FocusDialog extends BaseDialog{
     public View view;
     public Focus current;
     public int currentSectors = -1;
-    public FocusDatabaseDialog database = new FocusDatabaseDialog();
 
     /* put a sound file in the "sounds/" directory */
     public Sound researchSound = Vars.tree.loadSound("research");
@@ -118,10 +117,6 @@ public class FocusDialog extends BaseDialog{
                 Core.app.post(this::hide);
             }
         });
-
-        buttons.button("@database", Icon.book, () -> {
-            database.show();
-        }).size(210f, 64f).name("database");
 
         //scaling/drag input
         addListener(new InputListener(){
@@ -263,7 +258,7 @@ public class FocusDialog extends BaseDialog{
     }
 
     boolean selectable(TechNode node){
-        return current == node.content ? view.reqComplete(node) : (node.content.unlocked() || !node.objectives.contains(i -> !i.complete())) && (node.parent == null || node.parent.content.unlocked());
+        return current == node.content ? view.reqComplete(node) : current == null && !node.objectives.contains(i -> !i.complete()) && (node.parent == null || node.parent.content.unlocked()) && !((Focus)node.content).exclusives.contains((UnlockableContent::unlocked));
     }
 
     boolean locked(TechNode node){
@@ -455,7 +450,6 @@ public class FocusDialog extends BaseDialog{
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
                     button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed
                             : current == null ? Tex.button : node.node.content == current ? FocusTex.buttonGreen : Tex.button;
-
                     ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.fullIcon);
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
                     button.getImage().setScaling(Scaling.bounded);

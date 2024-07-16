@@ -11,17 +11,16 @@ public class ExFocus {
     /* region defense */
     public static void load(){
         example = new Focus("example"){{
-            addSectors = 1;
-            requirements(ItemStack.with(Items.copper, 100, Items.lead, 200));
-            unlock(Blocks.copperWall, Blocks.copperWallLarge);
-            reward(ItemStack.with(Items.coal, 200));
+            requirements(ItemStack.with());
+            unlock(Blocks.mechanicalDrill);
+            reward(ItemStack.with(Items.copper, 500, Items.lead, 500));
         }};
 
         advanced = new Focus("advanced"){{
             addSectors = 2;
-            requirements(ItemStack.with(Items.graphite, 500, Items.silicon, 300));
-            unlock(Items.metaglass, Blocks.kiln);
-            reward(ItemStack.with(Items.silicon, 1000));
+            requirements(ItemStack.with(Items.copper, 200, Items.lead, 200));
+            unlock(Items.coal, Blocks.copperWall);
+            reward(ItemStack.with(Items.coal, 100));
         }};
     }
 }
