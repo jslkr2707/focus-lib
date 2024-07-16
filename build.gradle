@@ -1,7 +1,5 @@
-plugins {
-    id 'java'
-}
-
+apply plugin: "java"
+version '1.0'
 group "focus"
 
 
@@ -12,10 +10,12 @@ sourceSets.main {
 
 ext {
     mindustryVersion = "v146"
+    jabelVersion = "93fde537c7"
 }
 
 repositories {
     mavenCentral()
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven {url "https://jitpack.io"}
 }
 
@@ -31,9 +31,17 @@ jar {
 
 
 dependencies{
-    annotationProcessor 'com.github.Anuken:jabel:0.8.0'
+    annotationProcessor 'com.github.Anuken:jabel:$jabelVersion'
     compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+}
+
+configurations.all{
+    resolutionStrategy.eachDependency { details ->
+        if(details.requested.group == 'com.github.Anuken.Arc'){
+            details.useVersion "$mindustryVersion"
+        }
+    }
 }
 
 task dexify(type: Jar) {
