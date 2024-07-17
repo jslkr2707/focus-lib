@@ -20,11 +20,11 @@ public class FocusDisplay extends Table {
         table(Tex.button, t -> {
             t.margin(10f);
             t.center();
-            t.button(new TextureRegionDrawable(f == null ? Icon.none.getRegion() : f.fullIcon), () -> {});
+            t.button((f == null ? Icon.none : new TextureRegionDrawable(f.fullIcon)), () -> {});
             t.row();
             t.add(Core.bundle.get(f == null ? "focus.none" : f.name));
             t.marginBottom(5f);
-        }).center();
+        });
     }
 
 }
