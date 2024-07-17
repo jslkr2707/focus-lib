@@ -47,6 +47,7 @@ configurations.all{
     }
 }
 
+/*
 task jarAndroid{
     dependsOn "jar"
 
@@ -67,6 +68,7 @@ task jarAndroid{
             .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
+ */
 
 jar{
     archiveFileName = "${base.archivesBaseName}Desktop.jar"
@@ -85,11 +87,11 @@ jar{
 }
 
 task deploy(type: Jar){
-    dependsOn jarAndroid
+    // dependsOn jarAndroid
     dependsOn jar
     archiveFileName = "${base.archivesBaseName}.jar"
 
-    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+    from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar")] }
 
     doLast{
         delete{

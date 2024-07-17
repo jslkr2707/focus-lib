@@ -32,7 +32,7 @@ import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.*;
 import mindustry.ui.layout.*;
 import mindustry.ui.layout.TreeLayout.*;
 
@@ -49,6 +49,7 @@ public class FocusDialog extends BaseDialog{
     public TechNode lastNode = root.node;
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
+    public FocusDisplay focusDisplay;
     public View view;
     public Focus current;
     public int currentSectors = -1;
@@ -65,10 +66,11 @@ public class FocusDialog extends BaseDialog{
         titleTable.remove();
         titleTable.clear();
         titleTable.top();
+
         showTechSelect = true;
 
         margin(0f).marginBottom(8);
-        cont.stack(titleTable, view = new View(), itemDisplay = new ItemsDisplay()).grow();
+        cont.stack(titleTable, view = new View(), itemDisplay = new ItemsDisplay(), focusDisplay = new FocusDisplay()).grow();
 
         titleTable.toFront();
 
@@ -255,6 +257,7 @@ public class FocusDialog extends BaseDialog{
         }
 
         itemDisplay.rebuild(items);
+        focusDisplay.rebuild(current);
     }
 
     boolean selectable(TechNode node){
@@ -547,6 +550,7 @@ public class FocusDialog extends BaseDialog{
             Core.scene.act();
             rebuild(shine);
             itemDisplay.rebuild(items, usedShine);
+            focusDisplay.rebuild(current);
         }
 
         void unlock(TechNode node){
