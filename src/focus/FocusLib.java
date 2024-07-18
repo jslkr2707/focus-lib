@@ -10,6 +10,8 @@ import mindustry.mod.*;
 import static mindustry.Vars.*;
 
 public class FocusLib extends Mod{
+    public static FocusTex ft = new FocusTex();
+
     public FocusLib(){
     }
 
@@ -28,9 +30,9 @@ public class FocusLib extends Mod{
         }
         mod.meta.version = mod.meta.version + "\n";
 
-        Events.on(EventType.ClientLoadEvent.class, e -> {
+        Events.run(EventType.ClientLoadEvent.class, () -> {
             FocusSetting.init("focus.title");
-            FocusTex.load();
+            ft.init();
         });
     }
 

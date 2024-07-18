@@ -7,7 +7,7 @@ import static arc.Core.atlas;
 public class FocusTex {
     public static Drawable buttonGreen;
 
-    public static void load(){
+    public static void init(){
         buttonGreen = atlas.drawable("button-green");
     }
 }

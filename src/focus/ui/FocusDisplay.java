@@ -3,6 +3,7 @@ package focus.ui;
 import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import focus.type.*;
 import mindustry.gen.*;
 
@@ -17,14 +18,15 @@ public class FocusDisplay extends Table {
         bottom().left();
         margin(0);
 
+        add(Core.bundle.get("focus.researching"));
+        row();
         table(Tex.button, t -> {
-            t.margin(10f);
+            t.margin(20f);
             t.center();
-            t.button((f == null ? Icon.none : new TextureRegionDrawable(f.fullIcon)), () -> {});
+            t.image(f == null ? Icon.none.getRegion() : f.fullIcon).padBottom(10f);
             t.row();
-            t.add(Core.bundle.get(f == null ? "focus.none" : f.name));
-            t.marginBottom(5f);
-        });
+            t.add(f == null ? Core.bundle.get("focus.none") : f.localizedName).scaling(Scaling.bounded);
+        }).center().padTop(10f).size(200f, 150f);
     }
 
 }
