@@ -50,6 +50,7 @@ public class FocusDialog extends BaseDialog{
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
     public FocusDisplay focusDisplay;
+    public Table stopTable = new Table();
     public View view;
     public Focus current;
     public int currentSectors = -1;
@@ -63,9 +64,34 @@ public class FocusDialog extends BaseDialog{
     public FocusDialog(String name){
         super("name");
 
+        current = all(Core.settings.getString("current", null));
+        currentSectors = Core.settings.getInt("sectors", -1);
+
         titleTable.remove();
         titleTable.clear();
         titleTable.top();
+        titleTable.button(Core.bundle.get("focus.stop"), () -> {
+            new BaseDialog(""){{
+                cont.pane(t -> {
+                    t.table(button, a -> {
+                        a.margin(20f);
+                        a.add("@focus.stop.ask");
+                    }).padBottom(10f).center();
+
+                    t.row();
+
+                    t.table(pane, yn -> {
+                        yn.button("@focus.stop.yes", () -> {
+                            current = null;
+                            focusDisplay.rebuild(null);
+                            hide();
+                        }).grow();
+
+                        yn.button("@focus.stop.no", this::hide).padLeft(20f).grow();
+                    }).center();
+                }).center();
+            }}.show();
+        }).top().right().growX().maxWidth(300f);
 
         showTechSelect = true;
 
@@ -92,8 +118,6 @@ public class FocusDialog extends BaseDialog{
             checkMargin.run();
             Core.app.post(checkMargin);
 
-            current = all(Core.settings.getString("current", null));
-            currentSectors = Core.settings.getInt("sectors", -1);
             Planet currPlanet = ui.planet.isShown() ?
                     ui.planet.state.planet :
                     state.isCampaign() ? state.rules.sector.planet : null;

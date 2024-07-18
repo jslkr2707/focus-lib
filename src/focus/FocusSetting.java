@@ -29,7 +29,7 @@ public class FocusSetting {
             b.add().size(iconMed);
         }, () -> new BaseDialog("@techtree.select"){{
             cont.pane(t -> t.table(Tex.button, in -> {
-                in.defaults().width(300f).height(60f);
+                in.defaults().fillX();
                 for(TechTree.TechNode node : TechTree.roots){
                     if (node.children.get(0).content instanceof Focus) continue;
 
