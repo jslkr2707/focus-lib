@@ -50,7 +50,6 @@ public class FocusDialog extends BaseDialog{
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
     public FocusDisplay focusDisplay;
-    public Table stopTable = new Table();
     public View view;
     public Focus current;
     public int currentSectors = -1;
@@ -83,6 +82,7 @@ public class FocusDialog extends BaseDialog{
                     t.table(pane, yn -> {
                         yn.button("@focus.stop.yes", () -> {
                             current = null;
+                            Core.settings.remove("current");
                             focusDisplay.rebuild(null);
                             hide();
                         }).grow();
@@ -424,6 +424,9 @@ public class FocusDialog extends BaseDialog{
             infoTable.clear();
             infoTable.touchable = Touchable.enabled;
 
+            current = all(Core.settings.getString("current", null));
+            currentSectors = Core.settings.getInt("sectors", -1);
+
             for(TechTreeNode node : nodes){
                 ImageButton button = new ImageButton(node.node.content.fullIcon, Styles.nodei);
                 button.resizeImage(node.node.content.fullIcon.width * FocusSetting.nodeSize(node.node) / Scl.scl(128f));
@@ -476,7 +479,7 @@ public class FocusDialog extends BaseDialog{
                     float offset = (Core.graphics.getHeight() % 2) / 2f;
                     button.setPosition(node.x + panX + width / 2f, node.y + panY + height / 2f + offset, Align.center);
                     button.getStyle().up = !locked(node.node) ? Tex.buttonOver : !selectable(node.node) || !canSpend(node.node) ? Tex.buttonRed
-                            : current == null ? Tex.button : node.node.content == current ? FocusTex.buttonGreen : Tex.button;
+                            : current == null ? Tex.button : node.node.content == current ? buttonSelect : Tex.button;
                     ((TextureRegionDrawable)button.getStyle().imageUp).setRegion(node.node.content.fullIcon);
                     button.getImage().setColor(!locked(node.node) ? Color.white : node.selectable ? Color.gray : Pal.gray);
                     button.getImage().setScaling(Scaling.bounded);

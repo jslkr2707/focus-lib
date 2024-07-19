@@ -1,7 +1,6 @@
 package focus.ui;
 
 import arc.*;
-import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import focus.type.*;

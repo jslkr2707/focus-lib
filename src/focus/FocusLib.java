@@ -10,7 +10,7 @@ import mindustry.mod.*;
 import static mindustry.Vars.*;
 
 public class FocusLib extends Mod{
-    public static FocusTex ft = new FocusTex();
+    //public static FocusUILoader fui = new FocusUILoader();
 
     public FocusLib(){
     }
@@ -24,15 +24,16 @@ public class FocusLib extends Mod{
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
             mod.meta.displayName = stringf.get(mod.meta.name + ".name");
-            mod.meta.description = Core.bundle.get("mod.ages.description");
+            mod.meta.description = Core.bundle.get("mod.focus-lib.description");
 
             mod.meta.author = "[royal]" + mod.meta.author + "[]";
         }
+
         mod.meta.version = mod.meta.version + "\n";
 
         Events.run(EventType.ClientLoadEvent.class, () -> {
             FocusSetting.init("focus.title");
-            ft.init();
+            //fui.init();
         });
     }
 
