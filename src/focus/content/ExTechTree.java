@@ -15,7 +15,8 @@ public class ExTechTree {
 
     public static void load() {
         nodeRoot("asdf", example, () -> {
-                node(advanced, Seq.with(new sectorsCompleted(1)), () -> {});
+            node(intermediate, () -> {});
+            node(advanced, Seq.with(new sectorsCompleted(1), new focusResearch(intermediate)), () -> {});
         });
     }
 }

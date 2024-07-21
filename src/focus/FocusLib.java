@@ -10,7 +10,7 @@ import mindustry.mod.*;
 import static mindustry.Vars.*;
 
 public class FocusLib extends Mod{
-    //public static FocusUILoader fui = new FocusUILoader();
+    public static FocusUILoader fui = new FocusUILoader();
 
     public FocusLib(){
     }
@@ -33,7 +33,7 @@ public class FocusLib extends Mod{
 
         Events.run(EventType.ClientLoadEvent.class, () -> {
             FocusSetting.init("focus.title");
-            //fui.init();
+            fui.init();
         });
     }
 

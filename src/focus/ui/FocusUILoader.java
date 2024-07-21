@@ -5,5 +5,9 @@ import arc.scene.style.*;
 import static arc.Core.atlas;
 
 public class FocusUILoader {
-    public static Drawable buttonGreen = atlas.drawable("button-green");
+    public static Drawable buttonGreen;
+
+    public void init(){
+        buttonGreen = atlas.getDrawable("focus-lib-button-green");
+    }
 }
