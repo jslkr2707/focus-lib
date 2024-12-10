@@ -37,7 +37,6 @@ import mindustry.ui.layout.*;
 import mindustry.ui.layout.TreeLayout.*;
 
 import java.util.*;
-
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
@@ -53,7 +52,6 @@ public class FocusDialog extends BaseDialog{
     public View view;
     public Focus current;
     public int currentSectors = -1;
-
     /* put a sound file in the "sounds/" directory */
     public Sound researchSound = Vars.tree.loadSound("research");
     public ItemSeq items;
@@ -68,7 +66,7 @@ public class FocusDialog extends BaseDialog{
 
         titleTable.remove();
         titleTable.clear();
-        titleTable.top();
+        titleTable.top().right();
         titleTable.button(Core.bundle.get("focus.stop"), () -> {
             new BaseDialog(""){{
                 cont.pane(t -> {
@@ -79,19 +77,18 @@ public class FocusDialog extends BaseDialog{
 
                     t.row();
 
-                    t.table(pane, yn -> {
-                        yn.button("@focus.stop.yes", () -> {
-                            current = null;
-                            Core.settings.remove("current");
-                            focusDisplay.rebuild(null);
-                            hide();
-                        }).grow();
 
-                        yn.button("@focus.stop.no", this::hide).padLeft(20f).grow();
-                    }).center();
+                    t.button("@focus.stop.yes", () -> {
+                        current = null;
+                        Core.settings.remove("current");
+                        focusDisplay.rebuild(null);
+                        hide();
+                    });
+
+                    t.button("@focus.stop.no", this::hide).padLeft(20f);
                 }).center();
             }}.show();
-        }).top().right().growX().maxWidth(300f);
+        }).top().right().fillX().minWidth(200f).touchable(() -> current == null ? Touchable.disabled : Touchable.enabled);
 
         showTechSelect = true;
 
@@ -405,7 +402,7 @@ public class FocusDialog extends BaseDialog{
         }
 
         public Focus[] completedFocus(){
-            Seq<Content> focusList = content.getBy(ContentType.typeid_UNUSED).filter(c -> c instanceof Focus);
+            Seq<Content> focusList = content.getBy(ContentType.typeid_UNUSED).select(c -> c instanceof Focus);
             Focus[] arr = new Focus[focusList.size];
             for (int i = 0;i < focusList.size; i++){
                 if (((Focus)focusList.get(i)).unlocked()) arr[i] = (Focus)focusList.get(i);
@@ -430,11 +427,7 @@ public class FocusDialog extends BaseDialog{
                 ImageButton button = new ImageButton(node.node.content.fullIcon.found() ? node.node.content.fullIcon : Core.atlas.find("unknown"), Styles.nodei);
                 button.getImageCell().marginTop(3f).marginBottom(3f);
                 button.resizeImage(96f);
-                button.row();
                 button.visible(() -> node.visible);
-                button.table(Tex.button, n -> {
-                    n.add(node.node.content.localizedName).center().scaling(Scaling.bounded);
-                }).center().bottom();
 
                 button.clicked(() -> {
                     if(moved) return;
@@ -566,6 +559,7 @@ public class FocusDialog extends BaseDialog{
                 }
             } else if (reqComplete(node)){
                 unlock(node);
+                Log.info(node.localizedName() + "unlock");
                 items = items();
                 current = null;
                 delCurrent();
