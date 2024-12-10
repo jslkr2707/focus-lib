@@ -1,13 +1,13 @@
-package focus.util;
+package quests.util;
 
-import focus.type.*;
-import focus.ui.dialogs.*;
+import quests.type.*;
+import quests.ui.dialogs.*;
 import arc.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 
-public class FObjectives {
+public class QObjectives {
     public static class customResearch implements Objective {
         public UnlockableContent content;
 
@@ -29,7 +29,7 @@ public class FObjectives {
 
         @Override
         public boolean complete(){
-            return FocusDialog.completed() >= this.standard;
+            return QuestDialog.completed() >= this.standard;
         }
 
         @Override
@@ -39,9 +39,9 @@ public class FObjectives {
     }
 
     public static class notUnlocked implements Objective{
-        public Focus opposite;
+        public Quest opposite;
 
-        public notUnlocked(Focus content) { this.opposite = content; }
+        public notUnlocked(Quest content) { this.opposite = content; }
 
         @Override
         public boolean complete(){
@@ -55,13 +55,13 @@ public class FObjectives {
     }
 
     public static class focusResearch implements Objective {
-        public Focus[] prerequisite;
+        public Quest[] prerequisite;
 
-        public focusResearch(Focus... focus) { this.prerequisite = focus; }
+        public focusResearch(Quest... quest) { this.prerequisite = quest; }
 
         @Override
         public boolean complete() {
-            for (Focus f: prerequisite) {
+            for (Quest f: prerequisite) {
                 if (!f.unlocked()) return false;
             }
             return true;

@@ -1,7 +1,7 @@
-package focus;
+package quests;
 
-import focus.content.*;
-import focus.ui.*;
+import quests.content.*;
+import quests.ui.*;
 import arc.*;
 import arc.func.*;
 import mindustry.game.*;
@@ -9,10 +9,10 @@ import mindustry.mod.*;
 
 import static mindustry.Vars.*;
 
-public class FocusLib extends Mod{
+public class Quests extends Mod{
     public static FocusUILoader fui = new FocusUILoader();
 
-    public FocusLib(){
+    public Quests(){
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FocusLib extends Mod{
         mod.meta.version = mod.meta.version + "\n";
 
         Events.run(EventType.ClientLoadEvent.class, () -> {
-            FocusSetting.init("focus.title");
+            QuestSetting.init("focus.title");
             fui.init();
         });
     }

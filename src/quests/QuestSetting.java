@@ -1,13 +1,11 @@
-package focus;
+package quests;
 
 import arc.scene.ui.layout.*;
-import arc.util.*;
-import focus.type.*;
-import focus.ui.dialogs.FocusDialog;
+import quests.type.*;
+import quests.ui.dialogs.QuestDialog;
 import arc.*;
 import arc.scene.*;
 import arc.scene.style.*;
-import mindustry.*;
 import mindustry.content.TechTree;
 import mindustry.gen.Tex;
 import mindustry.graphics.*;
@@ -16,7 +14,7 @@ import mindustry.ui.dialogs.*;
 
 import static mindustry.Vars.*;
 
-public class FocusSetting {
+public class QuestSetting {
     public static boolean showTechSelect;
     public String dialogTitleKey;
 
@@ -32,7 +30,7 @@ public class FocusSetting {
                 cont.pane(t -> t.table(Tex.button, in -> {
                     in.defaults().width(300f).height(60f);
                     for (TechTree.TechNode node : TechTree.roots) {
-                        if (node.children.get(0).content instanceof Focus) continue;
+                        if (node.children.get(0).content instanceof Quest) continue;
                         if (node.requiresUnlock && !node.content.unlocked() && node != ui.research.getPrefRoot()) continue;
 
                         in.button(node.localizedName(), node.icon(), Styles.flatTogglet, iconMed, () -> {
@@ -51,7 +49,7 @@ public class FocusSetting {
     }
 
     public static void init(String name){
-        FocusDialog dialog = new FocusDialog(Core.bundle.format(name));
+        QuestDialog dialog = new QuestDialog(Core.bundle.format(name));
 
         ui.research.shown(() -> {
             var group = (Group)ui.research.getChildren().first();

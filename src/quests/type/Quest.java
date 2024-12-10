@@ -1,18 +1,18 @@
-package focus.type;
+package quests.type;
 
 import arc.Core;
 import arc.struct.Seq;
 import mindustry.ctype.*;
 import mindustry.type.*;
 
-public class Focus extends UnlockableContent{
+public class Quest extends UnlockableContent{
     public int addSectors = 0;
     public ItemStack[] requirements;
     public ItemStack[] rewards;
     public Seq<UnlockableContent> unlockContents = new Seq<>();
-    public Seq<Focus> exclusives = new Seq<>();
+    public Seq<Quest> exclusives = new Seq<>();
 
-    public Focus(String name){
+    public Quest(String name){
         super(name);
 
         hideDetails = false;
@@ -25,8 +25,8 @@ public class Focus extends UnlockableContent{
         this.rewards = stack;
     }
 
-    public void exclude(Focus... content){
-        for (Focus f: content){
+    public void exclude(Quest... content){
+        for (Quest f: content){
             this.exclusives.add(f);
         }
     }

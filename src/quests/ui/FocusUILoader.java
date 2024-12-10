@@ -1,4 +1,4 @@
-package focus.ui;
+package quests.ui;
 
 import arc.scene.style.*;
 

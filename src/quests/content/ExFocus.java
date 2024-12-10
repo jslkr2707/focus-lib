@@ -1,22 +1,22 @@
-package focus.content;
+package quests.content;
 
-import focus.type.*;
+import quests.type.*;
 import mindustry.content.*;
 import mindustry.type.*;
 
 public class ExFocus {
-    public static Focus
+    public static Quest
     example, advanced, intermediate;
 
     /* region defense */
     public static void load(){
-        example = new Focus("example"){{
+        example = new Quest("example"){{
             requirements(ItemStack.with());
             unlock(Blocks.mechanicalDrill);
             reward(ItemStack.with(Items.copper, 500, Items.lead, 500));
         }};
 
-        advanced = new Focus("advanced"){{
+        advanced = new Quest("advanced"){{
             addSectors = 2;
             requirements(ItemStack.with(Items.copper, 2500, Items.lead, 2500));
             unlock(Items.coal, Blocks.copperWall);
@@ -24,7 +24,7 @@ public class ExFocus {
 
         }};
 
-        intermediate = new Focus("intermediate"){{
+        intermediate = new Quest("intermediate"){{
             requirements(ItemStack.with());
             reward(ItemStack.with());
             unlock(Blocks.arc);

@@ -1,6 +1,6 @@
 <div align="center">
 
-# [FocusLib](https://github.com/jslkr2707/focus-lib/)
+# [FocusLib](https://github.com/jslkr2707/quest-lib/)
 
 FocusLib(FL) is a mindustry mod library that enables you to implement a techtree that resembles "National Focus Tree" system of the game HOI4 into your mod.<br>
 Currently supporting only Java. Planning to support json and js.

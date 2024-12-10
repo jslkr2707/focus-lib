@@ -1,9 +1,9 @@
-package focus.ui.dialogs;
+package quests.ui.dialogs;
 
 import arc.audio.*;
-import focus.*;
-import focus.type.Focus;
-import focus.ui.*;
+import quests.*;
+import quests.type.Quest;
+import quests.ui.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -19,7 +19,7 @@ import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import focus.util.*;
+import quests.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.content.TechTree.*;
@@ -40,7 +40,7 @@ import java.util.*;
 import static mindustry.Vars.*;
 import static mindustry.gen.Tex.*;
 
-public class FocusDialog extends BaseDialog{
+public class QuestDialog extends BaseDialog{
     public static boolean debugShowRequirements = false;
 
     public ObjectSet<TechTreeNode> nodes = new ObjectSet<>();
@@ -48,9 +48,9 @@ public class FocusDialog extends BaseDialog{
     public TechNode lastNode = root.node;
     public Rect bounds = new Rect();
     public ItemsDisplay itemDisplay;
-    public FocusDisplay focusDisplay;
+    public QuestDisplay questDisplay;
     public View view;
-    public Focus current;
+    public Quest current;
     public int currentSectors = -1;
     /* put a sound file in the "sounds/" directory */
     public Sound researchSound = Vars.tree.loadSound("research");
@@ -58,7 +58,7 @@ public class FocusDialog extends BaseDialog{
 
     private boolean showTechSelect;
 
-    public FocusDialog(String name){
+    public QuestDialog(String name){
         super("name");
 
         current = all(Core.settings.getString("current", null));
@@ -81,7 +81,7 @@ public class FocusDialog extends BaseDialog{
                     t.button("@focus.stop.yes", () -> {
                         current = null;
                         Core.settings.remove("current");
-                        focusDisplay.rebuild(null);
+                        questDisplay.rebuild(null);
                         hide();
                     });
 
@@ -93,7 +93,7 @@ public class FocusDialog extends BaseDialog{
         showTechSelect = true;
 
         margin(0f).marginBottom(8);
-        cont.stack(titleTable, view = new View(), itemDisplay = new ItemsDisplay(), focusDisplay = new FocusDisplay()).grow();
+        cont.stack(titleTable, view = new View(), itemDisplay = new ItemsDisplay(), questDisplay = new QuestDisplay()).grow();
 
         titleTable.toFront();
 
@@ -277,11 +277,11 @@ public class FocusDialog extends BaseDialog{
         }
 
         itemDisplay.rebuild(items);
-        focusDisplay.rebuild(current);
+        questDisplay.rebuild(current);
     }
 
     boolean selectable(TechNode node){
-        return current == node.content ? view.reqComplete(node) : current == null && !node.objectives.contains(i -> !i.complete()) && (node.parent == null || node.parent.content.unlocked()) && !((Focus)node.content).exclusives.contains((UnlockableContent::unlocked));
+        return current == node.content ? view.reqComplete(node) : current == null && !node.objectives.contains(i -> !i.complete()) && (node.parent == null || node.parent.content.unlocked()) && !((Quest)node.content).exclusives.contains((UnlockableContent::unlocked));
     }
 
     boolean locked(TechNode node){
@@ -315,14 +315,14 @@ public class FocusDialog extends BaseDialog{
             }
 
             {
-                for (Focus focus : view.completedFocus()) {
-                    if (focus != null) {
-                        for (ItemStack stack : focus.rewards) {
+                for (Quest quest : view.completedFocus()) {
+                    if (quest != null) {
+                        for (ItemStack stack : quest.rewards) {
                             values[stack.item.id] += stack.amount;
                             total += stack.amount;
                         }
 
-                        for (ItemStack stack : focus.requirements) {
+                        for (ItemStack stack : quest.requirements) {
                             values[stack.item.id] -= stack.amount;
                             total -= stack.amount;
                         }
@@ -332,10 +332,10 @@ public class FocusDialog extends BaseDialog{
         };
     }
 
-    public Focus all(String name){
+    public Quest all(String name){
         if (name == null) return null;
         for (Content c: Vars.content.getBy(ContentType.typeid_UNUSED)){
-            if (((Focus) c).localizedName.equals(name)) return (Focus) c;
+            if (((Quest) c).localizedName.equals(name)) return (Quest) c;
         }
         return null;
     }
@@ -356,7 +356,7 @@ public class FocusDialog extends BaseDialog{
         LayoutNode(TechTreeNode node, LayoutNode parent){
             this.node = node;
             this.parent = parent;
-            this.width = this.height = FocusSetting.nodeSize(node.node);
+            this.width = this.height = QuestSetting.nodeSize(node.node);
             if(node.children != null){
                 children = Seq.with(node.children).map(t -> new LayoutNode(t, this)).toArray(LayoutNode.class);
             }
@@ -370,7 +370,7 @@ public class FocusDialog extends BaseDialog{
         public TechTreeNode(TechNode node, TechTreeNode parent){
             this.node = node;
             this.parent = parent;
-            this.width = this.height = FocusSetting.nodeSize(node);
+            this.width = this.height = QuestSetting.nodeSize(node);
             nodes.add(this);
             if(node.children != null){
                 children = new TechTreeNode[node.children.size];
@@ -401,11 +401,11 @@ public class FocusDialog extends BaseDialog{
             Core.settings.remove("sectors");
         }
 
-        public Focus[] completedFocus(){
-            Seq<Content> focusList = content.getBy(ContentType.typeid_UNUSED).select(c -> c instanceof Focus);
-            Focus[] arr = new Focus[focusList.size];
+        public Quest[] completedFocus(){
+            Seq<Content> focusList = content.getBy(ContentType.typeid_UNUSED).select(c -> c instanceof Quest);
+            Quest[] arr = new Quest[focusList.size];
             for (int i = 0;i < focusList.size; i++){
-                if (((Focus)focusList.get(i)).unlocked()) arr[i] = (Focus)focusList.get(i);
+                if (((Quest)focusList.get(i)).unlocked()) arr[i] = (Quest)focusList.get(i);
             }
             return arr;
         }
@@ -552,7 +552,7 @@ public class FocusDialog extends BaseDialog{
                 }
 
                 if(complete){
-                    current = (Focus)node.content;
+                    current = (Quest)node.content;
                     currentSectors = completed();
                     putCurrent();
                     researchSound.play();
@@ -572,7 +572,7 @@ public class FocusDialog extends BaseDialog{
             Core.scene.act();
             rebuild(shine);
             itemDisplay.rebuild(items, usedShine);
-            focusDisplay.rebuild(current);
+            questDisplay.rebuild(current);
         }
 
         void unlock(TechNode node){
@@ -596,7 +596,7 @@ public class FocusDialog extends BaseDialog{
         }
 
         boolean reqComplete(TechNode node){
-            return completed() >= currentSectors + ((Focus)node.content).addSectors;
+            return completed() >= currentSectors + ((Quest)node.content).addSectors;
         }
 
         void rebuild(){
@@ -769,11 +769,11 @@ public class FocusDialog extends BaseDialog{
                                 }).left();
                                 b.row();
 
-                                Objective pre = node.objectives.find(o -> o instanceof FObjectives.focusResearch);
+                                Objective pre = node.objectives.find(o -> o instanceof QObjectives.focusResearch);
                                 if (pre != null) {
-                                    Focus[] foc = ((FObjectives.focusResearch) pre).prerequisite;
+                                    Quest[] foc = ((QObjectives.focusResearch) pre).prerequisite;
 
-                                    for (Focus f : foc) {
+                                    for (Quest f : foc) {
                                         b.table(fo -> {
                                             fo.left().marginLeft(9f);
                                             fo.add(f.localizedName).color(f.unlocked() ? Color.white : Color.red).left();
@@ -790,10 +790,10 @@ public class FocusDialog extends BaseDialog{
                     }).left();
 
                     infoTable.row();
-                    if (((Focus) node.content).rewards.length > 0) {
+                    if (((Quest) node.content).rewards.length > 0) {
                         infoTable.table(b -> {
                             b.margin(3f).left().defaults().left();
-                            ItemStack[] rew = ((Focus) node.content).rewards;
+                            ItemStack[] rew = ((Quest) node.content).rewards;
 
                             b.add(Core.bundle.format("focus.reward")).color(Color.lime);
                             for (ItemStack i : rew) {
@@ -809,13 +809,13 @@ public class FocusDialog extends BaseDialog{
 
                     infoTable.row();
 
-                    if (((Focus) node.content).unlockContents.size > 0) {
+                    if (((Quest) node.content).unlockContents.size > 0) {
                         infoTable.table(r -> {
                             r.margin(3f).left().defaults().left();
 
                             r.add(Core.bundle.format("focus.additional")).color(Pal.accent);
                             r.row();
-                            for (UnlockableContent c : ((Focus) node.content).unlockContents) {
+                            for (UnlockableContent c : ((Quest) node.content).unlockContents) {
                                 r.table(u -> {
                                     u.left().marginLeft(9f);
                                     u.image(c.uiIcon).size(20f).left().padRight(6f);
@@ -833,7 +833,7 @@ public class FocusDialog extends BaseDialog{
                     tbl.row();
                     tbl.table(ad -> {
                         ad.margin(3f).left().marginLeft(9f);
-                        ad.add(Core.bundle.format("focus.moresectors", completed() - currentSectors, ((Focus)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
+                        ad.add(Core.bundle.format("focus.moresectors", completed() - currentSectors, ((Quest)node.content).addSectors, reqComplete(node) ? "green" : "red")).color(Color.white);
                     }).marginLeft(9f).left();
                 }).margin(9f).left();
             }

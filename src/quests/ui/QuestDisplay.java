@@ -1,18 +1,18 @@
-package focus.ui;
+package quests.ui;
 
 import arc.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import focus.type.*;
+import quests.type.*;
 import mindustry.gen.*;
 
-public class FocusDisplay extends Table {
+public class QuestDisplay extends Table {
 
-    public FocusDisplay(){
+    public QuestDisplay(){
         rebuild(null);
     }
 
-    public void rebuild(Focus f){
+    public void rebuild(Quest f){
         clear();
         bottom().left();
         margin(0);

@@ -1,13 +1,11 @@
-package focus.content;
+package quests.content;
 
-import arc.*;
 import arc.struct.Seq;
-import focus.util.*;
 import mindustry.content.*;
 
 import static mindustry.content.TechTree.*;
-import static focus.util.FObjectives.*;
-import static focus.content.ExFocus.*;
+import static quests.util.QObjectives.*;
+import static quests.content.ExFocus.*;
 
 
 public class ExTechTree {
